@@ -1,3 +1,5 @@
+import sys
+
 import numpy as np
 from scipy.interpolate import splev, splprep
 
@@ -67,7 +69,7 @@ def isolate_collinear(line, closed=False, collinearity_tol=1e-5):
     else:
         points = add_point(points, (line[firstpoint] + line[lastpoint]) / 2)
     if closed:
-        points = np.append(points, [points[0]], axis=0)
+        points = add_point(points, points[0])
     return points
 
 
@@ -76,10 +78,14 @@ def smooth_contour(contour, smoothness=20, closed=None, collinearity_tol=1e-5):
         closed = np.all(contour[0] == contour[-1])
 
     isolated_contour = isolate_collinear(contour, closed, collinearity_tol)
-    if isolated_contour.shape[0] >= 4:
-        smoothness = isolated_contour.shape[0] * smoothness
-        model, u = splprep(isolated_contour.T, s=0, k=min(3, isolated_contour.shape[0] - 1), per=1 if closed else 0)
-    else:
-        smoothness = contour.shape[0] * smoothness
-        model, u = splprep(contour.T, s=0, k=min(3, contour.shape[0] - 1), per=1 if closed else 0)
-    return np.array(splev(np.linspace(0, 1, smoothness), model)).T
+    try:
+        if isolated_contour.shape[0] >= 4:
+            smoothness = isolated_contour.shape[0] * smoothness
+            model, u = splprep(isolated_contour.T, s=0, k=3, per=1 if closed else 0)
+        else:
+            smoothness = contour.shape[0] * smoothness
+            model, u = splprep(contour.T, s=0, k=min(3, contour.shape[0] - 1), per=1 if closed else 0)
+        return np.array(splev(np.linspace(0, 1, smoothness), model)).T
+    except ValueError as e:
+        print("Failed to smoothen contour: " + e, file=sys.stderr)
+        return isolated_contour
