@@ -14,7 +14,7 @@ plt.rc("font", family="serif")
 
 # Taken from Ordnance Survey (OS) data, each grid with 10km side
 # Note - Y-axis must be inverted for plotting
-data = np.genfromtxt("data/NO44.asc", skip_header=5)
+data = np.genfromtxt("../data/NO44.asc", skip_header=5)
 
 
 # Create 10km x 10km coordinates

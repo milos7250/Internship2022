@@ -1,27 +1,35 @@
-import matplotlib.cm
 import numpy as np
 from matplotlib import pyplot as plt
-from skimage import measure
+from matplotlib.cm import ScalarMappable
+from matplotlib.colors import Normalize
 from scipy import interpolate
+from skimage import measure
 
-from functions import smooth_contour
+from functions_1D import smooth_contour
 
-block_stride = 5
+
+"""
+This script creates smooth contours by attempting to interpolate the data itself first, then creating smooth contours.
+"""
+
+
+block_stride = 8
 height_levels = 50
 
 # Import data. Reversing y axis is necessary to make sure north stays on the top of the graphs.
 # NN17 is an ordnance tile from Fort William, NO44 north of Dundee, NO51 in St Andrews, NO33 in Dundee
 data = np.loadtxt("data/NO44.asc", skiprows=5)[::-1, :]
 maximum = int(np.ceil(np.max(data)))
+levels = [x for x in range(0, maximum, height_levels)]
+
 
 # Set up subplots and colormaps
 fig, axes = plt.subplots(nrows=4, ncols=4)
 for ax in axes.flatten():
     ax.set_aspect("equal", "box")
 cmap = plt.get_cmap("terrain")
-norm = matplotlib.colors.Normalize(0, maximum)
-colors = matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap)
-levels = [x for x in range(0, maximum, height_levels)]
+norm = Normalize(0, maximum)
+colors = ScalarMappable(norm=norm, cmap=cmap)
 plt.subplots_adjust(hspace=0.3)
 plt.colorbar(colors, ticks=levels, ax=axes.ravel().tolist())
 
