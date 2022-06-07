@@ -1,0 +1,58 @@
+use_fixes=True
+block_stride=1
+height_levels = 50
+
+Tile name: NN17.
+Method: linear, Mean Error: 235.18763561567758.
+Method: cubic, Mean Error: 241.92729174288917.
+Method: rfb_linear, Mean Error: 131.83291277516045.
+Method: rfb_thin_plate_spline, Mean Error: 138.24910950895102.
+Method: rfb_cubic, Mean Error: 169.20835591886603.
+Method: rfb_quintic, Mean Error: 205.4258515953894.
+Method: rfb_multiquadric, Epsilon: 3, Mean Error: 195.90157155874164.
+Method: rfb_multiquadric, Epsilon: 10, Mean Error: 145.75211348028168.
+Method: rfb_multiquadric, Epsilon: 30, Mean Error: 133.0673506349528.
+Method: rfb_multiquadric, Epsilon: 100, Mean Error: 131.71416393058212.
+Method: rfb_inverse_multiquadric, Epsilon: 10, Mean Error: 309.2764591339083.
+Method: rfb_inverse_quadratic, Epsilon: 3.5, Mean Error: 309.7360925692397.
+Tile name: NO33.
+Method: linear, Mean Error: 201.23596121419612.
+Method: cubic, Mean Error: 187.45946810016653.
+Method: rfb_linear, Mean Error: 135.72940150748576.
+Method: rfb_thin_plate_spline, Mean Error: 155.54240365180712.
+Method: rfb_cubic, Mean Error: 170.38646914914665.
+Method: rfb_quintic, Mean Error: 174.6077293373177.
+Method: rfb_multiquadric, Epsilon: 3, Mean Error: 193.1797900606046.
+Method: rfb_multiquadric, Epsilon: 10, Mean Error: 166.57698170217424.
+Method: rfb_multiquadric, Epsilon: 30, Mean Error: 143.00412543171817.
+Method: rfb_multiquadric, Epsilon: 100, Mean Error: 137.58778067696352.
+Method: rfb_inverse_multiquadric, Epsilon: 10, Mean Error: 202.98127590606725.
+Method: rfb_inverse_quadratic, Epsilon: 3.5, Mean Error: 207.16069889993761.
+Tile name: NO44.
+Method: linear, Mean Error: 155.7915596241521.
+Method: cubic, Mean Error: 158.4488716152283.
+Method: rfb_linear, Mean Error: 71.12564642064297.
+Method: rfb_thin_plate_spline, Mean Error: 106.39985118947527.
+Method: rfb_cubic, Mean Error: 229.13301354152216.
+Method: rfb_quintic, Mean Error: 245.96206179440887.
+Method: rfb_multiquadric, Epsilon: 3, Mean Error: 275.3334478503818.
+Method: rfb_multiquadric, Epsilon: 10, Mean Error: 149.61208586714355.
+Method: rfb_multiquadric, Epsilon: 30, Mean Error: 92.00346963840765.
+Method: rfb_multiquadric, Epsilon: 100, Mean Error: 76.71829889374888.
+Method: rfb_inverse_multiquadric, Epsilon: 10, Mean Error: 271.73264162891826.
+Method: rfb_inverse_quadratic, Epsilon: 3.5, Mean Error: 298.1570755491235.
+Tile name: NO51.
+Method: linear, Mean Error: 817.6280497927829.
+Method: cubic, Mean Error: 829.2667517229058.
+Method: rfb_linear, Mean Error: 316.680043004003.
+Method: rfb_thin_plate_spline, Mean Error: 150.81589922954697.
+Method: rfb_cubic, Mean Error: 87.03835269092285.
+Method: rfb_quintic, Mean Error: 91.15339566649953.
+Method: rfb_multiquadric, Epsilon: 3, Mean Error: 88.32026783174601.
+Method: rfb_multiquadric, Epsilon: 10, Mean Error: 192.3142897311069.
+Method: rfb_multiquadric, Epsilon: 30, Mean Error: 277.0441120794807.
+Method: rfb_multiquadric, Epsilon: 100, Mean Error: 305.6156533894509.
+Method: rfb_inverse_multiquadric, Epsilon: 10, Mean Error: 85.76807820846942.
+Method: rfb_inverse_quadratic, Epsilon: 3.5, Mean Error: 101.15978921110403.
+
+Process finished with exit code 0

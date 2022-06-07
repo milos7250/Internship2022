@@ -1,4 +1,4 @@
-from sys import stderr
+import warnings
 
 import numpy as np
 from scipy.interpolate import splev, splprep
@@ -119,5 +119,5 @@ def smooth_contour(contour: np.ndarray, smoothness: float = 20, closed: bool = N
             model, u = splprep(contour.T, s=0, k=min(3, contour.shape[0] - 1), per=1 if closed else 0)
         return np.array(splev(np.linspace(0, 1, smoothness), model)).T
     except ValueError as e:
-        print("Failed to smoothen contour: " + str(e), file=stderr)
+        warnings.warn("An error occurred when smoothing contour. Points might be collinear/coincident.", RuntimeWarning)
         return isolated_contour

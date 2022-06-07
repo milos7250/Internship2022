@@ -21,7 +21,7 @@ datagrid = np.loadtxt("data/NO44.asc", skiprows=5)[::-1, :]
 x = np.linspace(0, 10, datagrid.shape[1])
 y = np.linspace(0, 10, datagrid.shape[0])
 maximum = int(np.ceil(np.max(datagrid)))
-levels = [x for x in range(0, maximum + height_levels, height_levels)]
+levels = [i for i in range(0, maximum + height_levels, height_levels)]
 maximum = levels[-1]
 
 # Set up subplots and colormaps
@@ -29,7 +29,7 @@ fig, axes = plt.subplots(nrows=3, ncols=4)
 for ax in axes.flatten():
     ax.set_aspect("equal", "box")
 cmap = plt.get_cmap("terrain")
-norm = Normalize(0, maximum)
+norm = Normalize(min(np.min(datagrid) * 1.1, -10), maximum * 1.1)  # Leave extra 10% for interpolation overshoot
 colors = ScalarMappable(norm=norm, cmap=cmap)
 plt.subplots_adjust(hspace=0.3)
 plt.colorbar(colors, ticks=levels, ax=axes.ravel().tolist())
