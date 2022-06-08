@@ -263,9 +263,9 @@ def interpolate_low_output_resolution(
                 old = contours_datapoints.shape[0]
                 step = contours_datapoints.shape[0] // 5000 + 1
                 contours_datapoints = contours_datapoints[::step]
-                # print(f"The number of contour datapoints was shrunk from {old} to {contours_datapoints.shape[0]}.")
-            # else:
-            #     print(f"The number of contour datapoints is {contours_datapoints.shape[0]}.")
+                print(f"The number of contour datapoints was shrunk from {old} to {contours_datapoints.shape[0]}.")
+            else:
+                print(f"The number of contour datapoints is {contours_datapoints.shape[0]}.")
 
             inputpoints = np.array([XI, YI]).reshape(2, -1).T
             interpolated_datagrid = interpolate.RBFInterpolator(
@@ -274,7 +274,8 @@ def interpolate_low_output_resolution(
                 kernel=method[4:],
                 smoothing=smoothing,
                 **kwargs,
-            )(inputpoints).reshape(yi.size, xi.size)
+            )
+            interpolated_datagrid = interpolated_datagrid(inputpoints).reshape(yi.size, xi.size)
         case _:
             raise TypeError(f"Invalid method selected: {method}")
     if use_fix_contours:
