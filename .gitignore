@@ -1,3 +1,5 @@
 /helpers/CurrentWindowPos*.pkl
 /data/terr50_gagg_gb.zip
 /data/FictionalData.xcf
+/conda/
+/data/FictionalDatad_Interpolated.txt

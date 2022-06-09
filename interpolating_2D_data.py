@@ -4,8 +4,8 @@ from matplotlib.cm import ScalarMappable
 from matplotlib.colors import Normalize
 from scipy import interpolate
 
-from functions_2D import plot_contours, interpolate_low_output_resolution, clip_to_data
-
+from functions_2D import (clip_to_data, interpolate_low_output_resolution,
+                          plot_contours)
 
 """
 This script creates smooth contours by attempting to interpolate the data itself first, then creating smooth contours.
@@ -26,7 +26,7 @@ levels = [i for i in range(0, maximum + height_levels, height_levels)]
 maximum = levels[-1]
 
 cmap = plt.get_cmap("terrain")
-norm = Normalize(min(np.min(datagrid) * 1.1, -10), maximum * 1.1)  # Leave extra 10% for interpolation overshoot
+norm = Normalize(-0.25 * maximum * 1.1, maximum * 1.1)  # Leave extra 10% for interpolation overshoot
 colors = ScalarMappable(norm=norm, cmap=cmap)
 
 

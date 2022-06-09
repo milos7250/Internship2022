@@ -1,38 +1,53 @@
-import pathlib
-
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.cm import ScalarMappable
 from matplotlib.colors import Normalize
-from scipy import interpolate
-from PIL import Image
 
 import helpers.save_figure_position
-from functions_2D import plot_contours, interpolate_low_output_resolution
+from functions_2D import interpolate_low_output_resolution, plot_contours
 
-image = Image.open("data/FictionalData.png")
-colordict = {0: 7, 1: 0, 2: 6, 3: 1, 4: 5, 5: 2, 6: 4, 7: 3}
-change_color = np.vectorize(lambda x: colordict[x])
+datagrid = np.load("data/FictionalData.npy", allow_pickle=False) - 1
+maximum = np.max(datagrid)
+x = np.arange(0, datagrid.shape[1])
+y = np.arange(0, datagrid.shape[0])
+levels = list(np.arange(0, 8))
 
 cmap = "terrain"
-norm = Normalize(0, 7)
+norm = Normalize(-0.25 * maximum * 1.1, maximum * 1.1)
 colors = ScalarMappable(norm=norm, cmap=cmap)
-# noinspection PyTypeChecker
-image = np.array(image)
-image = change_color(image)
-x = np.arange(0, image.shape[1])
-y = np.arange(0, image.shape[0])
+fig, axes = plt.subplots(nrows=2, ncols=3)
+for ax in axes.flatten():
+    ax.set_aspect("equal", "box")
+axes = axes.flatten()
 
 
-plt.subplot(121)
-plt.imshow(image, cmap=cmap, norm=norm, interpolation="none", resample=False)
-plt.colorbar()
+axes[0].pcolormesh(x, y, datagrid, cmap=cmap, norm=norm, rasterized=True)
+plot_contours(x, y, datagrid, ax=axes[3], colors=colors, low_output_resolution=True, interpolate=False)
+plt.colorbar(colors, ax=axes[0], ticks=[i for i in range(8)])
 
 
-stride = 5
-interpolated_image = interpolate_low_output_resolution(x, y, image - 1, x[::stride], y[::stride])
-interpolated_image = np.where(image[::stride, ::stride] == 0, image[::stride, ::stride], interpolated_image)
-plt.subplot(122)
-plt.imshow(interpolated_image, cmap=cmap, norm=norm, interpolation="none", resample=False)
+interpolated_image = interpolate_low_output_resolution(
+    x,
+    y,
+    datagrid,
+    use_clip_to_data=False,
+    allow_hybrid_interpolation=True,
+)
+# interpolated_image = np.where(datagrid == 0, datagrid, interpolated_image)
+axes[1].pcolormesh(x, y, interpolated_image, cmap=cmap, norm=norm, rasterized=True)
+plt.figure()
+plt.axes(projection="3d")
+X, Y = np.meshgrid(x, y)
+plt.gca().plot_surface(X, Y, interpolated_image, cmap=cmap, norm=norm)
+# plot_contours(x, y, interpolated_image, ax=axes[4], colors=colors, levels=levels, interpolate=False)
 
+# purerbf = np.load("data/FictionalData_Interpolated.npy")
+# purerbf = np.where(datagrid == 0, datagrid, purerbf)
+# axes[2].pcolormesh(x, y, purerbf, cmap=cmap, norm=norm, rasterized=True)
+# plot_contours(x, y, datagrid, ax=axes[5], colors=colors, levels=levels, interpolate=False)
+
+
+# norm_diff = Normalize(-np.max(np.abs(interpolated_image - purerbf)), np.max(np.abs(interpolated_image - purerbf)))
+# axes[3].pcolormesh(x, y, interpolated_image - purerbf, cmap="coolwarm", norm=norm_diff)
+# plt.colorbar(ScalarMappable(cmap="coolwarm", norm=norm_diff), ax=axes[3])
 helpers.save_figure_position.ShowLastPos(plt)

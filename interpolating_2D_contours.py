@@ -5,7 +5,6 @@ from matplotlib.colors import Normalize
 
 from functions_2D import plot_contours
 
-
 """
 This script creates smooth contours without attempting to interpolate the data itself.
 """

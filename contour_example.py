@@ -1,7 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
-from external.bezier import evaluate_bezier
 
+from external.bezier import evaluate_bezier
 from functions_1D import isolate_collinear, smooth_contour
 
 # USE FOR CLOSED CONTOURS

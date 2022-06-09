@@ -3,7 +3,6 @@ import pickle
 import matplotlib
 import matplotlib.pyplot as plt
 
-
 ###########################################
 # A helper script which preserves on screen positions of figures in between running programs
 

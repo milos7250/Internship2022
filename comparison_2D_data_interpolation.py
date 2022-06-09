@@ -3,9 +3,8 @@ from matplotlib import pyplot as plt
 from matplotlib.cm import ScalarMappable
 from matplotlib.colors import Normalize
 
-from functions_2D import plot_contours, interpolate_low_output_resolution
+from functions_2D import interpolate_low_output_resolution, plot_contours
 from helpers.save_figure_position import ShowLastPos
-
 
 """
 This script implements a comparative test for 2D interpolation techniques
@@ -31,7 +30,7 @@ def test_epsilons_for_method(xo, yo, original_datagrid, x, y, datagrid, epsilons
                 datagrid,
                 xo,
                 yo,
-                method="rfb_multiquadric",
+                method="rbf_multiquadric",
                 epsilon=epsilon,
                 use_fix_contours=False,
                 use_clip_to_data=False,
@@ -66,10 +65,10 @@ def test_methods(xo, yo, original_datagrid, x, y, datagrid, use_fixes, plot):
     for method in [
         "linear",  # The spline interpolator don't work well
         "cubic",
-        "rfb_linear",
-        "rfb_thin_plate_spline",
-        "rfb_cubic",
-        "rfb_quintic",
+        "rbf_linear",
+        "rbf_thin_plate_spline",
+        "rbf_cubic",
+        "rbf_quintic",
     ]:
         interpolated_datagrid = interpolate_low_output_resolution(
             x,
@@ -85,12 +84,12 @@ def test_methods(xo, yo, original_datagrid, x, y, datagrid, use_fixes, plot):
         if plot:
             plot_result()
     for epsilon, method in [
-        [3, "rfb_multiquadric"],  # Still not sure what value for epsilon is the best
-        [10, "rfb_multiquadric"],
-        [30, "rfb_multiquadric"],
-        [100, "rfb_multiquadric"],
-        [10, "rfb_inverse_multiquadric"],  # Inverse methods don't work well in sparse places.
-        [3.5, "rfb_inverse_quadratic"],
+        [3, "rbf_multiquadric"],  # Still not sure what value for epsilon is the best
+        [10, "rbf_multiquadric"],
+        [30, "rbf_multiquadric"],
+        [100, "rbf_multiquadric"],
+        [10, "rbf_inverse_multiquadric"],  # Inverse methods don't work well in sparse places.
+        [3.5, "rbf_inverse_quadratic"],
     ]:
         interpolated_datagrid = interpolate_low_output_resolution(
             x,

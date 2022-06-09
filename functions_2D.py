@@ -3,9 +3,10 @@ import warnings
 import numpy as np
 from matplotlib.axes import Axes
 from matplotlib.cm import ScalarMappable
-from skimage.measure import find_contours
-from functions_1D import smooth_contour
 from scipy import interpolate
+from skimage.measure import find_contours
+
+from functions_1D import smooth_contour
 
 
 def plot_contours(
@@ -18,6 +19,7 @@ def plot_contours(
     levels: list = None,
     low_output_resolution: bool = False,
     plot_title: str = None,
+    collinearity_tol: float = None,
 ):
     """
     Finds contours of data at specified levels using 'skimage.measure._find_contours.find_contours' and plots them on
@@ -49,7 +51,7 @@ def plot_contours(
     ):
         level = contour_datapoints[0, 2]
         if interpolate:
-            contour_datapoints = smooth_contour(contour_datapoints[:, 0:2])
+            contour_datapoints = smooth_contour(contour_datapoints[:, 0:2], collinearity_tol=collinearity_tol)
         ax.plot(contour_datapoints[:, 0], contour_datapoints[:, 1], color=colors.to_rgba(level))
     title = ""
     if plot_title:
@@ -127,6 +129,7 @@ def __test_elementwise(original, interpolated, levels):
 __test_vectorized = np.vectorize(__test_elementwise, excluded=[2])
 
 
+# TODO: Function runs very inefficiently, consider reimplementing
 def test(datagrid, interpolated_datagrid):
     """
     Tests whether interpolated data is within the range suggested by original low output resolution data.
@@ -160,6 +163,7 @@ def __clip_elementwise(original, interpolated, levels):
 __clip_vectorized = np.vectorize(__clip_elementwise, excluded=[2])
 
 
+# TODO: Function runs very inefficiently, consider reimplementing
 def clip_to_data(x, y, datagrid, xi, yi, interpolated_datagrid):
     """
     Clips interpolated data to the range suggested by original low output resolution data.
@@ -204,9 +208,12 @@ def fix_contours(x: np.ndarray, y: np.ndarray, datagrid, interpolated_datagrid):
     contours = isolate_contour_datapoints(x, y, datagrid, low_output_resolution=True)
     for point in contours:
         try:
-            interpolated_datagrid[np.where(y == point[1])[0][0], np.where(x == point[0])[0][0]] = point[2]
-        except IndexError:
-            pass
+            interpolated_datagrid[
+                np.where(y == int(np.round(point[1])))[0][0],
+                np.where(x == int(np.round(point[0])))[0][0],
+            ] = point[2]
+        except IndexError as e:
+            warnings.warn(f"{str(e)}: A point was skipped when fixing contours.", RuntimeWarning)
     return interpolated_datagrid
 
 
@@ -214,72 +221,96 @@ def interpolate_low_output_resolution(
     x: np.ndarray,
     y: np.ndarray,
     datagrid: np.ndarray,
-    xi: np.ndarray = None,
-    yi: np.ndarray = None,
-    method: str = "rfb_thin_plate_spline",
+    xf: np.ndarray = None,
+    yf: np.ndarray = None,
+    method: str = "rbf_thin_plate_spline",
     smoothing: float = 1e-3,
-    use_fix_contours: bool = True,
-    use_clip_to_data: bool = True,
+    use_fix_contours: bool = False,
+    use_clip_to_data: bool = False,
+    allow_hybrid_interpolation: bool = True,
     **kwargs,
 ):
     """
     Interpolates data in a grid with low output resolution (i.e. the data values are step-like, not smooth) by first
     isolating the contours of the data and then using methods available in the 'scipy.interpolate' module.
 
+    A hybrid approach where we first use RBF to generate a low resolution regular grid from isolated contours and then
+    use Cubic Splines to generate a high resolution fine grid is much waster and seems to produce comparable results
+    when compared to pure RBF. Therefore, this approach is preferred for large datagrids.
+
     :param x: (m) ndarray - The x coordinates of the datagrid.
     :param y: (n) ndarray - The y coordinates of the datagrid.
     :param datagrid:(n, m) ndarray - The datagrid to interpolate.
-    :param xi: (m) ndarray - The x coordinates to interpolate the datagrid to.
-    :param yi: (n) ndarray - The x coordinates to interpolate the datagrid to.
+    :param xf: (m) ndarray - The x coordinates to interpolate the datagrid to.
+    :param yf: (n) ndarray - The x coordinates to interpolate the datagrid to.
     :param method: One of "nearest, linear, cubic" (using scipy.interpolate._ndgriddata.griddata) or any methods
-    available in 'scipy.interpolate._rbfinterp.RBFInterpolator' prefixed by "rfb_". In case RFB is used, also smoothing
+    available in 'scipy.interpolate._rbfinterp.RBFInterpolator' prefixed by "rbf_". In case RBF is used, also smoothing
     and epsilon parameters can/need to be specified when appropriate. Other arguments for RBFInterpolator can be passed
     on, see their respective documentation for further information.
-    :param smoothing: The smoothing applied to RFB interpolated data. If contours are wobbly, increase smoothing.
+    :param smoothing: The smoothing applied to RBF interpolated data. If contours are wobbly, increase smoothing.
     :param use_fix_contours: If True, applies 'fix_contours' to interpolated data.
     :param use_clip_to_data: If True, applies 'clip_to_data' to interpolated data.
+    :param allow_hybrid_interpolation: If False, only RBF interpolation is used, regardless of the size of the dataset.
     :return: (n, m) ndarray - the interpolated datagrid
     """
-    if xi is None and yi is None:
-        xi, yi = x, y
-    XI, YI = np.meshgrid(xi, yi)
-    contours_datapoints = isolate_contour_datapoints(x, y, datagrid, low_output_resolution=True)
-    match method:
-        case "nearest" | "linear" | "cubic":
-            interpolated_datagrid = interpolate.griddata(
-                contours_datapoints[:, 0:2],
-                contours_datapoints[:, 2],
-                (XI, YI),
-                method=method,
-                fill_value=np.nan,
-            )
-        case _ if "rfb" in method:
-            """
-            Limit the number of points passed to RBFInterpolator in order to cut down time. Taking points in regular
-            intervals from contours should not affect the results much, as it removes points which are close to
-            unremoved points, and these can be interpolated well.
-            """
-            if contours_datapoints.shape[0] > 5000:
-                old = contours_datapoints.shape[0]
-                step = contours_datapoints.shape[0] // 5000 + 1
-                contours_datapoints = contours_datapoints[::step]
-                print(f"The number of contour datapoints was shrunk from {old} to {contours_datapoints.shape[0]}.")
-            else:
-                print(f"The number of contour datapoints is {contours_datapoints.shape[0]}.")
+    __max_res = 256 * 256
+    __max_step = 16
 
-            inputpoints = np.array([XI, YI]).reshape(2, -1).T
-            interpolated_datagrid = interpolate.RBFInterpolator(
-                contours_datapoints[:, 0:2],
-                contours_datapoints[:, 2],
-                kernel=method[4:],
-                smoothing=smoothing,
-                **kwargs,
-            )
-            interpolated_datagrid = interpolated_datagrid(inputpoints).reshape(yi.size, xi.size)
-        case _:
-            raise TypeError(f"Invalid method selected: {method}")
+    if xf is None and yf is None:
+        xf, yf = x, y
+
+    if allow_hybrid_interpolation and xf.size * yf.size > __max_res * __max_step**2:
+        warnings.warn(
+            f"The required output resolution is very large ({xf.size} x {yf.size}). A lot of information might be "
+            f"lost during interpolation and results might be inaccurate. If possible, use a subset of the data "
+            f"provided.",
+            RuntimeWarning,
+        )
+    if not allow_hybrid_interpolation and xf.size * yf.size > __max_res:
+        warnings.warn(
+            f"The required output resolution is large ({xf.size} x {yf.size}). Interpolation may take very long. If "
+            f"possible, allow hybrid interpolation or use a subset of the data provided.",
+            RuntimeWarning,
+        )
+
+    contours_datapoints = isolate_contour_datapoints(x, y, datagrid, low_output_resolution=True)
+    if method in ["nearest", "linear", "cubic"]:
+        xi, yi = xf, yf
+        XF, YF = np.meshgrid(xf, yf)
+        interpolated_datagrid = interpolate.griddata(
+            contours_datapoints[:, 0:2], contours_datapoints[:, 2], (XF, YF), method=method, rescale=True
+        )
+    elif method[:3] == "rbf":
+        """
+        Limit the number of points passed to RBFInterpolator in order to cut down time. Taking points in regular
+        intervals from contours should not affect the results much, as it removes points which are close to
+        unremoved points, and these can be interpolated well.
+        """
+        if contours_datapoints.shape[0] > 10000:
+            step = contours_datapoints.shape[0] // 10000 + 1
+            contours_datapoints = contours_datapoints[::step]
+
+        if allow_hybrid_interpolation and xf.size * yf.size > __max_res:  # Use hybrid approach for large datasets.
+            step = int(np.sqrt((xf.size * yf.size - 1) / __max_res)) + 1
+            xi = x[::step]
+            yi = y[::step]
+            datagrid = datagrid[::step, ::step]
+        else:
+            xi, yi = xf, yf
+
+        XI, YI = np.meshgrid(xi, yi)
+        inputpoints = np.array([XI, YI]).reshape(2, -1).T
+        interpolated_datagrid = interpolate.RBFInterpolator(
+            contours_datapoints[:, 0:2], contours_datapoints[:, 2], kernel=method[4:], smoothing=smoothing, **kwargs
+        )(inputpoints).reshape(yi.size, xi.size)
+    else:
+        raise TypeError(f"Invalid method selected: {method}")
+
     if use_fix_contours:
         interpolated_datagrid = fix_contours(xi, yi, datagrid, interpolated_datagrid)
     if use_clip_to_data:
         interpolated_datagrid = clip_to_data(x, y, datagrid, xi, yi, interpolated_datagrid)
+
+    if allow_hybrid_interpolation and xf.size * yf.size > __max_res and method[:3] == "rbf":
+        interpolated_datagrid = interpolate.RectBivariateSpline(yi, xi, interpolated_datagrid, s=smoothing)(yf, xf)
     return interpolated_datagrid
