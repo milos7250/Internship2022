@@ -224,10 +224,10 @@ def interpolate_low_output_resolution(
     xf: np.ndarray = None,
     yf: np.ndarray = None,
     method: str = "rbf_thin_plate_spline",
-    smoothing: float = 1e-3,
+    smoothing: float = 0.1,
     use_fix_contours: bool = False,
     use_clip_to_data: bool = False,
-    allow_hybrid_interpolation: bool = True,
+    allow_hybrid_interpolation: bool = False,
     **kwargs,
 ):
     """

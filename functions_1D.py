@@ -113,10 +113,10 @@ def smooth_contour(contour: np.ndarray, smoothness: float = 20, closed: bool = N
     try:
         if isolated_contour.shape[0] >= 4:
             smoothness = isolated_contour.shape[0] * smoothness
-            model, u = splprep(isolated_contour.T, s=1e-2, k=3, per=1 if closed else 0)
+            model, u = splprep(isolated_contour.T, s=0, k=3, per=1 if closed else 0)
         else:
             smoothness = contour.shape[0] * smoothness
-            model, u = splprep(contour.T, s=1e-2, k=min(3, contour.shape[0] - 1), per=1 if closed else 0)
+            model, u = splprep(contour.T, s=0, k=min(3, contour.shape[0] - 1), per=1 if closed else 0)
         return np.array(splev(np.linspace(0, 1, smoothness), model)).T
     except ValueError as e:
         warnings.warn("An error occurred when smoothing contour. Points might be collinear/coincident.", RuntimeWarning)
