@@ -36,7 +36,7 @@ def check_half_plane(collinear_points: np.ndarray, points: np.ndarray):
     return np.sign(line_eq(points[0])) == np.sign(line_eq(points[1]))
 
 
-def isolate_collinear(path: np.ndarray, closed: bool = False, collinearity_tol: float = None):
+def isolate_from_collinear(path: np.ndarray, closed: bool = False, collinearity_tol: float = None):
     """
     Isolates points from step segments. Midpoints are selected if a step is an inflection point, two points along the
     step are selected if the step is local minimum/maximum.
@@ -95,21 +95,19 @@ def isolate_collinear(path: np.ndarray, closed: bool = False, collinearity_tol: 
     return points
 
 
-def smooth_contour(contour: np.ndarray, smoothness: float = 20, closed: bool = None, collinearity_tol: float = None):
+def smooth_contour(contour: np.ndarray, smoothness: float = 20, collinearity_tol: float = None):
     """
     Smoothens a 2D contour by using cubic splines.
 
     :param contour: (n, 2) ndarray - contour to smoothen.
     :param smoothness: The amount of segments by which the spline should be approximated in between two consecutive
     points.
-    :param closed: Whether the contour is closed.
     :param collinearity_tol: Tolerance for 'functions_1D.are_collinear'. Needs to be adjusted to fit size of data.
     :return: (n, 2) ndarray - the smoothened contour.
     """
-    if closed is None:
-        closed = np.all(contour[0] == contour[-1])
+    closed = np.all(contour[0] == contour[-1])
 
-    isolated_contour = isolate_collinear(contour, closed, collinearity_tol)
+    isolated_contour = isolate_from_collinear(contour, closed, collinearity_tol)
     try:
         if isolated_contour.shape[0] >= 4:
             smoothness = isolated_contour.shape[0] * smoothness

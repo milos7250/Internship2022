@@ -1,4 +1,5 @@
 import warnings
+from typing import Union
 
 import numpy as np
 from matplotlib.axes import Axes
@@ -16,8 +17,8 @@ def plot_contours(
     interpolate: bool,
     ax: Axes,
     colors: ScalarMappable,
-    levels: list = None,
-    low_output_resolution: bool = False,
+    levels: Union[list, np.ndarray] = None,
+    discretized_data: bool = False,
     plot_title: str = None,
     collinearity_tol: float = None,
 ):
@@ -32,12 +33,12 @@ def plot_contours(
     :param ax: The pyplot axis to plot to.
     :param colors: ScalarMappable instance used to determine contour colors.
     :param levels: Values at which to plot contours. Only necessary when low_output_resolution=False.
-    :param low_output_resolution: If set to True, the values of datagrid are expected to be discrete. This is the case
+    :param discretized_data: If set to True, the values of datagrid are expected to be discrete. This is the case
     when the output resolution of the function is low (the output is binned).
     :param plot_title: The title of the plot.
     :return: None
     """
-    if low_output_resolution and levels is None:
+    if discretized_data and levels is None:
         levels = np.unique(datagrid)
         levels = np.append(levels, 2 * levels[-1] - levels[-2])
         if levels.size > 100:
@@ -47,7 +48,7 @@ def plot_contours(
 
     # Find contours for each level
     for contour_datapoints in isolate_contour_datapoints(
-        x, y, datagrid, levels=levels, low_output_resolution=low_output_resolution, return_separate_contours=True
+        x, y, datagrid, levels=levels, discretized_data=discretized_data, return_separate_contours=True
     ):
         level = contour_datapoints[0, 2]
         if interpolate:
@@ -66,7 +67,7 @@ def isolate_contour_datapoints(
     y: np.ndarray,
     datagrid: np.ndarray,
     levels: list = None,
-    low_output_resolution: bool = False,
+    discretized_data: bool = False,
     return_separate_contours=False,
 ):
     """
@@ -76,12 +77,12 @@ def isolate_contour_datapoints(
     :param y: (n) ndarray - The y coordinates of the datagrid.
     :param datagrid: (n, m) ndarray - The datagrid to isolate contours from.
     :param levels: Values at which to plot contours. Only necessary when low_output_resolution=False.
-    :param low_output_resolution: If set to True, the values of datagrid are expected to be discrete. This is the case
+    :param discretized_data: If set to True, the values of datagrid are expected to be discrete. This is the case
     when the output resolution of the function is low (the output is binned).
     :param return_separate_contours: If set to True, the contour points are separated into a list by contours.
     :return: list of (k_i, 3) ndarrays - The isolated contours.
     """
-    if low_output_resolution and levels is None:
+    if discretized_data and levels is None:
         levels = np.unique(datagrid)
         levels = np.append(levels, 2 * levels[-1] - levels[-2])
         if levels.size > 100:
@@ -101,9 +102,7 @@ def isolate_contour_datapoints(
                     [
                         x[contour[:, 0].astype(int)].T[:, np.newaxis],
                         y[contour[:, 1].astype(int)].T[:, np.newaxis],
-                        np.array([levels[idx + 1 if low_output_resolution else idx]] * contour.shape[0]).T[
-                            :, np.newaxis
-                        ],
+                        np.array([levels[idx + 1 if discretized_data else idx]] * contour.shape[0]).T[:, np.newaxis],
                     ],
                     axis=1,
                 ),
@@ -144,80 +143,7 @@ def test(datagrid, interpolated_datagrid):
     return __test_vectorized(datagrid, interpolated_datagrid, levels)
 
 
-def __clip_elementwise(original, interpolated, levels):
-    """
-    Element-wise version of 'clip' function.
-    """
-    min_index = np.where(original == np.array(levels))[0][-1]
-    minimum = levels[min_index]
-    maximum = levels[min_index + 1]
-    if interpolated <= minimum:
-        return minimum
-    elif maximum <= interpolated:
-        return maximum
-    else:
-        return interpolated
-
-
-# Turns element-wise function into a vector function
-__clip_vectorized = np.vectorize(__clip_elementwise, excluded=[2])
-
-
-# TODO: Function runs very inefficiently, consider reimplementing
-def clip_to_data(x, y, datagrid, xi, yi, interpolated_datagrid):
-    """
-    Clips interpolated data to the range suggested by original low output resolution data.
-
-    :param datagrid: (n, m) ndarray - Original low output resolution data.
-    :param interpolated_datagrid: (n, m) ndarray - Interpolated data.
-    :return: (n, m) ndarray - The interpolated data. The data that were outside the suggested range are clipped to the
-    endpoints of the range.
-    """
-    # TODO: Consider implementing case when the shapes are not the same
-    if datagrid.shape != interpolated_datagrid.shape:
-        warnings.warn("Different data shapes. Data not clipped.", RuntimeWarning)
-        return interpolated_datagrid
-    #     XI, YI = np.meshgrid(xi, yi)
-    #     inputpoints = np.array([XI, YI]).reshape(2, -1).T
-    #     datagrid = (
-    #         interpolate.RegularGridInterpolator((x, y), datagrid, method="nearest")(inputpoints)
-    #         .reshape(yi.size, xi.size)
-    #         .T
-    #     )
-    interpolated_datagrid[np.isnan(interpolated_datagrid)] = datagrid[np.isnan(interpolated_datagrid)]
-    levels = np.unique(datagrid)
-    levels = np.append(levels, 2 * levels[-1] - levels[-2])
-    return __clip_vectorized(datagrid, interpolated_datagrid, levels)
-
-
-def fix_contours(x: np.ndarray, y: np.ndarray, datagrid, interpolated_datagrid):
-    """
-    Replaces contours from original data into the interpolated data. This makes sure that the original information about
-    contours is perserved.
-
-    :param x: (m) ndarray - The x coordinates of the datagrid.
-    :param y: (n) ndarray - The y coordinates of the datagrid.
-    :param datagrid: (n, m) ndarray - The datagrid before interpolation.
-    :param interpolated_datagrid: (n, m) ndarray - The datagrid after interpolation.
-    :return: (n, m) ndarray - The interpolated datagrid combined with contours from the original datagrid.
-    """
-    # TODO: Consider implementing case when the shapes are not the same
-    if datagrid.shape != interpolated_datagrid.shape:
-        warnings.warn("Different data shapes. Contours not fixed.", RuntimeWarning)
-        return interpolated_datagrid
-    contours = isolate_contour_datapoints(x, y, datagrid, low_output_resolution=True)
-    for point in contours:
-        try:
-            interpolated_datagrid[
-                np.where(y == int(np.round(point[1])))[0][0],
-                np.where(x == int(np.round(point[0])))[0][0],
-            ] = point[2]
-        except IndexError as e:
-            warnings.warn(f"{str(e)}: A point was skipped when fixing contours.", RuntimeWarning)
-    return interpolated_datagrid
-
-
-def interpolate_low_output_resolution(
+def interpolate_discretized_data(
     x: np.ndarray,
     y: np.ndarray,
     datagrid: np.ndarray,
@@ -225,8 +151,6 @@ def interpolate_low_output_resolution(
     yf: np.ndarray = None,
     method: str = "rbf_thin_plate_spline",
     smoothing: float = 0.1,
-    use_fix_contours: bool = False,
-    use_clip_to_data: bool = False,
     allow_hybrid_interpolation: bool = False,
     **kwargs,
 ):
@@ -248,8 +172,6 @@ def interpolate_low_output_resolution(
     and epsilon parameters can/need to be specified when appropriate. Other arguments for RBFInterpolator can be passed
     on, see their respective documentation for further information.
     :param smoothing: The smoothing applied to RBF interpolated data. If contours are wobbly, increase smoothing.
-    :param use_fix_contours: If True, applies 'fix_contours' to interpolated data.
-    :param use_clip_to_data: If True, applies 'clip_to_data' to interpolated data.
     :param allow_hybrid_interpolation: If False, only RBF interpolation is used, regardless of the size of the dataset.
     :return: (n, m) ndarray - the interpolated datagrid
     """
@@ -273,7 +195,7 @@ def interpolate_low_output_resolution(
             RuntimeWarning,
         )
 
-    contours_datapoints = isolate_contour_datapoints(x, y, datagrid, low_output_resolution=True)
+    contours_datapoints = isolate_contour_datapoints(x, y, datagrid, discretized_data=True)
     if method in ["nearest", "linear", "cubic"]:
         xi, yi = xf, yf
         XF, YF = np.meshgrid(xf, yf)
@@ -294,7 +216,6 @@ def interpolate_low_output_resolution(
             step = int(np.sqrt((xf.size * yf.size - 1) / __max_res)) + 1
             xi = x[::step]
             yi = y[::step]
-            datagrid = datagrid[::step, ::step]
         else:
             xi, yi = xf, yf
 
@@ -305,11 +226,6 @@ def interpolate_low_output_resolution(
         )(inputpoints).reshape(yi.size, xi.size)
     else:
         raise TypeError(f"Invalid method selected: {method}")
-
-    if use_fix_contours:
-        interpolated_datagrid = fix_contours(xi, yi, datagrid, interpolated_datagrid)
-    if use_clip_to_data:
-        interpolated_datagrid = clip_to_data(x, y, datagrid, xi, yi, interpolated_datagrid)
 
     if allow_hybrid_interpolation and xf.size * yf.size > __max_res and method[:3] == "rbf":
         interpolated_datagrid = interpolate.RectBivariateSpline(yi, xi, interpolated_datagrid, s=smoothing)(yf, xf)
