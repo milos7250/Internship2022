@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 from matplotlib.cm import ScalarMappable
 from matplotlib.colors import Normalize
 
-from functions_2D import interpolate_low_output_resolution, plot_contours
+from functions_2D import interpolate_discretized_data, plot_contours
 from helpers.save_figure_position import ShowLastPos
 
 """
@@ -24,17 +24,7 @@ def test_epsilons_for_method(xo, yo, original_datagrid, x, y, datagrid, epsilons
     for epsilon in epsilons:
         mse = mean_square_error(
             original_datagrid,
-            interpolate_low_output_resolution(
-                x,
-                y,
-                datagrid,
-                xo,
-                yo,
-                method="rbf_multiquadric",
-                epsilon=epsilon,
-                use_fix_contours=False,
-                use_clip_to_data=False,
-            ),
+            interpolate_discretized_data(x, y, datagrid, xo, yo, method="rbf_multiquadric", epsilon=epsilon),
         )
         mses.append(mse)
         print(f"Epsilon: {epsilon}, Mean Square Error: {mse}")
@@ -44,14 +34,14 @@ def test_epsilons_for_method(xo, yo, original_datagrid, x, y, datagrid, epsilons
     plt.show()
 
 
-def test_methods(xo, yo, original_datagrid, x, y, datagrid, use_fixes, plot):
+def test_methods(xo, yo, original_datagrid, x, y, datagrid, plot):
     def plot_result():
         fig = plt.figure(figsize=(16, 9))
         axes = fig.subplots(1, 4, subplot_kw={"aspect": "equal"})
         plt.tight_layout()
-        axes[0].pcolormesh(xo, yo, original_datagrid, cmap=cmap, norm=norm, rasterized=True)
-        axes[1].pcolormesh(x, y, datagrid, cmap=cmap, norm=norm, rasterized=True)
-        axes[2].pcolormesh(xo, yo, interpolated_datagrid, cmap=cmap, norm=norm, rasterized=True)
+        axes[0].pcolormesh(xo, yo, original_datagrid, cmap=cmap, norm=norm)
+        axes[1].pcolormesh(x, y, datagrid, cmap=cmap, norm=norm)
+        axes[2].pcolormesh(xo, yo, interpolated_datagrid, cmap=cmap, norm=norm)
         plt.colorbar(colors, ticks=levels, ax=axes[0:3].ravel().tolist())
 
         diff = np.nan_to_num(interpolated_datagrid - original_datagrid)
@@ -70,15 +60,13 @@ def test_methods(xo, yo, original_datagrid, x, y, datagrid, use_fixes, plot):
         "rbf_cubic",
         "rbf_quintic",
     ]:
-        interpolated_datagrid = interpolate_low_output_resolution(
+        interpolated_datagrid = interpolate_discretized_data(
             x,
             y,
             datagrid,
             xo,
             yo,
             method=method,
-            use_fix_contours=use_fixes,
-            use_clip_to_data=use_fixes,
         )
         print(f"Method: {method}, Mean Error: {mean_square_error(original_datagrid, interpolated_datagrid)}.")
         if plot:
@@ -91,7 +79,7 @@ def test_methods(xo, yo, original_datagrid, x, y, datagrid, use_fixes, plot):
         [10, "rbf_inverse_multiquadric"],  # Inverse methods don't work well in sparse places.
         [3.5, "rbf_inverse_quadratic"],
     ]:
-        interpolated_datagrid = interpolate_low_output_resolution(
+        interpolated_datagrid = interpolate_discretized_data(
             x,
             y,
             datagrid,
@@ -99,8 +87,6 @@ def test_methods(xo, yo, original_datagrid, x, y, datagrid, use_fixes, plot):
             yo,
             method=method,
             epsilon=epsilon,
-            use_fix_contours=use_fixes,
-            use_clip_to_data=use_fixes,
         )
         print(
             f"Method: {method}, Epsilon: {epsilon}, Mean Error: {mean_square_error(original_datagrid, interpolated_datagrid)}."
@@ -128,4 +114,4 @@ for tile in ["NN17", "NO33", "NO44", "NO51"]:
     datagrid = height_levels * np.floor(original_datagrid[::block_stride, ::block_stride] / height_levels)
     x = np.linspace(0, 10, datagrid.shape[1])
     y = np.linspace(0, 10, datagrid.shape[0])
-    test_methods(xo, yo, original_datagrid, x, y, datagrid, use_fixes=True, plot=False)
+    test_methods(xo, yo, original_datagrid, x, y, datagrid, plot=False)

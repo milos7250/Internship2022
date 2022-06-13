@@ -2,30 +2,38 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 from external.bezier import evaluate_bezier
-from functions_1D import isolate_collinear, smooth_contour
+from functions_1D import isolate_from_collinear, smooth_contour
 
-# USE FOR CLOSED CONTOURS
+"""
+Script interpolates 1D parametric paths in 2D by using Cubic splines.
+"""
+
+# Set up Figure
+plt.rc("text", usetex=True)
+plt.rc("font", family="serif")
+size = 0.7
+fig = plt.figure(figsize=(16 * size, 9 * size))
+fig.tight_layout()
+axes = fig.subplots(1, 3, sharex="all", sharey="all", subplot_kw={"frame_on": False, "xticks": [], "yticks": []})
 
 # Load and plot the original contour
 contour = np.loadtxt("data/RealContour1A.txt")
-# Set last point equal to first to close the curve
-if not np.all(contour[0] == contour[-1]):
-    contour = np.append(contour, [contour[0]], axis=0)
+axes[0].plot(contour[:, 0], contour[:, 1], color=plt.get_cmap("tab10")(0))
+axes[0].set_title("Terraced contour")
 
-plt.figure(figsize=(11, 8))
-plt.plot(contour[:, 0], contour[:, 1])
-
-interpolated_contour = smooth_contour(contour, collinearity_tol=1e-2)
-plt.plot(interpolated_contour[:, 0], interpolated_contour[:, 1])
+cubic_spline = smooth_contour(contour, collinearity_tol=1e-2)
+axes[1].plot(cubic_spline[:, 0], cubic_spline[:, 1], color=plt.get_cmap("tab10")(1))
+axes[1].set_title("Cubic spline")
 
 # Bezier
-contour_points = isolate_collinear(contour, closed=True, collinearity_tol=1e-2)
-path = evaluate_bezier(contour_points, 20)
-plt.plot(path[:, 0], path[:, 1])
-plt.legend(["Original line", "Cubic spline", "Bezier spline"])
+contour_points = isolate_from_collinear(contour, collinearity_tol=1e-2)
+bezier_curve = evaluate_bezier(contour_points, 20)
+axes[2].plot(bezier_curve[:, 0], bezier_curve[:, 1], color=plt.get_cmap("tab10")(2))
+axes[2].set_title("Bezier curve")
 
 # Plot line points and isolated points
 # plt.plot(line[:, 0], line[:, 1], "gx", markersize=10)
 # plt.plot(isolated_points[:, 0], isolated_points[:, 1], "ro")
 
+plt.savefig("images/2D_Contour.png")
 plt.show()

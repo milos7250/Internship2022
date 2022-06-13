@@ -4,7 +4,7 @@ from matplotlib.cm import ScalarMappable
 from matplotlib.colors import Normalize
 
 import helpers.save_figure_position
-from functions_2D import interpolate_low_output_resolution, plot_contours
+from functions_2D import interpolate_discretized_data, plot_contours
 
 block_stride = 8
 height_levels = 50
@@ -36,9 +36,9 @@ z_discrete = height_levels * np.floor(z / height_levels)
 
 axes[1].pcolormesh(x, y, z_discrete, cmap=cmap, norm=norm)
 
-plot_contours(x, y, z_discrete, colors=colors, ax=axes[2], low_output_resolution=True, interpolate=False)
+plot_contours(x, y, z_discrete, colors=colors, ax=axes[2], discretized_data=True, interpolate=False)
 
-z_interp = interpolate_low_output_resolution(x, y, z_discrete, use_fix_contours=False, use_clip_to_data=False)
+z_interp = interpolate_discretized_data(x, y, z_discrete)
 axes[3].pcolormesh(x, y, z_interp, cmap=cmap, norm=norm)
 
 norm_diff = Normalize(-np.max(np.abs(z_interp - z)), np.max(np.abs(z_interp - z)))

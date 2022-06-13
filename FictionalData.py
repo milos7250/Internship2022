@@ -5,7 +5,7 @@ from matplotlib.colors import Normalize
 from mayavi import mlab
 
 import helpers.save_figure_position
-from functions_2D import interpolate_low_output_resolution, plot_contours
+from functions_2D import interpolate_discretized_data, plot_contours
 
 datagrid = np.load("data/FictionalData.npy", allow_pickle=False)
 maximum = np.max(datagrid)
@@ -30,11 +30,10 @@ axes = axes.flatten()
 #
 #
 
-interpolated_image = interpolate_low_output_resolution(
+interpolated_image = interpolate_discretized_data(
     x,
     y,
     datagrid - 1,
-    use_clip_to_data=False,
     allow_hybrid_interpolation=True,
 )
 sea_fix = lambda x: np.where(np.all([0 < x, x < 1], axis=0), -(x**3) + 2 * x**2, np.maximum(x, 0))
