@@ -96,14 +96,14 @@ def test_methods(plot):
         axes[3].pcolormesh(xo, yo, diff, cmap=cmap_diff, norm=norm_diff)
         axes[3].set_title("Difference of Interpolated\nand Original Raster")
         plt.colorbar(colors_diff, ax=axes[3], fraction=0.05, pad=0.1)
-        plt.savefig(f"images/differences/{filename})_2D.png")
+        plt.savefig(f"images/differences/{filename}_2D.png")
 
     for method, method_name in [
         [
             "linear",
-            "Delaunay Triangulation\n and Barycentric Interpolation",
+            "Delaunay Triangulation\nand Barycentric Interpolation",
         ],  # The spline interpolators don't work well
-        ["cubic", "Delaunay Triangulation\n and Clough-Tocher scheme"],
+        ["cubic", "Delaunay Triangulation\nand Clough-Tocher scheme"],
         # ["rbf_linear", "Radial Basis\nLinear Function"],
         ["rbf_thin_plate_spline", "Radial Basis\nThin Plate Spline"],
         # ["rbf_cubic", "Radial Basis\nCubic Function"],

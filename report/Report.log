@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Arch Linux) (preloaded format=pdflatex 2022.5.30)  14 JUN 2022 11:23
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Arch Linux) (preloaded format=pdflatex 2022.5.30)  14 JUN 2022 17:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -611,32 +611,97 @@ Package pdftex.def Info: ../images/2D_Contour_Zoomed.png  used on input line 70
 File: ../images/NO44/2D_Contour_Interpolation.png Graphic file (type png)
 <use ../images/NO44/2D_Contour_Interpolation.png>
 Package pdftex.def Info: ../images/NO44/2D_Contour_Interpolation.png  used on i
-nput line 85.
+nput line 88.
+(pdftex.def)             Requested size: 483.69687pt x 272.07709pt.
+<../images/NO33/2D_Contour_Interpolation.png, id=39, 1156.32pt x 650.43pt>
+File: ../images/NO33/2D_Contour_Interpolation.png Graphic file (type png)
+<use ../images/NO33/2D_Contour_Interpolation.png>
+Package pdftex.def Info: ../images/NO33/2D_Contour_Interpolation.png  used on i
+nput line 93.
 (pdftex.def)             Requested size: 483.69687pt x 272.07709pt.
 [4
 
  <../images/2D_Contour.png> <../images/2D_Contour_Zoomed.png>] [5 <../images/NO
-44/2D_Contour_Interpolation.png>] (./Report.aux) ) 
+44/2D_Contour_Interpolation.png> <../images/NO33/2D_Contour_Interpolation.png>]
+<../images/differences/Delaunay_Triangulation_and_Barycentric_Interpolation_2D.
+png, id=52, 961.191pt x 220.4235pt>
+File: ../images/differences/Delaunay_Triangulation_and_Barycentric_Interpolatio
+n_2D.png Graphic file (type png)
+<use ../images/differences/Delaunay_Triangulation_and_Barycentric_Interpolation
+_2D.png>
+Package pdftex.def Info: ../images/differences/Delaunay_Triangulation_and_Baryc
+entric_Interpolation_2D.png  used on input line 121.
+(pdftex.def)             Requested size: 483.69687pt x 110.92114pt.
+<../images/differences/Delaunay_Triangulation_and_Clough-Tocher_scheme_2D.png, 
+id=53, 961.191pt x 220.4235pt>
+File: ../images/differences/Delaunay_Triangulation_and_Clough-Tocher_scheme_2D.
+png Graphic file (type png)
+<use ../images/differences/Delaunay_Triangulation_and_Clough-Tocher_scheme_2D.p
+ng>
+Package pdftex.def Info: ../images/differences/Delaunay_Triangulation_and_Cloug
+h-Tocher_scheme_2D.png  used on input line 126.
+(pdftex.def)             Requested size: 483.69687pt x 110.92114pt.
+<../images/differences/Radial_Basis_Thin_Plate_Spline_2D.png, id=54, 961.191pt 
+x 220.4235pt>
+File: ../images/differences/Radial_Basis_Thin_Plate_Spline_2D.png Graphic file 
+(type png)
+<use ../images/differences/Radial_Basis_Thin_Plate_Spline_2D.png>
+Package pdftex.def Info: ../images/differences/Radial_Basis_Thin_Plate_Spline_2
+D.png  used on input line 131.
+(pdftex.def)             Requested size: 483.69687pt x 110.92114pt.
+<../images/differences/Delaunay_Triangulation_and_Barycentric_Interpolation_3D.
+png, id=55, 2433.36375pt x 1405.98pt>
+File: ../images/differences/Delaunay_Triangulation_and_Barycentric_Interpolatio
+n_3D.png Graphic file (type png)
+<use ../images/differences/Delaunay_Triangulation_and_Barycentric_Interpolation
+_3D.png>
+Package pdftex.def Info: ../images/differences/Delaunay_Triangulation_and_Baryc
+entric_Interpolation_3D.png  used on input line 142.
+(pdftex.def)             Requested size: 154.78653pt x 89.41818pt.
+<../images/differences/Delaunay_Triangulation_and_Clough-Tocher_scheme_3D.png, 
+id=56, 2433.36375pt x 1405.98pt>
+File: ../images/differences/Delaunay_Triangulation_and_Clough-Tocher_scheme_3D.
+png Graphic file (type png)
+<use ../images/differences/Delaunay_Triangulation_and_Clough-Tocher_scheme_3D.p
+ng>
+Package pdftex.def Info: ../images/differences/Delaunay_Triangulation_and_Cloug
+h-Tocher_scheme_3D.png  used on input line 148.
+(pdftex.def)             Requested size: 154.78653pt x 89.41818pt.
+<../images/differences/Radial_Basis_Thin_Plate_Spline_3D.png, id=57, 2433.36375
+pt x 1405.98pt>
+File: ../images/differences/Radial_Basis_Thin_Plate_Spline_3D.png Graphic file 
+(type png)
+<use ../images/differences/Radial_Basis_Thin_Plate_Spline_3D.png>
+Package pdftex.def Info: ../images/differences/Radial_Basis_Thin_Plate_Spline_3
+D.png  used on input line 154.
+(pdftex.def)             Requested size: 154.78653pt x 89.41818pt.
+ [6 <../images/differences/Delaunay_Triangulation_and_Barycentric_Interpolation
+_2D.png> <../images/differences/Delaunay_Triangulation_and_Clough-Tocher_scheme
+_2D.png> <../images/differences/Radial_Basis_Thin_Plate_Spline_2D.png>]
+[7 <../images/differences/Delaunay_Triangulation_and_Barycentric_Interpolation_
+3D.png> <../images/differences/Delaunay_Triangulation_and_Clough-Tocher_scheme_
+3D.png> <../images/differences/Radial_Basis_Thin_Plate_Spline_3D.png>]
+(./Report.aux) ) 
 Here is how much of TeX's memory you used:
- 15943 strings out of 478238
- 317659 string characters out of 5850456
- 578609 words of memory out of 5000000
- 33904 multiletter control sequences out of 15000+600000
- 478074 words of font info for 62 fonts, out of 8000000 for 9000
+ 16020 strings out of 478238
+ 321673 string characters out of 5850456
+ 586876 words of memory out of 5000000
+ 33972 multiletter control sequences out of 15000+600000
+ 478373 words of font info for 63 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  99i,9n,94p,636b,974s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmbx12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmm
-i10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/s
-hare/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texmf-dist/fonts/type1/pu
-blic/amsfonts/cm/cmr7.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm
-/cmsy10.pfb>
-Output written on Report.pdf (7 pages, 367098 bytes).
+</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pf
+b></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cm
+r17.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/sh
+are/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmsy10.pfb>
+Output written on Report.pdf (9 pages, 5095572 bytes).
 PDF statistics:
- 84 PDF objects out of 1000 (max. 8388607)
- 46 compressed objects within 1 object stream
+ 109 PDF objects out of 1000 (max. 8388607)
+ 53 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 43 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 78 words of extra memory for PDF output out of 10000 (max. 10000000)
 

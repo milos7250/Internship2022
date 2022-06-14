@@ -10,10 +10,10 @@ This script creates smooth contours without attempting to interpolate the data i
 """
 
 block_stride = 8
-height_levels = 50
+height_levels = 50  # Use 150 for Fort William, 100 for Drumnadrochit, 50 otherwise
 # NN17 - Fort William, NO44 - north of Dundee, NO51 - in St Andrews, NO33 - in Dundee, NH52 - Drumnadrochit
-tile = "NO44"
-tile_name = "South of Forfar"
+tile = "NO33"
+tile_name = "Dundee West"
 dim_x = 10 * 1e3  # Dimensions of loaded data in m
 dim_y = 10 * 1e3  # Dimensions of loaded data in m
 
@@ -63,7 +63,12 @@ vmin = -0.25 * maximum * 1.1
 vmax = maximum * 1.1
 norm = Normalize(vmin, vmax)  # Leave extra 10% for interpolation overshoot
 colors = ScalarMappable(norm=norm, cmap=cmap)
-plt.colorbar(colors, ticks=levels, format="%d m", ax=axes[0, :].ravel().tolist(), aspect=10)
+plt.colorbar(colors, ticks=levels, format="%d m", ax=axes[0, :2].ravel().tolist(), aspect=10, pad=0.05)
+discretized_colors = ScalarMappable(
+    norm=BoundaryNorm(levels, levels.size - 1),
+    cmap=LinearSegmentedColormap.from_list("", colors.to_rgba(levels), N=levels.size - 1),
+)
+plt.colorbar(discretized_colors, ticks=levels, format="%d m", ax=axes[0, 2:].ravel().tolist(), aspect=10)
 contour_colors = ScalarMappable(
     norm=BoundaryNorm(
         [
@@ -73,7 +78,7 @@ contour_colors = ScalarMappable(
         ],
         levels.size,
     ),
-    cmap=LinearSegmentedColormap.from_list("", colors.to_rgba(contour_levels), N=levels.size),
+    cmap=LinearSegmentedColormap.from_list("", colors.to_rgba(contour_levels), N=contour_levels.size),
 )
 plt.colorbar(contour_colors, ticks=contour_levels, format="%d m", ax=axes[1:, :].ravel().tolist())
 
@@ -109,11 +114,11 @@ plot_contours_wrap(x, y, datagrid, axes[:, 0], plot_title=f"{tile_name}\n50m Res
 low_spatial_res_datagrid = datagrid[::block_stride, ::block_stride]
 x2 = np.linspace(0, dim_x, low_spatial_res_datagrid.shape[1])
 y2 = np.linspace(0, dim_y, low_spatial_res_datagrid.shape[0])
-plot_contours_wrap(x2, y2, low_spatial_res_datagrid, axes[:, 2], "Low Spatial Resolution", levels=levels)
+plot_contours_wrap(x2, y2, low_spatial_res_datagrid, axes[:, 1], "Low Spatial Resolution", levels=levels)
 
 # Discretize Data
 discretized_datagrid = height_levels * np.floor(datagrid / height_levels)
-plot_contours_wrap(x, y, discretized_datagrid, axes[:, 1], "Discretized Data", discretized_data=True)
+plot_contours_wrap(x, y, discretized_datagrid, axes[:, 2], "Discretized Data", discretized_data=True)
 
 # Change spatial and measuring resolution
 discretized_low_spatial_res_datagrid = height_levels * np.floor(
