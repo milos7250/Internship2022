@@ -13,6 +13,7 @@ block_stride = 8
 height_levels = 50
 # NN17 - Fort William, NO44 - north of Dundee, NO51 - in St Andrews, NO33 - in Dundee, NH52 - Drumnadrochit
 tile = "NO44"
+tile_name = "South of Forfar"
 dim_x = 10 * 1e3  # Dimensions of loaded data in m
 dim_y = 10 * 1e3  # Dimensions of loaded data in m
 
@@ -31,10 +32,10 @@ axes = fig.subplots(
     subplot_kw={
         "adjustable": "box",
         "aspect": "equal",
-        "xticks": [x for x in np.linspace(0, dim_x, 6)],
-        "yticks": [y for y in np.linspace(0, dim_y, 6)],
-        "xticklabels": [f"{x:d} km" for x in np.linspace(0, dim_x / 1e3, 6, dtype=int)],
-        "yticklabels": [f"{y:d} km" for y in np.linspace(0, dim_x / 1e3, 6, dtype=int)],
+        "xticks": [i for i in np.linspace(0, dim_x, 6)],
+        "yticks": [i for i in np.linspace(0, dim_y, 6)],
+        "xticklabels": [f"{i:d} km" for i in np.linspace(0, dim_x / 1e3, 6, dtype=int)],
+        "yticklabels": [f"{i:d} km" for i in np.linspace(0, dim_x / 1e3, 6, dtype=int)],
         "xlim": (0, dim_x),
         "ylim": (0, dim_y),
     },
@@ -102,7 +103,7 @@ def plot_contours_wrap(x, y, datagrid, axes, plot_title, levels=None, discretize
     axes[0].set_title(plot_title)
 
 
-plot_contours_wrap(x, y, datagrid, axes[:, 0], "Original Data", levels=levels)
+plot_contours_wrap(x, y, datagrid, axes[:, 0], plot_title=f"{tile_name}\n50m Resolution Raster", levels=levels)
 
 # Lower Spatial Resolution
 low_spatial_res_datagrid = datagrid[::block_stride, ::block_stride]
