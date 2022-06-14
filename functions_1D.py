@@ -71,7 +71,7 @@ def isolate_from_collinear(path: np.ndarray, closed: bool = False, collinearity_
             i += 1
             continue
 
-        if check_half_plane(
+        if points.shape[1] == 2 and check_half_plane(
             path[[firstpoint, lastpoint]], path[[firstpoint - 1, min(lastpoint + 1, path.shape[0] - 1)]]
         ):
             points = add_point(points, 2 / 3 * path[firstpoint] + 1 / 3 * path[lastpoint])

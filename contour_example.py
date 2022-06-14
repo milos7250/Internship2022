@@ -10,7 +10,7 @@ Script interpolates 1D parametric paths in 2D by using Cubic splines.
 
 # Set up Figure
 plt.rc("text", usetex=True)
-plt.rc("font", family="serif")
+plt.rc("font", family="serif", size=25)
 size = 0.7
 fig = plt.figure(figsize=(16 * size, 9 * size))
 fig.tight_layout()
@@ -18,7 +18,8 @@ axes = fig.subplots(1, 3, sharex="all", sharey="all", subplot_kw={"frame_on": Fa
 
 # Load and plot the original contour
 contour = np.loadtxt("data/RealContour1A.txt")
-axes[0].plot(contour[:, 0], contour[:, 1], color=plt.get_cmap("tab10")(0))
+axes[0].plot(contour[:, 0], contour[:, 1], "o", markersize=1, color=plt.get_cmap("tab10")(0))
+# axes[0].plot(contour[:, 0], contour[:, 1], color=plt.get_cmap("tab10")(0))
 axes[0].set_title("Terraced contour")
 
 cubic_spline = smooth_contour(contour, collinearity_tol=1e-2)
@@ -35,5 +36,5 @@ axes[2].set_title("Bezier curve")
 # plt.plot(line[:, 0], line[:, 1], "gx", markersize=10)
 # plt.plot(isolated_points[:, 0], isolated_points[:, 1], "ro")
 
-plt.savefig("images/2D_Contour.png")
+# plt.savefig("images/2D_Contour.png")
 plt.show()
