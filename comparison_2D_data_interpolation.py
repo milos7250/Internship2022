@@ -65,13 +65,14 @@ def test_methods(plot):
             gridspec_kw={"hspace": 0.3},
         )
 
-        axes[0].pcolormesh(xo, yo, original_datagrid, cmap=cmap, norm=norm)
+        axes[0].pcolormesh(xo, yo, original_datagrid, cmap=cmap, norm=norm, rasterized=True)
         axes[0].set_title("Original Raster")
-        axes[1].pcolormesh(x, y, datagrid, cmap=cmap, norm=norm)
+        axes[1].pcolormesh(x, y, datagrid, cmap=cmap, norm=norm, rasterized=True)
         axes[1].set_title("Discretized Raster")
-        axes[2].pcolormesh(xo, yo, interpolated_datagrid, cmap=cmap, norm=norm)
+        axes[2].pcolormesh(xo, yo, interpolated_datagrid, cmap=cmap, norm=norm, rasterized=True)
         axes[2].set_title(f"Interpolated Raster, using\n{method_name}")
         plt.colorbar(colors, ticks=levels, ax=axes[0:3].ravel().tolist(), shrink=0.4, aspect=15)
+        mlab.options.offscreen = True
         mlab.figure(bgcolor=(1, 1, 1))
         mlab.surf(
             yo,
@@ -86,17 +87,17 @@ def test_methods(plot):
         mlab.savefig(f"images/differences/{filename}_3D.png", magnification=10)
         # Use ImageMagick to remove background from image.
         os.system(
-            f"convert images/differences/{filename}_3D.png -transparent white images/differences/{filename}_3D.png"
+            f"convert images/differences/{filename}_3D.png -transparent -trim +repage white images/differences/{filename}_3D.png"
         )
 
         diff = np.nan_to_num(interpolated_datagrid - original_datagrid)
         cmap_diff = plt.get_cmap("coolwarm")
         norm_diff = Normalize(-np.max(abs(diff)), np.max(abs(diff)))
         colors_diff = ScalarMappable(cmap=cmap_diff, norm=norm_diff)
-        axes[3].pcolormesh(xo, yo, diff, cmap=cmap_diff, norm=norm_diff)
+        axes[3].pcolormesh(xo, yo, diff, cmap=cmap_diff, norm=norm_diff, rasterized=True)
         axes[3].set_title("Difference of Interpolated\nand Original Raster")
         plt.colorbar(colors_diff, ax=axes[3], fraction=0.05, pad=0.1)
-        plt.savefig(f"images/differences/{filename}_2D.png")
+        plt.savefig(f"images/differences/{filename}_2D.svg", transparent=True, dpi=300, bbox_inches="tight")
 
     for method, method_name in [
         [

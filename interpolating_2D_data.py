@@ -14,11 +14,14 @@ This script creates smooth contours by attempting to interpolate the data itself
 """
 
 block_stride = 8
-height_levels = 50  # Use 150 for Fort William, 50 otherwise
-
-# NN17 - Fort William, NO44 - north of Dundee, NO51 - in St Andrews, NO33 - in Dundee, NH52 - Drumnadrochit
-tile = "NH52"
-tile_name = "Drumnadrochit, Loch Ness"
+tiles = [
+    ["NO33", "Dundee West", 50, 5, 45],
+    ["NO44", "South of Forfar", 50, 5, 45],
+    ["NN17", "Fort William", 150, 2, 225],
+    ["NH52", "Drumnadrochit, Loch Ness", 100, 5, 225],
+    ["NO51", "St Andrews", 50, 5, 45],
+]
+tile, tile_name, height_levels, warp_scale, azimuth = tiles[2]
 dim_x = 10 * 1e3  # Dimensions of loaded data in m
 dim_y = 10 * 1e3  # Dimensions of loaded data in m
 
@@ -76,18 +79,18 @@ contour_colors = ScalarMappable(
             *(contour_levels[0:-1] + contour_levels[1:]) / 2,
             1.5 * contour_levels[-1] - 0.5 * contour_levels[-2],
         ],
-        levels.size,
+        contour_levels.size,
     ),
-    cmap=LinearSegmentedColormap.from_list("", colors.to_rgba(contour_levels), N=levels.size),
+    cmap=LinearSegmentedColormap.from_list("", colors.to_rgba(contour_levels), N=contour_levels.size),
 )
 plt.colorbar(contour_colors, ticks=contour_levels, format="%d m", ax=axes[2, :].ravel().tolist(), aspect=10)
 
 
 def plot_data_wrap(x, y, datagrid, xi=None, yi=None, interpolated_datagrid=None, axes=None, plot_title=None):
-    axes[0].pcolormesh(x, y, datagrid, cmap=cmap, norm=norm)
+    axes[0].pcolormesh(x, y, datagrid, cmap=cmap, norm=norm, rasterized=True)
     axes[0].set_title(plot_title)
     if interpolated_datagrid is not None:
-        axes[1].pcolormesh(xi, yi, interpolated_datagrid, cmap=cmap, norm=norm)
+        axes[1].pcolormesh(xi, yi, interpolated_datagrid, cmap=cmap, norm=norm, rasterized=True)
         axes[1].set_title("Interpolated Data")
         plot_contours(
             xi,
@@ -179,21 +182,24 @@ try:
 except FileExistsError:
     pass
 
-plt.savefig(f"images/{tile}/2D_Data_Interpolation.png")
+plt.savefig(f"images/{tile}/2D_Data_Interpolation.svg", transparent=True, dpi=300, bbox_inches="tight")
 # plt.show()
 
-os.system("zenity --info --text 'Interpolation Finished' --icon-name=emblem-success")
-exit()
+# os.system("zenity --info --text 'Interpolation Finished' --icon-name=emblem-success")
+# exit()
 
 # 3D plots
-warp_scale = 2  # Use 2 for Fort William, 5 otherwise
-azimuth = 225  # Use 225 for Fort William and Drumnadrochit, 0 otherwise
 
 mlab.options.offscreen = True
+
+# 1
 mlab.figure(bgcolor=(1, 1, 1))
 mlab.surf(y, x, np.rot90(datagrid.T), warp_scale=warp_scale, colormap="terrain", vmin=vmin, vmax=vmax)
-mlab.view(azimuth=azimuth)
+mlab.gcf().scene._lift()
+mlab.view(azimuth=azimuth, distance="auto")
 mlab.savefig(f"images/{tile}/2D_Data_Interpolation_3D_orig.png", magnification=10)
+
+# 2
 mlab.figure(bgcolor=(1, 1, 1))
 mlab.surf(
     y2,
@@ -204,8 +210,11 @@ mlab.surf(
     vmin=vmin,
     vmax=vmax,
 )
-mlab.view(azimuth=azimuth)
+mlab.gcf().scene._lift()
+mlab.view(azimuth=azimuth, distance="auto")
 mlab.savefig(f"images/{tile}/2D_Data_Interpolation_3D_low_spatial_res.png", magnification=10)
+
+# 3
 mlab.figure(bgcolor=(1, 1, 1))
 mlab.surf(
     y,
@@ -216,12 +225,18 @@ mlab.surf(
     vmin=vmin,
     vmax=vmax,
 )
-mlab.view(azimuth=azimuth)
+mlab.gcf().scene._lift()
+mlab.view(azimuth=azimuth, distance="auto")
 mlab.savefig(f"images/{tile}/2D_Data_Interpolation_3D_low_spatial_res_interpolated.png", magnification=10)
+
+# 4
 mlab.figure(bgcolor=(1, 1, 1))
 mlab.surf(y, x, np.rot90(discretized_datagrid.T), warp_scale=warp_scale, colormap="terrain", vmin=vmin, vmax=vmax)
-mlab.view(azimuth=azimuth)
+mlab.gcf().scene._lift()
+mlab.view(azimuth=azimuth, distance="auto")
 mlab.savefig(f"images/{tile}/2D_Data_Interpolation_3D_discretized_datagrid.png", magnification=10)
+
+# 5
 mlab.figure(bgcolor=(1, 1, 1))
 mlab.surf(
     y,
@@ -232,8 +247,11 @@ mlab.surf(
     vmin=vmin,
     vmax=vmax,
 )
-mlab.view(azimuth=azimuth)
+mlab.gcf().scene._lift()
+mlab.view(azimuth=azimuth, distance="auto")
 mlab.savefig(f"images/{tile}/2D_Data_Interpolation_3D_discretized_datagrid_interpolated.png", magnification=10)
+
+# 6
 mlab.figure(bgcolor=(1, 1, 1))
 mlab.surf(
     y2,
@@ -244,8 +262,11 @@ mlab.surf(
     vmin=vmin,
     vmax=vmax,
 )
-mlab.view(azimuth=azimuth)
+mlab.gcf().scene._lift()
+mlab.view(azimuth=azimuth, distance="auto")
 mlab.savefig(f"images/{tile}/2D_Data_Interpolation_3D_discretized_low_spatial_res_datagrid.png", magnification=10)
+
+# 7
 mlab.figure(bgcolor=(1, 1, 1))
 mlab.surf(
     y,
@@ -256,15 +277,16 @@ mlab.surf(
     vmin=vmin,
     vmax=vmax,
 )
-mlab.view(azimuth=azimuth)
+mlab.gcf().scene._lift()
+mlab.view(azimuth=azimuth, distance="auto")
 mlab.savefig(
     f"images/{tile}/2D_Data_Interpolation_3D_discretized_low_spatial_res_datagrid_interpolated.png", magnification=10
 )
 
-# Use ImageMagick to remove background from images.
+# Use ImageMagick to remove background from images and crop out fully transparent region.
 for image in os.listdir(f"images/{tile}/"):
     if "2D_Data_Interpolation_3D_" in image:
-        os.system(f"convert images/{tile}/{image} -transparent white images/{tile}/{image}")
+        os.system(f"convert images/{tile}/{image} -transparent white -trim +repage images/{tile}/{image}")
 
 # mlab.show()
 os.system("zenity --info --text 'Interpolation Finished' --icon-name=emblem-success")

@@ -4,6 +4,7 @@ from scipy import interpolate
 
 from external.bezier import evaluate_bezier
 from functions_1D import isolate_from_collinear
+from helpers.zoom_figure import zoom_figure
 
 """
 Script interpolates 1D functions by using Cubic splines and Bezier curves.
@@ -22,7 +23,7 @@ plt.gca().spines["right"].set_visible(False)
 line = np.loadtxt("data/Simple_Line1A.txt")
 plt.plot(line[:100, 0], line[:100, 1], "o", markersize=2)
 plt.legend(["Original line"], frameon=False)
-plt.savefig("images/1D_Function.png")
+plt.savefig("images/1D_Function.svg", transparent=True, dpi=300, bbox_inches="tight")
 plt.show()
 
 fig = plt.figure(figsize=(16 * size, 9 * size))
@@ -49,5 +50,10 @@ plt.legend(["Original line", "Cubic spline", "Bezier curve"], frameon=False)
 # plt.plot(line[:, 0], line[:, 1], "gx", markersize=10)
 plt.plot(isolated_points[:, 0], isolated_points[:, 1], "ro", markersize=3)
 
-plt.savefig("images/1D_Function_Interpolated.png")
+plt.savefig("images/1D_Function_Interpolated.svg", transparent=True, dpi=300, bbox_inches="tight")
+plt.show()
+exit()
+zoom_figure(plt, aspect=1, x0=1.245, y0=3.75, dx=0.5)
+plt.savefig("images/1D_Function_Interpolated_Zoomed.svg", transparent=True, dpi=300, bbox_inches="tight")
+
 plt.show()

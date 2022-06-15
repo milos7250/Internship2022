@@ -4,7 +4,9 @@
 \usepackage[margin=2cm]{geometry}
 \usepackage{indentfirst}
 \usepackage{subcaption,graphicx,float}
+\usepackage[inkscapepath=svgsubdir]{svg}
 \usepackage{todonotes}
+\usepackage{hyperref}
 
 % Title Page
 \title{Interpolation} %TODO: Come up with a better title
@@ -29,8 +31,8 @@ In one dimensional interpolation we have decided to compare interpolation method
 In 1D, the interpolation task is nearly straightforward. The only issue that can arise is when the data to be interpolated is discretized. This could occur for example when collecting data from a measurement where the measuring device has a finite precision and can only detect change in the observed quantity in steps.
 \begin{figure}[h]
  \centering
- \includegraphics[width=.6\textwidth]{../images/1D_Function.png}
- % 1D_Function.png: 800x450 px, 100dpi, 20.32x11.43 cm, bb=0 0 576 324
+ \includesvg[width=.6\textwidth]{../images/1D_Function.svg}
+ % 1D_Function.svg: 800x450 px, 100dpi, 20.32x11.43 cm, bb=0 0 576 324
  \caption{An example of discretized 1D data.}
  \label{fig:1D_fun}
 \end{figure}
@@ -43,13 +45,13 @@ Using this algorithm, we can now interpolate any discretized curves in 1D. An ex
 \begin{figure}[H]
     \centering
     \begin{subfigure}{0.6\textwidth}
-        \includegraphics[width=\textwidth]{../images/1D_Function_Interpolated.png}
-        % 1D_Function_Interpolated.png: 800x450 px, 100dpi, 20.32x11.43 cm, bb=0 0 576 324
+        \includesvg[width=\textwidth]{../images/1D_Function_Interpolated.svg}
+        % 1D_Function_Interpolated.svg: 800x450 px, 100dpi, 20.32x11.43 cm, bb=0 0 576 324
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.39\textwidth}
-        \includegraphics[width=\textwidth]{../images/1D_Function_Interpolated_Zoomed.png}
-        % 1D_Function_Interpolated_Zoomed.png: 800x450 px, 100dpi, 20.32x11.43 cm, bb=0 0 576 324
+        \includesvg[width=\textwidth]{../images/1D_Function_Interpolated_Zoomed.svg}
+        % 1D_Function_Interpolated_Zoomed.svg: 800x450 px, 100dpi, 20.32x11.43 cm, bb=0 0 576 324
     \end{subfigure}
     \caption{An example of curves interpolated from discretized 1D data.}
     \label{fig:1D_fun_interpolated}
@@ -63,11 +65,11 @@ Interpolating parametric curves in 2D (technically in any dimension) is very sim
 \begin{figure}[H]
     \centering
     \begin{subfigure}{0.49\textwidth}
-        \includegraphics[width=\textwidth]{../images/2D_Contour.png}
+        \includesvg[width=\textwidth]{../images/2D_Contour.svg}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.49\textwidth}
-        \includegraphics[width=\textwidth]{../images/2D_Contour_Zoomed.png}
+        \includesvg[width=\textwidth]{../images/2D_Contour_Zoomed.svg}
     \end{subfigure}
     \caption{An example of parametric curves interpolated from discretized parametric 1D curve in 2D.}
     \label{fig:2D_parametric_curve}
@@ -85,16 +87,16 @@ Isolating the contours in the first place can be done by regular marching square
 \begin{figure}[H]
     \centering
     \begin{subfigure}{\textwidth}
-        \includegraphics[width=1\textwidth]{../images/NO44/2D_Contour_Interpolation.png}
-        % 2D_Contour_Interpolation.png: 1600x900 px, 100dpi, 40.64x22.86 cm, bb=0 0 1152 648
-    \caption{Elevation data from near Forfar (UK ordnance tile NO44)}
+        \includesvg[width=1\textwidth]{../images/NH52/2D_Contour_Interpolation.svg}
+        % 2D_Contour_Interpolation.svg: 1600x900 px, 100dpi, 40.64x22.86 cm, bb=0 0 1152 648
+    \caption{Elevation data from Drumnadrochit, Loch Ness (UK ordnance tile NH52).}
     \end{subfigure}
     \begin{subfigure}{\textwidth}
-        \includegraphics[width=1\textwidth]{../images/NO33/2D_Contour_Interpolation.png}
-        % 2D_Contour_Interpolation.png: 1600x900 px, 100dpi, 40.64x22.86 cm, bb=0 0 1152 648
-    \caption{Elevation data from west Dundee (UK ordnance tile NO33)}
+        \includesvg[width=1\textwidth]{../images/NO33/2D_Contour_Interpolation.svg}
+        % 2D_Contour_Interpolation.svg: 1600x900 px, 100dpi, 40.64x22.86 cm, bb=0 0 1152 648
+    \caption{Elevation data from west Dundee (UK ordnance tile NO33).}
     \end{subfigure}
-    \caption{CInterpolation of elevation contours from data with various resolution.}
+    \caption{Interpolation of elevation contours from data with various resolution.}
     \label{fig:2D_contour}
 \end{figure}
 
@@ -118,18 +120,18 @@ By isolating contours from the discretized data we obtain a set of irregularly s
 \begin{figure}[H]
     \centering
     \begin{subfigure}{\textwidth}
-        \includegraphics[width=1\textwidth]{../images/differences/Delaunay_Triangulation_and_Barycentric_Interpolation_2D.png}
-        % 2D_Contour_Interpolation.png: 1600x900 px, 100dpi, 40.64x22.86 cm, bb=0 0 1152 648
+        \includesvg[width=1\textwidth]{../images/differences/Delaunay_Triangulation_and_Barycentric_Interpolation_2D.svg}
+        % 2D_Contour_Interpolation.svg: 1600x900 px, 100dpi, 40.64x22.86 cm, bb=0 0 1152 648
     \caption{Delaunay triangulation used together with barycentric interpolation.}
     \end{subfigure}
     \begin{subfigure}{\textwidth}
-        \includegraphics[width=1\textwidth]{../images/differences/Delaunay_Triangulation_and_Clough-Tocher_scheme_2D.png}
-        % 2D_Contour_Interpolation.png: 1600x900 px, 100dpi, 40.64x22.86 cm, bb=0 0 1152 648
+        \includesvg[width=1\textwidth]{../images/differences/Delaunay_Triangulation_and_Clough-Tocher_scheme_2D.svg}
+        % 2D_Contour_Interpolation.svg: 1600x900 px, 100dpi, 40.64x22.86 cm, bb=0 0 1152 648
     \caption{Delaunay triangulation used together with Clough-Tocher scheme.}
     \end{subfigure}
     \begin{subfigure}{\textwidth}
-        \includegraphics[width=1\textwidth]{../images/differences/Radial_Basis_Thin_Plate_Spline_2D.png}
-        % 2D_Contour_Interpolation.png: 1600x900 px, 100dpi, 40.64x22.86 cm, bb=0 0 1152 648
+        \includesvg[width=1\textwidth]{../images/differences/Radial_Basis_Thin_Plate_Spline_2D.svg}
+        % 2D_Contour_Interpolation.svg: 1600x900 px, 100dpi, 40.64x22.86 cm, bb=0 0 1152 648
     \caption{Radial basis function interpolation using thin plate spline radial function.}
     \end{subfigure}
     \caption{Comparison of various interpolation methods using elevation data from UK ordnance tile NO44 (South of Forfar).}
@@ -142,18 +144,21 @@ By isolating contours from the discretized data we obtain a set of irregularly s
         \includegraphics[width=\textwidth]{../images/differences/Delaunay_Triangulation_and_Barycentric_Interpolation_3D.png}
         % 2D_Contour_Interpolation.png: 1600x900 px, 100dpi, 40.64x22.86 cm, bb=0 0 1152 648
     \caption{Delaunay triangulation used together with barycentric interpolation.}
+    \label{fig:3D_discretized_comparison_a}
     \end{subfigure}
     \hfill
     \begin{subfigure}{.32\textwidth}
         \includegraphics[width=\textwidth]{../images/differences/Delaunay_Triangulation_and_Clough-Tocher_scheme_3D.png}
         % 2D_Contour_Interpolation.png: 1600x900 px, 100dpi, 40.64x22.86 cm, bb=0 0 1152 648
     \caption{Delaunay triangulation used together with Clough-Tocher scheme.}
+    \label{fig:3D_discretized_comparison_b}
     \end{subfigure}
     \hfill
     \begin{subfigure}{.32\textwidth}
         \includegraphics[width=\textwidth]{../images/differences/Radial_Basis_Thin_Plate_Spline_3D.png}
         % 2D_Contour_Interpolation.png: 1600x900 px, 100dpi, 40.64x22.86 cm, bb=0 0 1152 648
     \caption{Radial basis function interpolation using thin plate spline radial function.}
+    \label{fig:3D_discretized_comparison_c}
     \end{subfigure}
     \caption{Comparison of various interpolation methods using elevation data from UK ordnance tile NO44 (South of Forfar).}
     \label{fig:3D_discretized_comparison}
@@ -161,22 +166,68 @@ By isolating contours from the discretized data we obtain a set of irregularly s
 
 In Figure \ref{fig:2D_discretized_comparison} and \ref{fig:3D_discretized_comparison} we compare these methods. We can immediately notice that neither of the methods is particularly accurate at the regions where no contour lines are available, in this case the NW corner of the tile. The methods using Delaunay tirangulation do not interpolate regions outside the convex hull of the isolated points at all, and radial basis function interpolation does produce reasonable estimates, but as can be seen on the right-most plot the absolute error in this region is still quite high.
 
-Another issue with the Delaunay triangulation is that it doesn't produce smooth surfaces. This can be easily seen in Figure \ref{fig:3D_discretized_comparison} (a) and (b), where the triangles still remain visible when visualizing the surface. The Clough-Tocher scheme also introduces artifacts in forms of stretched valleys.
+Another issue with the Delaunay triangulation is that it doesn't produce smooth surfaces. This can be easily seen in Figure \ref{fig:3D_discretized_comparison_a} and \ref{fig:3D_discretized_comparison_b}, where the triangles still remain visible when visualizing the surface. The Clough-Tocher scheme also introduces artifacts in forms of stretched valleys.
 
-% \begin{figure}[H]
-%     \centering
-%     \begin{subfigure}{\textwidth}
-%         \includegraphics[width=1\textwidth]{../images/NO44/2D_Data_Interpolation.png}
-%         % 2D_Contour_Interpolation.png: 1600x900 px, 100dpi, 40.64x22.86 cm, bb=0 0 1152 648
-%     \caption{Elevation data from near Forfar (UK ordnance tile NO44)}
-%     \end{subfigure}
-%     \begin{subfigure}{\textwidth}
-%         \includegraphics[width=1\textwidth]{../images/NO33/2D_Data_Interpolation.png}
-%         % 2D_Contour_Interpolation.png: 1600x900 px, 100dpi, 40.64x22.86 cm, bb=0 0 1152 648
-%     \caption{Elevation data from west Dundee (UK ordnance tile NO33)}
-%     \end{subfigure}
-%     \caption{Interpolation of elevation data with various resolution.}
-%     \label{fig:2D_data}
-% \end{figure}
+The disadvantages of Delaunay tirangulation lead us to opting for the radial basis function interpolation for DEMs. With this approach, we also have a choice of kernel function for the interpolation. We compared several, such as linear, thin plate spline, cubic, quintic, multiquadric, inverse multiquadric, inverse quadratic and gaussian.\footnote{All available within the \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.RBFInterpolator.html}{RBFInterpolator class} of python scipy package.}. Out of these, linear, thin plate spline and multiquadric produced results with the smallest errors. We can see the RBF interpolation in action on Figure \ref{fig:2D_data} and \ref{fig:3D_discretized_interpolation}.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{\textwidth}
+        \includesvg[width=1\textwidth]{../images/NH52/2D_Data_Interpolation.svg}
+        % 2D_Contour_Interpolation.svg: 1600x900 px, 100dpi, 40.64x22.86 cm, bb=0 0 1152 648
+    \caption{Elevation data from Drumnadrochit, Loch Ness (UK ordnance tile NH52).}
+    \end{subfigure}
+    \begin{subfigure}{\textwidth}
+        \includesvg[width=1\textwidth]{../images/NO33/2D_Data_Interpolation.svg}
+        % 2D_Contour_Interpolation.svg: 1600x900 px, 100dpi, 40.64x22.86 cm, bb=0 0 1152 648
+    \caption{Elevation data from west Dundee (UK ordnance tile NO33).}
+    \end{subfigure}
+    \caption{Interpolation of elevation data with various resolution by using thin plate spline method.}
+    \label{fig:2D_data}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{\textwidth}
+        \begin{subfigure}{.49\textwidth}
+        \centering
+            \includegraphics[width=\textwidth]{../images/NH52/2D_Data_Interpolation_3D_discretized_datagrid.png}
+        \renewcommand\thesubfigure{\alph{subfigure}) i}
+        \caption{Surface from disretized elevation data.}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}{.49\textwidth}
+            \includegraphics[width=\textwidth]{../images/NH52/2D_Data_Interpolation_3D_discretized_datagrid_interpolated.png}
+        \addtocounter{subfigure}{-1}
+        \renewcommand\thesubfigure{\alph{subfigure}) ii}
+        \caption{Surface from interpolated elevation data.}
+        \end{subfigure}
+        \addtocounter{subfigure}{-1}
+        \renewcommand\thesubfigure{\alph{subfigure}}
+        \caption{Elevation data from Drumnadrochit, Loch Ness (UK ordnance tile NH52).}
+        \label{fig:3D_discretized_interpolation_a}
+    \end{subfigure}
+    \begin{subfigure}{\textwidth}
+        \centering
+        \begin{subfigure}{.49\textwidth}
+            \includegraphics[width=\textwidth]{../images/NO33/2D_Data_Interpolation_3D_discretized_datagrid.png}
+        \renewcommand\thesubfigure{\alph{subfigure}) i}
+        \caption{Surface from disretized elevation data.}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}{.49\textwidth}
+            \includegraphics[width=\textwidth]{../images/NO33/2D_Data_Interpolation_3D_discretized_datagrid_interpolated.png}
+        \addtocounter{subfigure}{-1}
+        \renewcommand\thesubfigure{\alph{subfigure}) ii}
+        \caption{Surface from interpolated elevation data.}
+        \end{subfigure}
+        \addtocounter{subfigure}{-1}
+        \renewcommand\thesubfigure{\alph{subfigure}}
+        \caption{Elevation data from west Dundee (UK ordnance tile NO33).}
+        \label{fig:3D_discretized_interpolation_b}
+    \end{subfigure}
+    \caption{Interpolating discretized elevation surface by using thin plate spline method.}
+    \label{fig:3D_discretized_interpolation}
+\end{figure}
 
 \end{document}

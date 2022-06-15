@@ -3,6 +3,7 @@ from matplotlib import pyplot as plt
 
 from external.bezier import evaluate_bezier
 from functions_1D import isolate_from_collinear, smooth_contour
+from helpers.zoom_figure import zoom_figure
 
 """
 Script interpolates 1D parametric paths in 2D by using Cubic splines.
@@ -36,5 +37,7 @@ axes[2].set_title("Bezier curve")
 # plt.plot(line[:, 0], line[:, 1], "gx", markersize=10)
 # plt.plot(isolated_points[:, 0], isolated_points[:, 1], "ro")
 
-# plt.savefig("images/2D_Contour.png")
-plt.show()
+plt.savefig("images/2D_Contour.svg", transparent=True, dpi=300, bbox_inches="tight")
+zoom_figure(plt, aspect=axes[0], x0=0, y0=114, dx=6)
+plt.savefig("images/2D_Contour_Zoomed.svg", transparent=True, dpi=300, bbox_inches="tight")
+# plt.show()

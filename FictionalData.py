@@ -24,7 +24,7 @@ for ax in axes.flatten():
 axes = axes.flatten()
 
 
-# axes[0].pcolormesh(x, y, datagrid, cmap=cmap, norm=norm, rasterized=True)
+# axes[0].pcolormesh(x, y, datagrid, cmap=cmap, norm=norm, rasterized=True, rasterized=True)
 # plot_contours(x, y, datagrid, ax=axes[3], colors=colors, low_output_resolution=True, interpolate=False)
 # plt.colorbar(colors, ax=axes[0], ticks=[i for i in range(8)])
 #
@@ -38,7 +38,7 @@ interpolated_image = interpolate_discretized_data(
 )
 sea_fix = lambda x: np.where(np.all([0 < x, x < 1], axis=0), -(x**3) + 2 * x**2, np.maximum(x, 0))
 interpolated_image = sea_fix(interpolated_image)
-# axes[1].pcolormesh(x, y, interpolated_image, cmap=cmap, norm=norm, rasterized=True)
+# axes[1].pcolormesh(x, y, interpolated_image, cmap=cmap, norm=norm, rasterized=True, rasterized=True)
 mlab.surf(x, y, interpolated_image.T, warp_scale=20, colormap="terrain", vmin=vmin, vmax=vmax)
 mlab.show()
 exit()
@@ -46,11 +46,11 @@ exit()
 
 # purerbf = np.load("data/FictionalData_Interpolated.npy")
 # purerbf = np.where(datagrid == 0, datagrid, purerbf)
-# axes[2].pcolormesh(x, y, purerbf, cmap=cmap, norm=norm, rasterized=True)
+# axes[2].pcolormesh(x, y, purerbf, cmap=cmap, norm=norm, rasterized=True, rasterized=True)
 # plot_contours(x, y, datagrid, ax=axes[5], colors=colors, levels=levels, interpolate=False)
 
 
 # norm_diff = Normalize(-np.max(np.abs(interpolated_image - purerbf)), np.max(np.abs(interpolated_image - purerbf)))
-# axes[3].pcolormesh(x, y, interpolated_image - purerbf, cmap="coolwarm", norm=norm_diff)
+# axes[3].pcolormesh(x, y, interpolated_image - purerbf, cmap="coolwarm", norm=norm_diff, rasterized=True)
 # plt.colorbar(ScalarMappable(cmap="coolwarm", norm=norm_diff), ax=axes[3])
 helpers.save_figure_position.ShowLastPos(plt)

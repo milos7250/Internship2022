@@ -66,7 +66,7 @@ def isolate_contour_datapoints(
     x: np.ndarray,
     y: np.ndarray,
     datagrid: np.ndarray,
-    levels: list = None,
+    levels: Union[list, np.ndarray] = None,
     discretized_data: bool = False,
     return_separate_contours=False,
 ):
