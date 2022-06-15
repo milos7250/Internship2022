@@ -83,10 +83,10 @@ try:
 except FileExistsError:
     pass
 
-plt.savefig("images/Slovakia/2D.png")
-plt.show()
-# mlab.surf(y, x, np.rot90(datagrid.T), mask=mask, warp_scale=5, colormap="terrain", vmin=vmin, vmax=vmax)
-# mlab.view(azimuth=315)
-#
-# mlab.options.offscreen = True
-# mlab.savefig("images/Slovakia/3D.png", magnification=10)
+plt.savefig("images/Slovakia/2D.svg", transparent=True, dpi=300, bbox_inches="tight")
+# plt.show()
+mlab.options.offscreen = True
+mlab.surf(y, x, np.rot90(datagrid.T), mask=mask, warp_scale=5, colormap="terrain", vmin=vmin, vmax=vmax)
+mlab.view(azimuth=315)
+
+mlab.savefig("images/Slovakia/3D.png", magnification=10)

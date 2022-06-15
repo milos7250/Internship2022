@@ -1,6 +1,7 @@
 /helpers/CurrentWindowPos*.pkl
 /data/terr50_gagg_gb.zip
 /data/FictionalData.xcf
-/conda/
+/conda*/
 /data/FictionalData_Interpolated.txt
 /data/dmr3-5_50.zip
+svg-inkscape/

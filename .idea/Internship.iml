@@ -3,8 +3,9 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/conda" />
+      <excludeFolder url="file://$MODULE_DIR$/conda-python3.10" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.9 (Internship)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.10 (Internship)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PackageRequirementsSettings">
