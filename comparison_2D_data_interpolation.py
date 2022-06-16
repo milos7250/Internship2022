@@ -8,6 +8,7 @@ from matplotlib.colors import Normalize
 from functions_2D import interpolate_discretized_data, plot_contours
 from helpers.save_figure_position import ShowLastPos
 from mayavi import mlab
+from helpers.colors import DEMScalarMappable
 
 """
 This script implements a comparative test for 2D interpolation techniques
@@ -65,16 +66,16 @@ def test_methods(plot):
             gridspec_kw={"hspace": 0.3},
         )
 
-        axes[0].pcolormesh(xo, yo, original_datagrid, cmap=cmap, norm=norm, rasterized=True)
+        axes[0].pcolormesh(xo, yo, original_datagrid, cmap=colors.cmap, norm=colors.norm, rasterized=True)
         axes[0].set_title("Original Raster")
-        axes[1].pcolormesh(x, y, datagrid, cmap=cmap, norm=norm, rasterized=True)
+        axes[1].pcolormesh(x, y, datagrid, cmap=colors.cmap, norm=colors.norm, rasterized=True)
         axes[1].set_title("Discretized Raster")
-        axes[2].pcolormesh(xo, yo, interpolated_datagrid, cmap=cmap, norm=norm, rasterized=True)
+        axes[2].pcolormesh(xo, yo, interpolated_datagrid, cmap=colors.cmap, norm=colors.norm, rasterized=True)
         axes[2].set_title(f"Interpolated Raster, using\n{method_name}")
         plt.colorbar(colors, ticks=levels, ax=axes[0:3].ravel().tolist(), shrink=0.4, aspect=15)
         mlab.options.offscreen = True
         mlab.figure(bgcolor=(1, 1, 1))
-        mlab.surf(
+        surf = mlab.surf(
             yo,
             xo,
             np.rot90(interpolated_datagrid.T),
@@ -83,11 +84,12 @@ def test_methods(plot):
             vmin=vmin,
             vmax=vmax,
         )
+        surf.module_manager.scalar_lut_manager.lut.table = colors.lut
         filename = method_name.replace("\n", " ").replace(" ", "_")
         mlab.savefig(f"images/differences/{filename}_3D.png", magnification=10)
         # Use ImageMagick to remove background from image.
         os.system(
-            f"convert images/differences/{filename}_3D.png -transparent -trim +repage white images/differences/{filename}_3D.png"
+            f"convert images/differences/{filename}_3D.png -transparent white -trim +repage images/differences/{filename}_3D.png"
         )
 
         diff = np.nan_to_num(interpolated_datagrid - original_datagrid)
@@ -148,7 +150,6 @@ def test_methods(plot):
 
 
 for tile in ["NO44"]:
-    # for tile in ["NN17", "NO33", "NO44", "NO51"]:
     print(f"Tile name: {tile}.")
     original_datagrid = np.loadtxt(f"data/{tile}.asc", skiprows=5)[::-1, :]
     # Each tile is of dimension 10km x 10km, sampled by 50m, thus we have 200 x 200 samples
@@ -159,11 +160,9 @@ for tile in ["NO44"]:
     levels = np.arange(minimum, maximum + 1e-10, height_levels, dtype=int)
 
     # Set up Colormaps
-    cmap = plt.get_cmap("terrain")
-    vmin = -0.25 * maximum * 1.1
-    vmax = maximum * 1.1
-    norm = Normalize(vmin, vmax)  # Leave extra 10% for interpolation overshoot
-    colors = ScalarMappable(norm=norm, cmap=cmap)
+    vmin = minimum / 1.1 if minimum > 0 else minimum * 1.1  # Leave extra 10% for interpolation overshoot
+    vmax = maximum * 1.1  # Leave extra 10% for interpolation overshoot
+    colors = DEMScalarMappable(vmin, vmax)
 
     datagrid = height_levels * np.floor(original_datagrid[::block_stride, ::block_stride] / height_levels)
     x = np.linspace(0, dim_x, datagrid.shape[1])

@@ -1,9 +1,8 @@
 import numpy as np
 from matplotlib import pyplot as plt
-from matplotlib.cm import ScalarMappable
-from matplotlib.colors import Normalize, BoundaryNorm, LinearSegmentedColormap
 
 from functions_2D import plot_contours
+from helpers.colors import DEMScalarMappable
 
 """
 This script creates smooth contours without attempting to interpolate the data itself.
@@ -11,13 +10,13 @@ This script creates smooth contours without attempting to interpolate the data i
 
 block_stride = 8
 tiles = [
-    ["NO33", "Dundee West", 50],
-    ["NO44", "South of Forfar", 50],
-    ["NN17", "Fort William", 150],
-    ["NH52", "Drumnadrochit, Loch Ness", 100],
-    ["NO51", "St Andrews", 50],
+    ["NO33", "Dundee West", 50, 0, False],
+    ["NO44", "South of Forfar", 50, 0, False],
+    ["NN17", "Fort William", 150, 0, False],
+    ["NH52", "Drumnadrochit, Loch Ness", 100, 15.3, True],
+    ["NO51", "St Andrews", 50, 0, False],
 ]
-tile, tile_name, height_levels = tiles[0]
+tile, tile_name, height_levels, water_level, zero_is_water = tiles[3]
 dim_x = 10 * 1e3  # Dimensions of loaded data in m
 dim_y = 10 * 1e3  # Dimensions of loaded data in m
 
@@ -62,34 +61,28 @@ levels = np.arange(minimum, maximum + 1e-10, height_levels, dtype=int)
 contour_levels = levels[:-1]
 
 # Set up Colormaps
-cmap = plt.get_cmap("terrain")
-vmin = -0.25 * maximum * 1.1
-vmax = maximum * 1.1
-norm = Normalize(vmin, vmax)  # Leave extra 10% for interpolation overshoot
-colors = ScalarMappable(norm=norm, cmap=cmap)
-plt.colorbar(colors, ticks=levels, format="%d m", ax=axes[0, :2].ravel().tolist(), aspect=10, pad=0.05)
-discretized_colors = ScalarMappable(
-    norm=BoundaryNorm(levels, levels.size),
-    cmap=LinearSegmentedColormap.from_list("", colors.to_rgba(levels), N=levels.size),
+vmin = minimum / 1.1 if minimum > 0 else minimum * 1.1  # Leave extra 10% for interpolation overshoot
+vmax = maximum * 1.1  # Leave extra 10% for interpolation overshoot
+colors = DEMScalarMappable(vmin, vmax, water_level, zero_is_water)
+ticks = (levels[0], *levels[1::2]) if tile == "NO33" else levels
+ticks = (*ticks, water_level) if (water_level not in ticks and water_level > vmin) else ticks
+plt.colorbar(
+    colors,
+    ticks=ticks,
+    format="%d m",
+    ax=axes[0, :2].ravel().tolist(),
+    aspect=10,
+    pad=0.05,
 )
-# print(minimum, maximum, levels)
-# for i in np.arange(np.floor(vmin), np.max(vmax), dtype=int):
-#     if i % 25 == 0:
-#         print(i, np.array(discretized_colors.to_rgba(i)) - np.array(colors.to_rgba(i)))
-# exit()
-plt.colorbar(discretized_colors, ticks=levels, format="%d m", ax=axes[0, 2:].ravel().tolist(), aspect=10)
-contour_colors = ScalarMappable(
-    norm=BoundaryNorm(
-        [
-            1.5 * contour_levels[0] - 0.5 * contour_levels[1],
-            *(contour_levels[0:-1] + contour_levels[1:]) / 2,
-            1.5 * contour_levels[-1] - 0.5 * contour_levels[-2],
-        ],
-        contour_levels.size,
-    ),
-    cmap=LinearSegmentedColormap.from_list("", colors.to_rgba(contour_levels), N=contour_levels.size),
+plt.colorbar(
+    colors.segmented(levels, kind="bottom"), ticks=levels, format="%d m", ax=axes[0, 2:].ravel().tolist(), aspect=10
 )
-plt.colorbar(contour_colors, ticks=contour_levels, format="%d m", ax=axes[1:, :].ravel().tolist())
+plt.colorbar(
+    colors.segmented(contour_levels, kind="middle"),
+    ticks=contour_levels,
+    format="%d m",
+    ax=axes[1:, :].ravel().tolist(),
+)
 
 
 def plot_contours_wrap(x, y, datagrid, axes, plot_title, levels=None, discretized_data=False):
@@ -113,7 +106,7 @@ def plot_contours_wrap(x, y, datagrid, axes, plot_title, levels=None, discretize
         colors=colors,
         discretized_data=discretized_data,
     )
-    axes[0].pcolormesh(x, y, datagrid, cmap=cmap, norm=norm, rasterized=True)
+    axes[0].pcolormesh(x, y, datagrid, cmap=colors.cmap, norm=colors.norm, rasterized=True)
     axes[0].set_title(plot_title)
 
 
