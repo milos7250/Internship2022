@@ -8,6 +8,7 @@ from scipy import interpolate
 from mayavi import mlab
 
 from functions_2D import interpolate_discretized_data, plot_contours
+from helpers.colors import DEMScalarMappable
 
 """
 This script creates smooth contours by attempting to interpolate the data itself first, then creating smooth contours.
@@ -15,13 +16,13 @@ This script creates smooth contours by attempting to interpolate the data itself
 
 block_stride = 8
 tiles = [
-    ["NO33", "Dundee West", 50, 5, 45],
-    ["NO44", "South of Forfar", 50, 5, 45],
-    ["NN17", "Fort William", 150, 2, 225],
-    ["NH52", "Drumnadrochit, Loch Ness", 100, 5, 225],
-    ["NO51", "St Andrews", 50, 5, 45],
+    ["NO33", "Dundee West", 50, 0, False, 5, 45],
+    ["NO44", "South of Forfar", 50, 0, False, 5, 45],
+    ["NN17", "Fort William", 150, 0, False, 2, 225],
+    ["NH52", "Drumnadrochit, Loch Ness", 100, 15.3, True, 5, 225],
+    ["NO51", "St Andrews", 50, 0, False, 5, 45],
 ]
-tile, tile_name, height_levels, warp_scale, azimuth = tiles[2]
+tile, tile_name, height_levels, water_level, zero_is_water, warp_scale, azimuth = tiles[3]
 dim_x = 10 * 1e3  # Dimensions of loaded data in m
 dim_y = 10 * 1e3  # Dimensions of loaded data in m
 
@@ -66,31 +67,31 @@ levels = np.arange(minimum, maximum + 1e-10, height_levels, dtype=int)
 contour_levels = levels[:-1] + 25
 
 # Set up Colormaps
-cmap = plt.get_cmap("terrain")
-vmin = -0.25 * maximum * 1.1
-vmax = maximum * 1.1
-norm = Normalize(vmin, vmax)  # Leave extra 10% for interpolation overshoot
-colors = ScalarMappable(norm=norm, cmap=cmap)
-plt.colorbar(colors, ticks=levels, format="%d m", ax=axes[0:2, :].ravel().tolist())
-contour_colors = ScalarMappable(
-    norm=BoundaryNorm(
-        [
-            1.5 * contour_levels[0] - 0.5 * contour_levels[1],
-            *(contour_levels[0:-1] + contour_levels[1:]) / 2,
-            1.5 * contour_levels[-1] - 0.5 * contour_levels[-2],
-        ],
-        contour_levels.size,
-    ),
-    cmap=LinearSegmentedColormap.from_list("", colors.to_rgba(contour_levels), N=contour_levels.size),
+vmin = minimum / 1.1 if minimum > 0 else minimum * 1.1  # Leave extra 10% for interpolation overshoot
+vmax = maximum * 1.1  # Leave extra 10% for interpolation overshoot
+colors = DEMScalarMappable(vmin, vmax, water_level, zero_is_water)
+ticks = levels
+ticks = (*ticks, water_level) if (water_level not in ticks and water_level > vmin) else ticks
+plt.colorbar(
+    colors,
+    ticks=ticks,
+    format="%d m",
+    ax=axes[0:2, :].ravel().tolist(),
 )
-plt.colorbar(contour_colors, ticks=contour_levels, format="%d m", ax=axes[2, :].ravel().tolist(), aspect=10)
+plt.colorbar(
+    colors.segmented(contour_levels, kind="middle"),
+    ticks=contour_levels,
+    format="%d m",
+    ax=axes[2, :].ravel().tolist(),
+    aspect=10,
+)
 
 
 def plot_data_wrap(x, y, datagrid, xi=None, yi=None, interpolated_datagrid=None, axes=None, plot_title=None):
-    axes[0].pcolormesh(x, y, datagrid, cmap=cmap, norm=norm, rasterized=True)
+    axes[0].pcolormesh(x, y, datagrid, cmap=colors.cmap, norm=colors.norm, rasterized=True)
     axes[0].set_title(plot_title)
     if interpolated_datagrid is not None:
-        axes[1].pcolormesh(xi, yi, interpolated_datagrid, cmap=cmap, norm=norm, rasterized=True)
+        axes[1].pcolormesh(xi, yi, interpolated_datagrid, cmap=colors.cmap, norm=colors.norm, rasterized=True)
         axes[1].set_title("Interpolated Data")
         plot_contours(
             xi,
@@ -185,8 +186,8 @@ except FileExistsError:
 plt.savefig(f"images/{tile}/2D_Data_Interpolation.svg", transparent=True, dpi=300, bbox_inches="tight")
 # plt.show()
 
-# os.system("zenity --info --text 'Interpolation Finished' --icon-name=emblem-success")
-# exit()
+os.system("zenity --info --text 'Interpolation Finished' --icon-name=emblem-success")
+exit()
 
 # 3D plots
 
@@ -194,14 +195,16 @@ mlab.options.offscreen = True
 
 # 1
 mlab.figure(bgcolor=(1, 1, 1))
-mlab.surf(y, x, np.rot90(datagrid.T), warp_scale=warp_scale, colormap="terrain", vmin=vmin, vmax=vmax)
+surf = mlab.surf(y, x, np.rot90(datagrid.T), warp_scale=warp_scale, colormap="terrain", vmin=vmin, vmax=vmax)
+surf.module_manager.scalar_lut_manager.lut.table = colors.lut
+mlab.draw()
 mlab.gcf().scene._lift()
 mlab.view(azimuth=azimuth, distance="auto")
 mlab.savefig(f"images/{tile}/2D_Data_Interpolation_3D_orig.png", magnification=10)
 
 # 2
 mlab.figure(bgcolor=(1, 1, 1))
-mlab.surf(
+surf = mlab.surf(
     y2,
     x2,
     np.rot90(low_spatial_res_datagrid.T),
@@ -210,13 +213,15 @@ mlab.surf(
     vmin=vmin,
     vmax=vmax,
 )
+surf.module_manager.scalar_lut_manager.lut.table = colors.lut
+mlab.draw()
 mlab.gcf().scene._lift()
 mlab.view(azimuth=azimuth, distance="auto")
 mlab.savefig(f"images/{tile}/2D_Data_Interpolation_3D_low_spatial_res.png", magnification=10)
 
 # 3
 mlab.figure(bgcolor=(1, 1, 1))
-mlab.surf(
+surf = mlab.surf(
     y,
     x,
     np.rot90(interpolated_low_spatial_res_datagrid.T),
@@ -225,20 +230,28 @@ mlab.surf(
     vmin=vmin,
     vmax=vmax,
 )
+surf.module_manager.scalar_lut_manager.lut.table = colors.lut
+mlab.draw()
 mlab.gcf().scene._lift()
 mlab.view(azimuth=azimuth, distance="auto")
 mlab.savefig(f"images/{tile}/2D_Data_Interpolation_3D_low_spatial_res_interpolated.png", magnification=10)
 
 # 4
 mlab.figure(bgcolor=(1, 1, 1))
-mlab.surf(y, x, np.rot90(discretized_datagrid.T), warp_scale=warp_scale, colormap="terrain", vmin=vmin, vmax=vmax)
+surf = mlab.surf(
+    y, x, np.rot90(discretized_datagrid.T), warp_scale=warp_scale, colormap="terrain", vmin=vmin, vmax=vmax
+)
+# Using colormap for contours is a dirty fix for mayavi using weird lookup table values
+surf.module_manager.scalar_lut_manager.lut.table = colors.segmented_lut(levels, kind="middle")
+mlab.draw()
+mlab.draw()
 mlab.gcf().scene._lift()
 mlab.view(azimuth=azimuth, distance="auto")
 mlab.savefig(f"images/{tile}/2D_Data_Interpolation_3D_discretized_datagrid.png", magnification=10)
 
 # 5
 mlab.figure(bgcolor=(1, 1, 1))
-mlab.surf(
+surf = mlab.surf(
     y,
     x,
     np.rot90(interpolated_discretized_datagrid.T),
@@ -247,13 +260,15 @@ mlab.surf(
     vmin=vmin,
     vmax=vmax,
 )
+surf.module_manager.scalar_lut_manager.lut.table = colors.lut
+mlab.draw()
 mlab.gcf().scene._lift()
 mlab.view(azimuth=azimuth, distance="auto")
 mlab.savefig(f"images/{tile}/2D_Data_Interpolation_3D_discretized_datagrid_interpolated.png", magnification=10)
 
 # 6
 mlab.figure(bgcolor=(1, 1, 1))
-mlab.surf(
+surf = mlab.surf(
     y2,
     x2,
     np.rot90(discretized_low_spatial_res_datagrid.T),
@@ -262,13 +277,16 @@ mlab.surf(
     vmin=vmin,
     vmax=vmax,
 )
+# Using colormap for contours is a dirty fix for mayavi using weird lookup table values
+surf.module_manager.scalar_lut_manager.lut.table = colors.segmented_lut(levels, kind="middle")
+mlab.draw()
 mlab.gcf().scene._lift()
 mlab.view(azimuth=azimuth, distance="auto")
 mlab.savefig(f"images/{tile}/2D_Data_Interpolation_3D_discretized_low_spatial_res_datagrid.png", magnification=10)
 
 # 7
 mlab.figure(bgcolor=(1, 1, 1))
-mlab.surf(
+surf = mlab.surf(
     y,
     x,
     np.rot90(interpolated_discretized_low_spatial_res_datagrid.T),
@@ -277,6 +295,8 @@ mlab.surf(
     vmin=vmin,
     vmax=vmax,
 )
+surf.module_manager.scalar_lut_manager.lut.table = colors.lut
+mlab.draw()
 mlab.gcf().scene._lift()
 mlab.view(azimuth=azimuth, distance="auto")
 mlab.savefig(

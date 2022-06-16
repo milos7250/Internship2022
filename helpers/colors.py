@@ -9,21 +9,26 @@ class DEMScalarMappable(ScalarMappable):
     colors_land = plt.cm.terrain(np.linspace(0.25, 1, 256))
     all_colors = np.vstack((colors_sea, colors_land))
 
-    def __init__(self, vmin, vmax):
-        if vmin > 0:
+    def __init__(self, vmin, vmax, zero=0, zero_is_water=False):
+        if vmax <= zero:
             norm = Normalize(vmin, vmax, clip=True)
-            cmap = LinearSegmentedColormap.from_list("terrain_map", self.colors_land)
-        elif vmin == 0:
+            cmap = LinearSegmentedColormap.from_list("terrain_map", self.colors_sea)
+        elif vmin == zero and zero_is_water:
             norm = Normalize(vmin, vmax, clip=True)
             cmap = LinearSegmentedColormap.from_list(
                 "terrain_map", np.vstack((self.colors_sea[-1], self.colors_land[1:]))
             )
-        elif vmax <= 0:
+        elif (vmin == zero and zero_is_water is False) or vmin > zero:
             norm = Normalize(vmin, vmax, clip=True)
-            cmap = LinearSegmentedColormap.from_list("terrain_map", self.colors_sea)
+            cmap = LinearSegmentedColormap.from_list("terrain_map", self.colors_land)
+        elif zero_is_water:
+            norm = TwoSlopeNorm(vmin=vmin, vcenter=zero, vmax=vmax)
+            cmap = LinearSegmentedColormap.from_list(
+                "terrain_map", np.vstack((self.colors_sea, self.colors_sea[-1], self.colors_land[1:]))
+            )
         else:
+            norm = TwoSlopeNorm(vmin=vmin, vcenter=zero, vmax=vmax)
             cmap = LinearSegmentedColormap.from_list("terrain_map", self.all_colors)
-            norm = TwoSlopeNorm(vmin=vmin, vcenter=0, vmax=vmax)
         super().__init__(norm, cmap)
 
     def segmented(self, bin_bounds, kind):

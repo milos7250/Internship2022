@@ -17,13 +17,13 @@ This script creates 3D graphics to showcase data discretization
 
 block_stride = 8
 tiles = [
-    ["NO33", "Dundee West", 50, 5, 45],
-    ["NO44", "South of Forfar", 50, 5, 45],
-    ["NN17", "Fort William", 150, 2, 225],
-    ["NH52", "Drumnadrochit, Loch Ness", 100, 5, 225],
-    ["NO51", "St Andrews", 50, 5, 45],
+    ["NO33", "Dundee West", 50, 0, False, 5, 45],
+    ["NO44", "South of Forfar", 50, 0, False, 5, 45],
+    ["NN17", "Fort William", 150, 0, False, 2, 225],
+    ["NH52", "Drumnadrochit, Loch Ness", 100, 15.3, True, 5, 225],
+    ["NO51", "St Andrews", 50, 0, False, 5, 45],
 ]
-tile, tile_name, height_levels, warp_scale, azimuth = tiles[2]
+tile, tile_name, height_levels, water_level, zero_is_water, warp_scale, azimuth = tiles[2]
 dim_x = 10 * 1e3  # Dimensions of loaded data in m
 dim_y = 10 * 1e3  # Dimensions of loaded data in m
 
@@ -40,7 +40,7 @@ contour_levels = levels
 # Set up Colormaps
 vmin = minimum / 1.1 if minimum > 0 else minimum * 1.1  # Leave extra 10% for interpolation overshoot
 vmax = maximum * 1.1  # Leave extra 10% for interpolation overshoot
-colors = DEMScalarMappable(vmin, vmax)
+colors = DEMScalarMappable(vmin, vmax, water_level, zero_is_water)
 
 # Discretize Data
 discretized_datagrid = height_levels * (np.floor(datagrid / height_levels))
