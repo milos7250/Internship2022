@@ -21,6 +21,7 @@ def plot_contours(
     discretized_data: bool = False,
     plot_title: str = None,
     collinearity_tol: float = None,
+    **kwargs,
 ):
     """
     Finds contours of data at specified levels using 'skimage.measure._find_contours.find_contours' and plots them on
@@ -36,6 +37,8 @@ def plot_contours(
     :param discretized_data: If set to True, the values of datagrid are expected to be discrete. This is the case
     when the output resolution of the function is low (the output is binned).
     :param plot_title: The title of the plot.
+    :param collinearity_tol: Tolerance for 'functions_1D.are_collinear'. Needs to be adjusted to fit size of data.
+    :param kwargs: Arguments to be passed to pyplot.
     :return: None
     """
     if discretized_data and levels is None:
@@ -53,7 +56,7 @@ def plot_contours(
         level = contour_datapoints[0, 2]
         if interpolate:
             contour_datapoints = smooth_contour(contour_datapoints[:, 0:2], collinearity_tol=collinearity_tol)
-        ax.plot(contour_datapoints[:, 0], contour_datapoints[:, 1], color=colors.to_rgba(level))
+        ax.plot(contour_datapoints[:, 0], contour_datapoints[:, 1], color=colors.to_rgba(level), **kwargs)
     title = ""
     if plot_title:
         title += f"{plot_title}\n"
