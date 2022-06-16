@@ -8,6 +8,7 @@ from scipy import interpolate
 from mayavi import mlab
 
 from functions_2D import interpolate_discretized_data, plot_contours, isolate_contour_datapoints
+from helpers.colors import DEMScalarMappable
 
 """
 This script creates 3D graphics to showcase data discretization
@@ -37,22 +38,12 @@ levels = np.arange(minimum, maximum + 1e-10, height_levels, dtype=int)
 contour_levels = levels
 
 # Set up Colormaps
-cmap = plt.get_cmap("terrain")
-vmin = -0.25 * maximum * 1.1
-vmax = maximum * 1.1
-norm = Normalize(vmin, vmax)  # Leave extra 10% for interpolation overshoot
-colors = ScalarMappable(norm=norm, cmap=cmap)
-contour_colors = ScalarMappable(
-    norm=BoundaryNorm(
-        contour_levels,
-        contour_levels.size - 1,
-    ),
-    cmap=LinearSegmentedColormap.from_list("", colors.to_rgba(contour_levels[:-1]), N=contour_levels.size - 1),
-)
-discretized_lut = contour_colors.to_rgba(np.linspace(vmin, vmax, 255)) * 255
+vmin = minimum / 1.1 if minimum > 0 else minimum * 1.1  # Leave extra 10% for interpolation overshoot
+vmax = maximum * 1.1  # Leave extra 10% for interpolation overshoot
+colors = DEMScalarMappable(vmin, vmax)
 
 # Discretize Data
-discretized_datagrid = height_levels * np.floor(datagrid / height_levels)
+discretized_datagrid = height_levels * (np.floor(datagrid / height_levels))
 
 mlab.options.offscreen = True
 # 1
@@ -60,7 +51,8 @@ mlab.figure(bgcolor=(1, 1, 1))
 surf = mlab.surf(
     y, x, np.rot90(discretized_datagrid.T), warp_scale=warp_scale, colormap="terrain", vmin=vmin, vmax=vmax
 )
-surf.module_manager.scalar_lut_manager.lut.table = discretized_lut
+# Using colormap for contours is a dirty fix for mayavi using weird lookup table values
+surf.module_manager.scalar_lut_manager.lut.table = colors.segmented_lut(levels, kind="middle")
 mlab.draw()
 mlab.gcf().scene._lift()
 mlab.view(azimuth=azimuth, distance="auto")
@@ -69,7 +61,7 @@ mlab.savefig(f"images/discretize/Discretized.png", magnification=10)
 # 2
 mlab.figure(bgcolor=(1, 1, 1))
 surf = mlab.surf(y, x, np.rot90(datagrid.T), warp_scale=warp_scale, colormap="terrain", vmin=vmin, vmax=vmax)
-surf.module_manager.scalar_lut_manager.lut.table = discretized_lut
+surf.module_manager.scalar_lut_manager.lut.table = colors.segmented_lut(levels, kind="bottom")
 mlab.draw()
 mlab.gcf().scene._lift()
 mlab.view(azimuth=azimuth, distance="auto")
@@ -78,9 +70,10 @@ mlab.savefig(f"images/discretize/Color_Graded.png", magnification=10)
 # 3
 mlab.figure(bgcolor=(1, 1, 1))
 surf = mlab.surf(y, x, np.rot90(datagrid.T), warp_scale=warp_scale, colormap="terrain", vmin=vmin, vmax=vmax)
+surf.module_manager.scalar_lut_manager.lut.table = colors.lut
 contours = isolate_contour_datapoints(x, y, np.rot90(datagrid, 3), levels=levels, return_separate_contours=True)
 for contour in contours:
-    mlab.plot3d(
+    obj = mlab.plot3d(
         contour[:, 0],
         contour[:, 1],
         contour[:, 2] * warp_scale,
@@ -90,6 +83,7 @@ for contour in contours:
         vmin=vmin,
         vmax=vmax,
     )
+    obj.module_manager.scalar_lut_manager.lut.table = colors.lut
 """
 Contour alternative:
 
@@ -108,7 +102,6 @@ surf = mlab.contour_surf(
 mlab.gcf().scene._lift()
 mlab.view(azimuth=azimuth, distance="auto")
 mlab.savefig(f"images/discretize/Accurate.png", magnification=10)
-
 # Use ImageMagick to remove background from images and crop out fully transparent region.
 for image in os.listdir(f"images/discretize/"):
     os.system(f"convert images/discretize/{image} -transparent white -trim +repage images/discretize/{image}")
