@@ -47,7 +47,6 @@ def test_methods(plot):
         plt.rc("font", family="serif")
         size = 1
         fig = plt.figure(figsize=(16 * size, 9 * size))
-        fig.tight_layout()
         axes = fig.subplots(
             1,
             4,
@@ -65,11 +64,14 @@ def test_methods(plot):
             },
             gridspec_kw={"hspace": 0.3},
         )
+        filename = method_name.replace("\n", " ").replace(" ", "_")
 
         axes[0].pcolormesh(xo, yo, original_datagrid, cmap=colors.cmap, norm=colors.norm, rasterized=True)
         axes[0].set_title("Original Raster")
+        axes[0].set_ylabel("Northing")
         axes[1].pcolormesh(x, y, datagrid, cmap=colors.cmap, norm=colors.norm, rasterized=True)
         axes[1].set_title("Discretized Raster")
+        axes[1].set_xlabel("Easting")
         axes[2].pcolormesh(xo, yo, interpolated_datagrid, cmap=colors.cmap, norm=colors.norm, rasterized=True)
         axes[2].set_title(f"Interpolated Raster, using\n{method_name}")
         plt.colorbar(colors, ticks=levels, ax=axes[0:3].ravel().tolist(), shrink=0.4, aspect=15)
@@ -85,7 +87,6 @@ def test_methods(plot):
             vmax=vmax,
         )
         surf.module_manager.scalar_lut_manager.lut.table = colors.lut
-        filename = method_name.replace("\n", " ").replace(" ", "_")
         mlab.savefig(f"images/differences/{filename}_3D.png", magnification=10)
         # Use ImageMagick to remove background from image.
         os.system(
@@ -98,6 +99,7 @@ def test_methods(plot):
         colors_diff = ScalarMappable(cmap=cmap_diff, norm=norm_diff)
         axes[3].pcolormesh(xo, yo, diff, cmap=cmap_diff, norm=norm_diff, rasterized=True)
         axes[3].set_title("Difference of Interpolated\nand Original Raster")
+        axes[3].set_xlabel("Easting")
         plt.colorbar(colors_diff, ax=axes[3], fraction=0.05, pad=0.1)
         plt.savefig(f"images/differences/{filename}_2D.svg", transparent=True, dpi=300, bbox_inches="tight")
 

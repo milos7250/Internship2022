@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Arch Linux) (preloaded format=pdflatex 2022.5.30)  16 JUN 2022 14:14
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Arch Linux) (preloaded format=pdflatex 2022.5.30)  16 JUN 2022 16:39
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -865,18 +865,6 @@ Package pdftex.def Info: ../images/svg-inkscape/2D_Contour_Zoomed_svg-tex.pdf ,
  page1 used on input line 56.
 (pdftex.def)             Requested size: 237.01411pt x 142.516pt.
 )
-Package svg Info: Calling Inkscape on input line 90.
-runsystem(inkscape "../images/NH52/2D_Contour_Interpolation.svg" -D --export-la
-tex --export-filename="2D_Contour_Interpolation_svg-tex.pdf")...executed.
-
-runsystem(mkdir -p "../images/NH52/svg-inkscape/")...executed.
-
-runsystem(mv "2D_Contour_Interpolation_svg-tex.pdf" "../images/NH52/svg-inkscap
-e/2D_Contour_Interpolation_svg-tex.pdf")...executed.
-
-runsystem(mv "2D_Contour_Interpolation_svg-tex.pdf_tex" "../images/NH52/svg-ink
-scape/2D_Contour_Interpolation_svg-tex.pdf_tex")...executed.
-
 Package svg Info: Last page of `../images/NH52/svg-inkscape/2D_Contour_Interpol
 ation_svg-tex.pdf' is 1 on input line 90.
 
@@ -917,29 +905,37 @@ pdfTeX warning: /usr/bin/pdflatex (file ../images/NO33/svg-inkscape/2D_Contour_
 Interpolation_svg-tex.pdf): PDF inclusion: multiple pdfs with page group includ
 ed in a single page
 >]
-Package svg Info: Calling Inkscape on input line 123.
-runsystem(inkscape "../images/differences/Delaunay_Triangulation_and_Barycentri
-c_Interpolation_2D.svg" -D --export-latex --export-filename="Delaunay_Triangula
-tion_and_Barycentric_Interpolation_2D_svg-tex.pdf")...executed.
+<../images/discretize/Accurate.png, id=2577, 3648.63126pt x 2597.705pt>
+File: ../images/discretize/Accurate.png Graphic file (type png)
+<use ../images/discretize/Accurate.png>
+Package pdftex.def Info: ../images/discretize/Accurate.png  used on input line 
+111.
+(pdftex.def)             Requested size: 145.11053pt x 103.29593pt.
+<../images/discretize/Color_Graded.png, id=2579, 3637.59pt x 2589.675pt>
+File: ../images/discretize/Color_Graded.png Graphic file (type png)
+<use ../images/discretize/Color_Graded.png>
+Package pdftex.def Info: ../images/discretize/Color_Graded.png  used on input l
+ine 116.
+(pdftex.def)             Requested size: 145.11053pt x 103.29276pt.
 
-runsystem(mkdir -p "../images/differences/svg-inkscape/")...executed.
+Underfull \hbox (badness 4001) in paragraph at lines 117--117
+\OT1/cmr/m/n/9 col-ors graded ac-cord-ing to dis-
+ []
 
-runsystem(mv "Delaunay_Triangulation_and_Barycentric_Interpolation_2D_svg-tex.p
-df" "../images/differences/svg-inkscape/Delaunay_Triangulation_and_Barycentric_
-Interpolation_2D_svg-tex.pdf")...executed.
-
-runsystem(mv "Delaunay_Triangulation_and_Barycentric_Interpolation_2D_svg-tex.p
-df_tex" "../images/differences/svg-inkscape/Delaunay_Triangulation_and_Barycent
-ric_Interpolation_2D_svg-tex.pdf_tex")...executed.
-
+<../images/discretize/Discretized.png, id=2580, 3642.60875pt x 2598.70876pt>
+File: ../images/discretize/Discretized.png Graphic file (type png)
+<use ../images/discretize/Discretized.png>
+Package pdftex.def Info: ../images/discretize/Discretized.png  used on input li
+ne 121.
+(pdftex.def)             Requested size: 145.11053pt x 103.49446pt.
 Package svg Info: Last page of `../images/differences/svg-inkscape/Delaunay_Tri
-angulation_and_Barycentric_Interpolation_2D_svg-tex.pdf' is 1 on input line 123
+angulation_and_Barycentric_Interpolation_2D_svg-tex.pdf' is 1 on input line 141
 .
 
 (../images/differences/svg-inkscape/Delaunay_Triangulation_and_Barycentric_Inte
 rpolation_2D_svg-tex.pdf_tex
 <../images/differences/svg-inkscape/Delaunay_Triangulation_and_Barycentric_Inte
-rpolation_2D_svg-tex.pdf, id=2577, page=1, 969.37683pt x 234.30336pt>
+rpolation_2D_svg-tex.pdf, id=2582, page=1, 982.28075pt x 243.01761pt>
 File: ../images/differences/svg-inkscape/Delaunay_Triangulation_and_Barycentric
 _Interpolation_2D_svg-tex.pdf Graphic file (type pdf)
 <use ../images/differences/svg-inkscape/Delaunay_Triangulation_and_Barycentric_
@@ -947,92 +943,64 @@ Interpolation_2D_svg-tex.pdf, page 1>
 Package pdftex.def Info: ../images/differences/svg-inkscape/Delaunay_Triangulat
 ion_and_Barycentric_Interpolation_2D_svg-tex.pdf , page1 used on input line 56.
 
-(pdftex.def)             Requested size: 483.69687pt x 116.91542pt.
+(pdftex.def)             Requested size: 483.69687pt x 119.66925pt.
 )
-Package svg Info: Calling Inkscape on input line 128.
-runsystem(inkscape "../images/differences/Delaunay_Triangulation_and_Clough-Toc
-her_scheme_2D.svg" -D --export-latex --export-filename="Delaunay_Triangulation_
-and_Clough-Tocher_scheme_2D_svg-tex.pdf")...executed.
-
-runsystem(mkdir -p "../images/differences/svg-inkscape/")...executed.
-
-runsystem(mv "Delaunay_Triangulation_and_Clough-Tocher_scheme_2D_svg-tex.pdf" "
-../images/differences/svg-inkscape/Delaunay_Triangulation_and_Clough-Tocher_sch
-eme_2D_svg-tex.pdf")...executed.
-
-runsystem(mv "Delaunay_Triangulation_and_Clough-Tocher_scheme_2D_svg-tex.pdf_te
-x" "../images/differences/svg-inkscape/Delaunay_Triangulation_and_Clough-Tocher
-_scheme_2D_svg-tex.pdf_tex")...executed.
-
 Package svg Info: Last page of `../images/differences/svg-inkscape/Delaunay_Tri
-angulation_and_Clough-Tocher_scheme_2D_svg-tex.pdf' is 1 on input line 128.
+angulation_and_Clough-Tocher_scheme_2D_svg-tex.pdf' is 1 on input line 146.
 
 (../images/differences/svg-inkscape/Delaunay_Triangulation_and_Clough-Tocher_sc
 heme_2D_svg-tex.pdf_tex
 <../images/differences/svg-inkscape/Delaunay_Triangulation_and_Clough-Tocher_sc
-heme_2D_svg-tex.pdf, id=2579, page=1, 969.37683pt x 234.30336pt>
+heme_2D_svg-tex.pdf, id=2584, page=1, 982.28075pt x 243.01761pt>
 File: ../images/differences/svg-inkscape/Delaunay_Triangulation_and_Clough-Toch
 er_scheme_2D_svg-tex.pdf Graphic file (type pdf)
 <use ../images/differences/svg-inkscape/Delaunay_Triangulation_and_Clough-Toche
 r_scheme_2D_svg-tex.pdf, page 1>
 Package pdftex.def Info: ../images/differences/svg-inkscape/Delaunay_Triangulat
 ion_and_Clough-Tocher_scheme_2D_svg-tex.pdf , page1 used on input line 56.
-(pdftex.def)             Requested size: 483.69687pt x 116.91542pt.
+(pdftex.def)             Requested size: 483.69687pt x 119.66925pt.
 )
-Package svg Info: Calling Inkscape on input line 133.
-runsystem(inkscape "../images/differences/Radial_Basis_Thin_Plate_Spline_2D.svg
-" -D --export-latex --export-filename="Radial_Basis_Thin_Plate_Spline_2D_svg-te
-x.pdf")...executed.
-
-runsystem(mkdir -p "../images/differences/svg-inkscape/")...executed.
-
-runsystem(mv "Radial_Basis_Thin_Plate_Spline_2D_svg-tex.pdf" "../images/differe
-nces/svg-inkscape/Radial_Basis_Thin_Plate_Spline_2D_svg-tex.pdf")...executed.
-
-runsystem(mv "Radial_Basis_Thin_Plate_Spline_2D_svg-tex.pdf_tex" "../images/dif
-ferences/svg-inkscape/Radial_Basis_Thin_Plate_Spline_2D_svg-tex.pdf_tex")...exe
-cuted.
-
 Package svg Info: Last page of `../images/differences/svg-inkscape/Radial_Basis
-_Thin_Plate_Spline_2D_svg-tex.pdf' is 1 on input line 133.
+_Thin_Plate_Spline_2D_svg-tex.pdf' is 1 on input line 151.
 
 (../images/differences/svg-inkscape/Radial_Basis_Thin_Plate_Spline_2D_svg-tex.p
 df_tex
 <../images/differences/svg-inkscape/Radial_Basis_Thin_Plate_Spline_2D_svg-tex.p
-df, id=2581, page=1, 969.37683pt x 234.30336pt>
+df, id=2586, page=1, 982.28075pt x 243.01761pt>
 File: ../images/differences/svg-inkscape/Radial_Basis_Thin_Plate_Spline_2D_svg-
 tex.pdf Graphic file (type pdf)
 <use ../images/differences/svg-inkscape/Radial_Basis_Thin_Plate_Spline_2D_svg-t
 ex.pdf, page 1>
 Package pdftex.def Info: ../images/differences/svg-inkscape/Radial_Basis_Thin_P
 late_Spline_2D_svg-tex.pdf , page1 used on input line 56.
-(pdftex.def)             Requested size: 483.69687pt x 116.91542pt.
-) [6]
+(pdftex.def)             Requested size: 483.69687pt x 119.66925pt.
+) [6 <../images/discretize/Accurate.png> <../images/discretize/Color_Graded.png
+> <../images/discretize/Discretized.png>]
 <../images/differences/Delaunay_Triangulation_and_Barycentric_Interpolation_3D.
-png, id=2588, 3307.35625pt x 1429.34pt>
+png, id=2597, 3307.35625pt x 1429.34pt>
 File: ../images/differences/Delaunay_Triangulation_and_Barycentric_Interpolatio
 n_3D.png Graphic file (type png)
 <use ../images/differences/Delaunay_Triangulation_and_Barycentric_Interpolation
 _3D.png>
 Package pdftex.def Info: ../images/differences/Delaunay_Triangulation_and_Baryc
-entric_Interpolation_3D.png  used on input line 144.
+entric_Interpolation_3D.png  used on input line 162.
 (pdftex.def)             Requested size: 154.78653pt x 66.8911pt.
 <../images/differences/Delaunay_Triangulation_and_Clough-Tocher_scheme_3D.png, 
-id=2590, 3305.34875pt x 1425.325pt>
+id=2598, 3305.34875pt x 1425.325pt>
 File: ../images/differences/Delaunay_Triangulation_and_Clough-Tocher_scheme_3D.
 png Graphic file (type png)
 <use ../images/differences/Delaunay_Triangulation_and_Clough-Tocher_scheme_3D.p
 ng>
 Package pdftex.def Info: ../images/differences/Delaunay_Triangulation_and_Cloug
-h-Tocher_scheme_3D.png  used on input line 151.
+h-Tocher_scheme_3D.png  used on input line 169.
 (pdftex.def)             Requested size: 154.78653pt x 66.74669pt.
-<../images/differences/Radial_Basis_Thin_Plate_Spline_3D.png, id=2591, 3378.622
+<../images/differences/Radial_Basis_Thin_Plate_Spline_3D.png, id=2599, 3378.622
 5pt x 1930.21124pt>
 File: ../images/differences/Radial_Basis_Thin_Plate_Spline_3D.png Graphic file 
 (type png)
 <use ../images/differences/Radial_Basis_Thin_Plate_Spline_3D.png>
 Package pdftex.def Info: ../images/differences/Radial_Basis_Thin_Plate_Spline_3
-D.png  used on input line 158.
+D.png  used on input line 176.
 (pdftex.def)             Requested size: 154.78653pt x 88.41675pt.
  [7 <../images/differences/svg-inkscape/Delaunay_Triangulation_and_Barycentric_
 Interpolation_2D_svg-tex.pdf> <../images/differences/svg-inkscape/Delaunay_Tria
@@ -1050,23 +1018,11 @@ age group included in a single page
 > <../images/differences/Delaunay_Triangulation_and_Barycentric_Interpolation_3
 D.png> <../images/differences/Delaunay_Triangulation_and_Clough-Tocher_scheme_3
 D.png> <../images/differences/Radial_Basis_Thin_Plate_Spline_3D.png>]
-Package svg Info: Calling Inkscape on input line 176.
-runsystem(inkscape "../images/NH52/2D_Data_Interpolation.svg" -D --export-latex
- --export-filename="2D_Data_Interpolation_svg-tex.pdf")...executed.
-
-runsystem(mkdir -p "../images/NH52/svg-inkscape/")...executed.
-
-runsystem(mv "2D_Data_Interpolation_svg-tex.pdf" "../images/NH52/svg-inkscape/2
-D_Data_Interpolation_svg-tex.pdf")...executed.
-
-runsystem(mv "2D_Data_Interpolation_svg-tex.pdf_tex" "../images/NH52/svg-inksca
-pe/2D_Data_Interpolation_svg-tex.pdf_tex")...executed.
-
 Package svg Info: Last page of `../images/NH52/svg-inkscape/2D_Data_Interpolati
-on_svg-tex.pdf' is 1 on input line 176.
+on_svg-tex.pdf' is 1 on input line 194.
 
 (../images/NH52/svg-inkscape/2D_Data_Interpolation_svg-tex.pdf_tex
-<../images/NH52/svg-inkscape/2D_Data_Interpolation_svg-tex.pdf, id=2655, page=1
+<../images/NH52/svg-inkscape/2D_Data_Interpolation_svg-tex.pdf, id=2662, page=1
 , 949.69888pt x 570.79324pt>
 File: ../images/NH52/svg-inkscape/2D_Data_Interpolation_svg-tex.pdf Graphic fil
 e (type pdf)
@@ -1076,10 +1032,10 @@ tex.pdf , page1 used on input line 56.
 (pdftex.def)             Requested size: 483.69687pt x 290.70877pt.
 )
 Package svg Info: Last page of `../images/NO33/svg-inkscape/2D_Data_Interpolati
-on_svg-tex.pdf' is 1 on input line 181.
+on_svg-tex.pdf' is 1 on input line 199.
 
 (../images/NO33/svg-inkscape/2D_Data_Interpolation_svg-tex.pdf_tex
-<../images/NO33/svg-inkscape/2D_Data_Interpolation_svg-tex.pdf, id=2657, page=1
+<../images/NO33/svg-inkscape/2D_Data_Interpolation_svg-tex.pdf, id=2664, page=1
 , 949.69888pt x 570.79324pt>
 File: ../images/NO33/svg-inkscape/2D_Data_Interpolation_svg-tex.pdf Graphic fil
 e (type pdf)
@@ -1088,52 +1044,52 @@ Package pdftex.def Info: ../images/NO33/svg-inkscape/2D_Data_Interpolation_svg-
 tex.pdf , page1 used on input line 56.
 (pdftex.def)             Requested size: 483.69687pt x 290.70877pt.
 )
-<../images/NH52/2D_Data_Interpolation_3D_discretized_datagrid.png, id=2658, 346
+<../images/NH52/2D_Data_Interpolation_3D_discretized_datagrid.png, id=2665, 346
 3.94125pt x 2702.095pt>
 File: ../images/NH52/2D_Data_Interpolation_3D_discretized_datagrid.png Graphic 
 file (type png)
 <use ../images/NH52/2D_Data_Interpolation_3D_discretized_datagrid.png>
 Package pdftex.def Info: ../images/NH52/2D_Data_Interpolation_3D_discretized_da
-tagrid.png  used on input line 194.
+tagrid.png  used on input line 212.
 (pdftex.def)             Requested size: 237.01411pt x 184.87799pt.
 <../images/NH52/2D_Data_Interpolation_3D_discretized_datagrid_interpolated.png,
- id=2659, 3626.54875pt x 2709.12125pt>
+ id=2666, 3626.54875pt x 2709.12125pt>
 File: ../images/NH52/2D_Data_Interpolation_3D_discretized_datagrid_interpolated
 .png Graphic file (type png)
 <use ../images/NH52/2D_Data_Interpolation_3D_discretized_datagrid_interpolated.
 png>
 Package pdftex.def Info: ../images/NH52/2D_Data_Interpolation_3D_discretized_da
-tagrid_interpolated.png  used on input line 200.
+tagrid_interpolated.png  used on input line 218.
 (pdftex.def)             Requested size: 237.01411pt x 177.04984pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 200--203
+Underfull \hbox (badness 10000) in paragraph at lines 218--221
 
  []
 
-<../images/NO33/2D_Data_Interpolation_3D_discretized_datagrid.png, id=2660, 361
+<../images/NO33/2D_Data_Interpolation_3D_discretized_datagrid.png, id=2667, 361
 9.5225pt x 2503.3525pt>
 File: ../images/NO33/2D_Data_Interpolation_3D_discretized_datagrid.png Graphic 
 file (type png)
 <use ../images/NO33/2D_Data_Interpolation_3D_discretized_datagrid.png>
 Package pdftex.def Info: ../images/NO33/2D_Data_Interpolation_3D_discretized_da
-tagrid.png  used on input line 213.
+tagrid.png  used on input line 231.
 (pdftex.def)             Requested size: 237.01411pt x 163.90776pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 213--215
+Underfull \hbox (badness 10000) in paragraph at lines 231--233
 
  []
 
 <../images/NO33/2D_Data_Interpolation_3D_discretized_datagrid_interpolated.png,
- id=2661, 3632.57124pt x 2473.24pt>
+ id=2668, 3632.57124pt x 2473.24pt>
 File: ../images/NO33/2D_Data_Interpolation_3D_discretized_datagrid_interpolated
 .png Graphic file (type png)
 <use ../images/NO33/2D_Data_Interpolation_3D_discretized_datagrid_interpolated.
 png>
 Package pdftex.def Info: ../images/NO33/2D_Data_Interpolation_3D_discretized_da
-tagrid_interpolated.png  used on input line 219.
+tagrid_interpolated.png  used on input line 237.
 (pdftex.def)             Requested size: 237.01411pt x 161.37006pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 219--222
+Underfull \hbox (badness 10000) in paragraph at lines 237--240
 
  []
 
@@ -1151,10 +1107,10 @@ Package rerunfilecheck Info: File `Report.out' has not changed.
 (rerunfilecheck)             Checksum: D2F475A29D5DA89E331D82FEDF867386;939.
  ) 
 Here is how much of TeX's memory you used:
- 23850 strings out of 478238
- 459221 string characters out of 5850456
- 734224 words of memory out of 5000000
- 41586 multiletter control sequences out of 15000+600000
+ 23854 strings out of 478238
+ 459273 string characters out of 5850456
+ 734297 words of memory out of 5000000
+ 41585 multiletter control sequences out of 15000+600000
  478373 words of font info for 63 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  94i,12n,94p,785b,989s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1167,10 +1123,10 @@ share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texmf-dist
 /fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texmf-dist/fonts/type1/pub
 lic/amsfonts/cm/cmr8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/
 cmr9.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on Report.pdf (11 pages, 14171274 bytes).
+Output written on Report.pdf (11 pages, 23299567 bytes).
 PDF statistics:
- 3452 PDF objects out of 3580 (max. 8388607)
- 2272 compressed objects within 23 object streams
- 30 named destinations out of 1000 (max. 500000)
- 216 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 3462 PDF objects out of 3580 (max. 8388607)
+ 2276 compressed objects within 23 object streams
+ 31 named destinations out of 1000 (max. 500000)
+ 231 words of extra memory for PDF output out of 10000 (max. 10000000)
 

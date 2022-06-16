@@ -103,9 +103,27 @@ Isolating the contours in the first place can be done by regular marching square
 We can see on Figure \ref{fig:2D_contour} that this approach does work quite nicely for cases when the spatial resolution is low. The contour levels can be chosen arbitraily and we should always be left with smooth contours. However, the drawbacks of this approach are that in case of discretized data, we are unable to produce contours of any level other than those of the data. For this, we would need to interpolate the data itself, as is discussed in the next section.
 
 \section{Bivariate Function}
-There are two main different cases when interpolating bivariate functions. One is that the spatial resolution of the 2D space is lower than required. In this case, the 2D space is sampled sparsely and the goal is to interpolate the function to a denser grid. The other reason is that the image of the function is discretized. The surface and it's derivatives are discontinuous, and producing a colormesh or a 3D visualisation of such data produces terraced surface. Hence we may wish to interpolate these terraces to produce a smooth surface.
+There are two main different cases when interpolating bivariate functions. One is that the spatial resolution of the 2D space is lower than required. In this case, the 2D space is sampled sparsely and the goal is to interpolate the function to a denser grid. The other reason is that the image of the function is discretized, as in Figure \ref{fig:3D_discrete_example}. The surface and it's derivatives are discontinuous, and producing a colormesh or a 3D visualisation of such data produces terraced surface. Hence we may wish to interpolate these terraces to produce a smooth surface.
 
-\todo{Insert figure of low res data and discretized data}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{.3\textwidth}
+        \includegraphics[width=1\textwidth]{../images/discretize/Accurate.png}
+    \caption.{Accurate elevation surface with contours}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{.3\textwidth}
+        \includegraphics[width=1\textwidth]{../images/discretize/Color_Graded.png}
+    \caption{Accurate elevation surface with colors graded according to discretization levels.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{.3\textwidth}
+        \includegraphics[width=1\textwidth]{../images/discretize/Discretized.png}
+    \caption{Discretized elevation surface.}
+    \end{subfigure}
+    \caption{An example of discretization of elevation data from Fort William (UK ordnance tile NN17), northwest view.}
+    \label{fig:3D_discrete_example}
+\end{figure}
 
 In the case where the domain is sampled sparsely, but is still on a regular grid, using bivariate spline interpolation is one of the fastest and most reliable methods to interpolate the data. We've used bicubic interpolation when interpolating DEMs in our examples, but in other cases using other degrees of polynomials is also valid and the choice should perhaps be motivated by the problem.
 
@@ -160,7 +178,7 @@ By isolating contours from the discretized data we obtain a set of irregularly s
     \caption{Radial basis function interpolation using thin plate spline radial function.}
     \label{fig:3D_discretized_comparison_c}
     \end{subfigure}
-    \caption{Comparison of various interpolation methods using elevation data from UK ordnance tile NO44 (South of Forfar).}
+    \caption{Comparison of various interpolation methods using elevation data from UK ordnance tile NO44 (South of Forfar), southeast view.}
     \label{fig:3D_discretized_comparison}
 \end{figure}
 
@@ -204,7 +222,7 @@ The disadvantages of Delaunay tirangulation lead us to opting for the radial bas
         \end{subfigure}
         \addtocounter{subfigure}{-1}
         \renewcommand\thesubfigure{\alph{subfigure}}
-        \caption{Elevation data from Drumnadrochit, Loch Ness (UK ordnance tile NH52).}
+        \caption{Elevation data from Drumnadrochit, Loch Ness (UK ordnance tile NH52), northwest view.}
         \label{fig:3D_discretized_interpolation_a}
     \end{subfigure}
     \begin{subfigure}{\textwidth}
@@ -223,11 +241,14 @@ The disadvantages of Delaunay tirangulation lead us to opting for the radial bas
         \end{subfigure}
         \addtocounter{subfigure}{-1}
         \renewcommand\thesubfigure{\alph{subfigure}}
-        \caption{Elevation data from west Dundee (UK ordnance tile NO33).}
+        \caption{Elevation data from west Dundee (UK ordnance tile NO33), southeast view.}
         \label{fig:3D_discretized_interpolation_b}
     \end{subfigure}
     \caption{Interpolating discretized elevation surface by using thin plate spline method.}
     \label{fig:3D_discretized_interpolation}
 \end{figure}
+
+\subsubsection{Limitations}
+It's worth to mention that the interpolation approach for discretized elevation does not behave optimally at local maxima or local minima. This can be seen on Figure \ref{fig:3D_discretized_interpolation_a} in the top right part. A valley is lost in the interpolation process, due to the algorithm by which we select contour lines. The outline of the valley is conserved for the interpolation with elevation value of the higher plateau ($200$ $m$), whilst no further information is preserved about the valley. If interpolation of higher accuracy is desired for DEMs, a revised algorithm must be implemented.
 
 \end{document}
