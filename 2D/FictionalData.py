@@ -7,7 +7,7 @@ from mayavi import mlab
 import helpers.save_figure_position
 from functions_2D import interpolate_discretized_data, plot_contours
 
-datagrid = np.load("data/FictionalData.npy", allow_pickle=False)
+datagrid = np.load("../data/FictionalData.npy", allow_pickle=False)
 maximum = np.max(datagrid)
 x = np.arange(0, datagrid.shape[1])
 y = np.arange(0, datagrid.shape[0])

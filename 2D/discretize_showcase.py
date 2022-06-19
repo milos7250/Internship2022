@@ -56,7 +56,7 @@ surf.module_manager.scalar_lut_manager.lut.table = colors.segmented_lut(levels, 
 mlab.draw()
 mlab.gcf().scene._lift()
 mlab.view(azimuth=azimuth, distance="auto")
-mlab.savefig(f"images/discretize/Discretized.png", magnification=10)
+mlab.savefig(f"../images/discretize/Discretized.png", magnification=10)
 
 # 2
 mlab.figure(bgcolor=(1, 1, 1))
@@ -65,7 +65,7 @@ surf.module_manager.scalar_lut_manager.lut.table = colors.segmented_lut(levels, 
 mlab.draw()
 mlab.gcf().scene._lift()
 mlab.view(azimuth=azimuth, distance="auto")
-mlab.savefig(f"images/discretize/Color_Graded.png", magnification=10)
+mlab.savefig(f"../images/discretize/Color_Graded.png", magnification=10)
 
 # 3
 mlab.figure(bgcolor=(1, 1, 1))
@@ -101,7 +101,7 @@ surf = mlab.contour_surf(
 """
 mlab.gcf().scene._lift()
 mlab.view(azimuth=azimuth, distance="auto")
-mlab.savefig(f"images/discretize/Accurate.png", magnification=10)
+mlab.savefig(f"../images/discretize/Accurate.png", magnification=10)
 # Use ImageMagick to remove background from images and crop out fully transparent region.
-for image in os.listdir(f"images/discretize/"):
+for image in os.listdir(f"../images/discretize/"):
     os.system(f"convert images/discretize/{image} -transparent white -trim +repage images/discretize/{image}")

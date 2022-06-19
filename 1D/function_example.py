@@ -20,7 +20,7 @@ plt.gca().spines["top"].set_visible(False)
 plt.gca().spines["right"].set_visible(False)
 
 # Load and plot the original function
-line = np.loadtxt("data/Simple_Line1A.txt")
+line = np.loadtxt("../data/Simple_Line1A.txt")
 plt.plot(line[:100, 0], line[:100, 1], "o", markersize=2)
 plt.legend(["Original line"], frameon=False)
 plt.savefig("images/1D_Function.svg", transparent=True, dpi=300, bbox_inches="tight")

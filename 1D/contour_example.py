@@ -18,7 +18,7 @@ fig.tight_layout()
 axes = fig.subplots(1, 3, sharex="all", sharey="all", subplot_kw={"frame_on": False, "xticks": [], "yticks": []})
 
 # Load and plot the original contour
-contour = np.loadtxt("data/RealContour1A.txt")
+contour = np.loadtxt("../data/RealContour1A.txt")
 axes[0].plot(contour[:, 0], contour[:, 1], "o", markersize=1, color=plt.get_cmap("tab10")(0))
 # axes[0].plot(contour[:, 0], contour[:, 1], color=plt.get_cmap("tab10")(0))
 axes[0].set_title("Terraced contour")
