@@ -10,7 +10,7 @@ import os
 import_step = 1
 height_levels = 200
 
-datagrid = Image.open("data/slovakia.tif")
+datagrid = Image.open("../data/slovakia.tif")
 datagrid = np.array(datagrid)[::-1][1200:2200:import_step, 2300:3300:import_step]
 datagrid = np.maximum(0, datagrid)
 dim_x = 50 * datagrid.shape[1]  # Dimensions of loaded data in m
@@ -79,7 +79,7 @@ axes[0].set_title("Zarnovica and Ziar nad Hronom Regions\n50m Resolution Raster"
 plot_contours(x, y, datagrid, levels=levels, ax=axes[1], interpolate=True, colors=colors)
 
 try:
-    os.mkdir(f"images/Slovakia")
+    os.mkdir(f"../images/Slovakia")
 except FileExistsError:
     pass
 
@@ -89,4 +89,4 @@ mlab.options.offscreen = True
 mlab.surf(y, x, np.rot90(datagrid.T), mask=mask, warp_scale=5, colormap="terrain", vmin=vmin, vmax=vmax)
 mlab.view(azimuth=315)
 
-mlab.savefig("images/Slovakia/3D.png", magnification=10)
+mlab.savefig("../images/Slovakia/3D.png", magnification=10)
