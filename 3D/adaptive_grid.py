@@ -1,12 +1,12 @@
-from spheres import Sphere
+from functions_3D import CartesianSphere
 from mayavi import mlab
 from skimage.measure import marching_cubes
 import numpy as np
 
 res = 10
 k = 10
-low_res = Sphere(res)
-high_res = Sphere(res * k)
+low_res = CartesianSphere(res)
+high_res = CartesianSphere(res * k)
 
 # for idx, radius in enumerate([5, 50]):
 #     sphere = Sphere(radius, centre=(idx * 3, 0, 0))
