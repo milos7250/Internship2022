@@ -1,4 +1,4 @@
-from spheres import Sphere
+from functions_3D import CartesianSphere
 from mayavi import mlab
 from skimage.measure import marching_cubes
 import numpy as np
@@ -7,7 +7,7 @@ import tricubic
 
 res = 10
 k = 5
-low_res = Sphere(res)
+low_res = CartesianSphere(res)
 
 vert, face, _, _ = marching_cubes(low_res.values, spacing=[low_res.spacing] * 3)
 mlab.triangular_mesh(
