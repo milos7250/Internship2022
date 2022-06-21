@@ -3,7 +3,7 @@ from mayavi import mlab
 from skimage.measure import marching_cubes
 import numpy as np
 from scipy.ndimage import gaussian_filter, rank_filter
-from scipy.interpolate import RBFInterpolator
+from scipy.interpolate import RBFInterpolator, griddata
 import tricubic
 
 res = 10
@@ -59,29 +59,41 @@ mlab.points3d(
 )
 
 
-interpolator = RBFInterpolator(vertices[:, 0:3], vertices[:, 3], kernel="thin_plate_spline", smoothing=2)
-interpolated = low_res_scaled.copy()
+# interpolator = RBFInterpolator(vertices[:, 0:3], vertices[:, 3], kernel="thin_plate_spline", smoothing=2)
+# interpolated = low_res_scaled.copy()
+#
+#
+# for z_idx, z_val in enumerate(high_res.grid[2]):
+#     for y_idx, y_val in enumerate(high_res.grid[1]):
+#         for x_idx, x_val in enumerate(high_res.grid[0]):
+#             if removed_mask[z_idx, y_idx, x_idx] == 1:
+#                 print(interpolator(np.array([[x_val, y_val, z_val]])))
+#                 interpolated[z_idx, y_idx, x_idx] = interpolator(np.array([[x_val, y_val, z_val]]))
+#
+# # print(*interpolated)
+#
+# vert, face, _, _ = marching_cubes(interpolated, spacing=[high_res.spacing] * 3)
+# mlab.triangular_mesh(
+#     vert[:, 0] + low_res.grid[0][0] + 3,
+#     vert[:, 1] + low_res.grid[1][0],
+#     vert[:, 2] + low_res.grid[2][0],
+#     face,
+# )
 
 
-for z_idx, z_val in enumerate(high_res.grid[2]):
-    for y_idx, y_val in enumerate(high_res.grid[1]):
-        for x_idx, x_val in enumerate(high_res.grid[0]):
-            if removed_mask[z_idx, y_idx, x_idx] == 1:
-                interpolated[z_idx, y_idx, x_idx] = interpolator(np.array([[x_val, y_val, z_val]]))
-
-# print(*interpolated)
-
-vert, face, _, _ = marching_cubes(interpolated, spacing=[high_res.spacing] * 3)
+gridded_vertices = griddata(vertices[:, 0:3], vertices[:, 3], tuple(high_res.meshgrid))
+gridded_vertices = np.where(np.isnan(gridded_vertices), low_res_scaled, gridded_vertices)
+vert, face, _, _ = marching_cubes(gridded_vertices, spacing=[high_res.spacing] * 3)
 mlab.triangular_mesh(
-    vert[:, 0] + low_res.grid[0][0] + 3,
+    vert[:, 0] + low_res.grid[0][0] + 6,
     vert[:, 1] + low_res.grid[1][0],
     vert[:, 2] + low_res.grid[2][0],
     face,
 )
 
-
-# spline = tricubic.tricubic(interpolated.tolist(), list(interpolated.shape))
-# interpolated = np.ndarray([i * k for i in interpolated.shape])
+# k = 10
+# spline = tricubic.tricubic(gridded_vertices.tolist(), list(gridded_vertices.shape))
+# interpolated = np.ndarray([i * k for i in gridded_vertices.shape])
 # for z in range(interpolated.shape[2]):
 #     for y in range(interpolated.shape[1]):
 #         for x in range(interpolated.shape[0]):
@@ -89,7 +101,7 @@ mlab.triangular_mesh(
 #
 # vert, face, _, _ = marching_cubes(interpolated, spacing=[low_res.spacing / k] * 3)
 # mlab.triangular_mesh(
-#     vert[:, 0] + low_res.grid[0][0] + 6,
+#     vert[:, 0] + low_res.grid[0][0] + 9,
 #     vert[:, 1] + low_res.grid[1][0],
 #     vert[:, 2] + low_res.grid[2][0],
 #     face,

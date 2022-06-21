@@ -78,8 +78,10 @@ class SphericalSphere:
     def __init__(self, resolution: int or [int, int, int], radius=1, pad: int = 1):
         if type(resolution) is int:
             self.r_resolution = self.theta_resolution = self.phi_resolution = resolution
+            self.resolution = [resolution] * 3
         else:
             self.r_resolution, self.theta_resolution, self.phi_resolution = resolution
+            self.resolution = resolution
         self.radius = radius
         self.pad = pad
         self.values = np.zeros((self.r_resolution + pad, self.theta_resolution, self.phi_resolution + 1))
