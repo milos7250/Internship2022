@@ -4,12 +4,13 @@ import numpy as np
 
 from functions_3D import remove_duplicate_vertices, linear, SphericalSphere
 
+k = 2
 small = 7
-r = theta = small * 2 - 1
-phi = small * 2
+r = theta = small * k - 1
+phi = small * k
 
 sphere = SphericalSphere([r, theta, phi])
-sphere2 = SphericalSphere(small)
+sphere_small = SphericalSphere(small)
 
 
 def sph_to_car(r, theta, phi):
@@ -42,7 +43,9 @@ def sphere_to_car(sphere: SphericalSphere):
     return car_points
 
 
-vertices, faces, _, _ = marching_cubes(sphere.values[:, :7, :], allow_degenerate=False, level=0.999)
+vertices, faces, _, _ = marching_cubes(
+    sphere.values[:, : sphere.theta_resolution // 2 + 1, :], allow_degenerate=False, level=0.999
+)
 vertices = sph_to_car(
     sphere.r_from_index(vertices[:, 0]), sphere.theta_from_index(vertices[:, 1]), sphere.phi_from_index(vertices[:, 2])
 )
@@ -55,12 +58,12 @@ mlab.triangular_mesh(
 )
 
 vertices2, faces2, _, _ = marching_cubes(
-    sphere2.values[:, sphere2.theta_resolution // 2 :, :], allow_degenerate=False, level=0.999
+    sphere_small.values[:, sphere_small.theta_resolution // 2 :, :], allow_degenerate=False, level=0.999
 )
 vertices2 = sph_to_car(
-    sphere2.r_from_index(vertices2[:, 0]),
-    sphere2.theta_from_index(vertices2[:, 1] + sphere2.theta_resolution // 2),
-    sphere2.phi_from_index(vertices2[:, 2]),
+    sphere_small.r_from_index(vertices2[:, 0]),
+    sphere_small.theta_from_index(vertices2[:, 1] + sphere_small.theta_resolution // 2),
+    sphere_small.phi_from_index(vertices2[:, 2]),
 )
 vertices2, faces2 = remove_duplicate_vertices(vertices2, faces2)
 mlab.triangular_mesh(
@@ -81,4 +84,57 @@ mlab.triangular_mesh(
     merged_faces,
 )
 
+# sphere_middle = SphericalSphere(sphere.resolution)
+# sphere_middle.values[...] = 0
+# sphere_middle.values[:, sphere.theta_resolution // 2 + 1, :] = sphere.values[:, sphere.theta_resolution // 2 + 1, :]
+# sphere_middle.values[::k, sphere.theta_resolution // 2 + 4, ::k] = sphere_small.values[
+#     :-1, sphere_small.theta_resolution // 2, :
+# ]
+#
+# vertices3, faces3, _, _ = marching_cubes(sphere_middle.values, allow_degenerate=False, level=0.999)
+# vertices3 = sph_to_car(
+#     sphere_middle.r_from_index(vertices3[:, 0]),
+#     sphere_middle.theta_from_index(vertices3[:, 1]),
+#     sphere_middle.phi_from_index(vertices3[:, 2]),
+# )
+# vertices3, faces3 = remove_duplicate_vertices(vertices3, faces3)
+# mlab.triangular_mesh(
+#     vertices3[:, 0] + 9,
+#     vertices3[:, 1],
+#     vertices3[:, 2],
+#     faces3,
+# )
+
+mlab.show()
+exit()
+
+# Nearest neighbor interpolation of sphere in spherical coordinates produces a smooth sphere
+sphere = SphericalSphere(small * k, pad=1)
+sphere_small = SphericalSphere(small, pad=0)
+sphere_scaled = SphericalSphere(small * k, pad=1)
+values = sphere_small.values.repeat(k, axis=0).repeat(k, axis=1).repeat(k, axis=2)[:, :, : -k + 1]
+sphere_scaled.values = np.pad(values, [[0, 1], [0, 0], [0, 0]])
+
+merged_sphere = SphericalSphere(small * k, pad=1)
+merged_sphere.values = np.concatenate(
+    [
+        sphere_scaled.values[:, sphere_scaled.theta_resolution // 2 :, :],
+        sphere.values[:, : sphere.theta_resolution // 2 + 1, :],
+    ],
+    axis=1,
+)
+
+vertices3, faces3, _, _ = marching_cubes(merged_sphere.values, allow_degenerate=False, level=0.999)
+vertices3 = sph_to_car(
+    merged_sphere.r_from_index(vertices3[:, 0]),
+    merged_sphere.theta_from_index(vertices3[:, 1]),
+    merged_sphere.phi_from_index(vertices3[:, 2]),
+)
+vertices3, faces3 = remove_duplicate_vertices(vertices3, faces3)
+mlab.triangular_mesh(
+    vertices3[:, 0] + 9,
+    vertices3[:, 1],
+    vertices3[:, 2],
+    faces3,
+)
 mlab.show()
