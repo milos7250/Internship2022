@@ -43,6 +43,7 @@ def sphere_to_car(sphere: SphericalSphere):
     return car_points
 
 
+# Show the upper part of high resolution sphere
 vertices, faces, _, _ = marching_cubes(
     sphere.values[:, : sphere.theta_resolution // 2 + 1, :], allow_degenerate=False, level=0.999
 )
@@ -57,6 +58,7 @@ mlab.triangular_mesh(
     faces,
 )
 
+# Show the lower part of low resolution sphere
 vertices2, faces2, _, _ = marching_cubes(
     sphere_small.values[:, sphere_small.theta_resolution // 2 :, :], allow_degenerate=False, level=0.999
 )
@@ -73,7 +75,7 @@ mlab.triangular_mesh(
     faces2,
 )
 
-# TODO: Close holes when merging
+# Merge the two half-spheres together
 merged_vertices = np.vstack([vertices, vertices2])
 merged_faces = np.vstack([faces, faces2 + vertices.shape[0]])
 merged_vertices, merged_faces = remove_duplicate_vertices(merged_vertices, merged_faces)
