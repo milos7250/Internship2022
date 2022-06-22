@@ -1,7 +1,9 @@
 import numpy as np
 from raster_geometry import sphere as sphere_gen
 
-linear = lambda x0, y0, x1, y1, x: (y1 - y0) / (x1 - x0) * (x - x0) + y0
+
+def linear(x0, y0, x1, y1, x):
+    return (y1 - y0) / (x1 - x0) * (x - x0) + y0
 
 
 def remove_duplicate_vertices(vertices: np.ndarray, faces: np.ndarray, tolerance=1e-3):
@@ -10,20 +12,21 @@ def remove_duplicate_vertices(vertices: np.ndarray, faces: np.ndarray, tolerance
 
     :param vertices: (N, 3) array of vertices
     :param faces: (M, 3) array of faces
+    :param tolerance: The maximum euclidean distance for points to be considered identical
     :return: ((N - n), (M - m)) tuple of arrays, with n removed vertices and m removed degenerate faces
     """
-    # Reassign faces to the smallest index of a point
+    # Reassign faces to the smallest index of a point and average their coordinates
     same = np.linalg.norm(vertices - vertices[:, np.newaxis], axis=2) < tolerance
     same[np.triu_indices_from(same)] = False
-    i, j = same.nonzero()
-    for m, n in zip(i, j):
-        faces[np.unravel_index(np.nonzero(faces.flatten() == m)[0], faces.shape)] = n
+    pts_remove, pts_keep = same.nonzero()
+    for p_remove, p_keep in zip(pts_remove, pts_keep):
+        faces[np.unravel_index(np.nonzero(faces.flatten() == p_remove)[0], faces.shape)] = p_keep
+        vertices[p_keep] = (vertices[p_remove] + vertices[p_keep]) / 2
 
     # Remove repeated points from vertices and adjust face numbers accordingly
-    delete = []
-    for idx in reversed(np.unique(i)):
+    delete = np.unique(pts_remove)
+    for idx in reversed(delete):
         faces[np.unravel_index(np.nonzero(faces.flatten() > idx)[0], faces.shape)] -= 1
-        delete.append(idx)
     vertices = np.delete(vertices, delete, axis=0)
 
     # Remove degenerate faces
