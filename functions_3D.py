@@ -32,7 +32,7 @@ def remove_duplicate_vertices(vertices: np.ndarray, faces: np.ndarray, tolerance
     # Remove degenerate faces
     delete = []
     for idx, face in enumerate(faces):
-        if np.unique(face).size != 3:
+        if np.unique(face).size != faces.shape[1]:
             delete.append(idx)
     faces = np.delete(faces, delete, axis=0)
 
