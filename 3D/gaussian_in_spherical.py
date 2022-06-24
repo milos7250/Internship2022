@@ -1,34 +1,69 @@
 import numpy as np
 from mayavi import mlab
-from skimage.measure import marching_cubes
+from numpy.typing import NDArray
 from scipy.ndimage import gaussian_filter
+from skimage.measure import marching_cubes
 
-from functions_3D import remove_duplicate_vertices, linear
+from functions_3D import linear, remove_duplicate_vertices
+
+"""
+This script investigates how marching cubes and gaussian filter work in spherical coordinates.
+"""
 
 
-def sph_to_car(r, theta, phi):
+def sph_to_car(r: float | NDArray[float], theta: float | NDArray[float], phi: float | NDArray[float]) -> NDArray[float]:
+    """
+    Converts spherical coordinates to cartesian.
+    """
     x = r * np.sin(theta) * np.cos(phi)
     y = r * np.sin(theta) * np.sin(phi)
     z = r * np.cos(theta)
     return np.array([x, y, z]).T
 
 
-def car_to_sph(x, y, z):
+def car_to_sph(x: float | NDArray[float], y: float | NDArray[float], z: float | NDArray[float]) -> NDArray[float]:
+    """
+    Converts cartesian coordinates to spherical.
+    """
     r = np.sqrt(x**2 + y**2 + z**2)
     theta = np.arccos(z / r)
     phi = np.arctan2(y / x)
     return np.array([r, theta, phi]).T
 
 
-def coords_from_indices(r_idx, theta_idx, phi_idx, shape):
+# TODO: Very time inefficient, consider replacing the linear() function by something else
+def coords_from_indices(
+    r_idx: float | NDArray[float],
+    theta_idx: float | NDArray[float],
+    phi_idx: float | NDArray[float],
+    shape: tuple[int],
+) -> tuple:
+    """
+    Converts indices of an array to spherical coordinates. Assumption is made that r index is the same as r value and
+    that theta and phi is linearly spaced from 0 to pi or 0 to 2*pi respectively (including endpoints).
+
+    :param r_idx: r index or (n) array of r indices
+    :param theta_idx: theta index or (n) array of theta indices
+    :param phi_idx: phi index or (n) array of phi indices
+    :param shape: shape of the array the indices are from
+    :return: (1, 3) array of (r, theta, phi) coordinates or (n, 3) array of r, theta, phi coordinates of each triplet of
+    indices.
+    """
     return (
-        linear(0, 0, shape[0] - 1, shape[0] - 1, r_idx),
+        r_idx,
         linear(0, 0, shape[1] - 1, np.pi, theta_idx),
         linear(0, 0, shape[2] - 1, 2 * np.pi, phi_idx),
     )
 
 
-def sph_grid_to_car(grid):
+def sph_grid_to_car(grid: NDArray[float]) -> NDArray[float]:
+    """
+    Converts points on a spherical grid into an array of points represented in cartesian coordinates.
+    '3D/gaussian_in_spherical.py' is used in the process.
+
+    :param grid: Values on a spherical grid.
+    :return: (n, 4) array of point coordinates with their value.
+    """
     car_points = np.empty((grid.size, 4))
     i = 0
     for r_idx in range(grid.shape[0]):
