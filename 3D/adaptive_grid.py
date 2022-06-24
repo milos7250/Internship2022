@@ -2,13 +2,12 @@ import itertools
 
 from mayavi import mlab
 from skimage.measure import marching_cubes
-from raster_geometry import sphere
 import numpy as np
 from scipy.ndimage import gaussian_filter, zoom
-from functions_3D import remove_duplicate_vertices, linear
+from functions_3D import linear
 
-res = 7
-n = 8
+res = 15
+n = 4
 a, b, c = res - 1, res / 2, res / 3
 a = b = c = res - 1
 low_res = np.zeros([res] * 3, dtype=float)
@@ -38,16 +37,12 @@ for i, j, k in itertools.product(*[np.arange(shape) for shape in high_res.shape]
     if (x / a) ** 2 + (y / b) ** 2 + (z / c) ** 2 <= 1:
         high_res[i, j, k] = 1
 
-
 x, y, z = coords_from_indices(*np.indices(low_res.shape), low_res.shape).T
 X, Y, Z = coords_from_indices(*np.indices(high_res.shape), high_res.shape).T
 
-
 # Apply gaussian filter and marching squares after merging
 # low_res_scaled = low_res.repeat(n, axis=0).repeat(n, axis=1).repeat(n, axis=2)[: -n + 1, : -n + 1, : -n + 1]
-low_res_scaled = zoom(
-    low_res, high_res.shape[0] / low_res.shape[0], order=0, mode="nearest", prefilter=False, grid_mode=True
-)
+low_res_scaled = zoom(low_res, high_res.shape[0] / low_res.shape[0], order=0, mode="nearest")
 low_res_cut = low_res_scaled[:, :, : high_res.shape[0] // 2]
 high_res_cut = high_res[:, :, high_res.shape[0] // 2 :]
 merged = np.concatenate([low_res_cut, high_res_cut], axis=2).reshape(high_res.shape)
@@ -61,48 +56,24 @@ mlab.triangular_mesh(
     vertices[:, 2],
     faces,
 )
-mlab.points3d(
-    X,
-    Y,
-    Z + res * 2,
-    merged,
-    mode="cube",
-    scale_factor=1,
-    colormap="coolwarm",
-)
 
 
 # Apply gaussian filter and marching squares before merging
+low_res[:, :, : low_res.shape[0] // 2 + 1] = gaussian_filter(
+    low_res[:, :, : low_res.shape[0] // 2 + 1], 2, mode="nearest"
+)
+high_res[:, :, high_res.shape[0] // 2 :] = gaussian_filter(high_res[:, :, high_res.shape[0] // 2 :], 2, mode="nearest")
 
 
-# glue_layer_low = low_res[:, :, low_res.shape[0] // 2]
 # glue_layer_high = high_res[:, :, high_res.shape[0] // 2]
-# glue_layer_high = zoom(  # Interpolates the layer to higher resolution linearly
+# glue_layer_high = zoom(  # Shrinks the high resolution layer
 #     glue_layer_high,
 #     low_res.shape[0] / high_res.shape[0],
-#     order=1,
+#     order=0,
 #     mode="nearest",
-#     prefilter=False,
-#     grid_mode=True,
 # )
-# glue_layer_low = (glue_layer_low + glue_layer_high) / 2
-# glue_layer_high = zoom(  # Interpolates the layer to higher resolution linearly
-#     glue_layer_low,
-#     high_res.shape[0] / low_res.shape[0],
-#     order=1,
-#     mode="nearest",
-#     prefilter=False,
-#     grid_mode=True,
-# )
-# low_res[:, :, low_res.shape[0] // 2] = glue_layer_low
-# high_res[:, :, high_res.shape[0] // 2] = glue_layer_high
+# low_res[:, :, low_res.shape[0] // 2] = glue_layer_high
 
-
-# low_res = gaussian_filter(low_res - 0.5, 1) + 0.5
-# high_res = gaussian_filter(high_res - 0.5, 1) + 0.5
-
-# import matplotlib.pyplot as plt
-#
 # plt.subplot(221)
 # plt.imshow(low_res[:, :, low_res.shape[0] // 2])
 # plt.subplot(222)
@@ -111,8 +82,6 @@ mlab.points3d(
 # plt.imshow(low_res[:, :, low_res.shape[0] // 2] >= 0.5)
 # plt.subplot(224)
 # plt.imshow(high_res[:, :, high_res.shape[0] // 2] >= 0.5)
-#
-# plt.show()
 
 
 def merge_meshes(vertices_hr, faces_hr, vertices_lr, faces_lr, x_range, y_range, z_range):
@@ -133,7 +102,6 @@ def merge_meshes(vertices_hr, faces_hr, vertices_lr, faces_lr, x_range, y_range,
     for p_remove, p_keep in zip(pts_remove, pts_keep):
         faces_hr.flat[faces_hr.flat == p_remove] = p_keep + vertices_hr.shape[0]
 
-    # TODO: Do this without loop
     for idx in range(np.count_nonzero(mask_lr)):
         low_to_high_pairing = high_to_low_pairing == idx
         print(idx)
@@ -180,33 +148,15 @@ mlab.triangular_mesh(
     faces,
 )
 
-
-vertices, faces = merge_meshes(vertices_high, faces_high, vertices_low, faces_low, [-res, res], [-res, res], [0, 0])
+vertices, faces = merge_meshes(
+    vertices_high, faces_high, vertices_low, faces_low, [-res, res], [-res, res], [-0.2, 0.2]
+)
 
 mlab.triangular_mesh(
     vertices[:, 0] + res * 4,
     vertices[:, 1],
     vertices[:, 2],
     faces,
-)
-
-mlab.points3d(
-    x[:, :, : low_res.shape[0] // 2 + 1] + res * 2,
-    y[:, :, : low_res.shape[0] // 2 + 1],
-    z[:, :, : low_res.shape[0] // 2 + 1] + res * 2,
-    low_res[:, :, : low_res.shape[0] // 2 + 1],
-    mode="cube",
-    scale_factor=1,
-    colormap="coolwarm",
-)
-mlab.points3d(
-    X[:, :, high_res.shape[0] // 2 :] + res * 2,
-    Y[:, :, high_res.shape[0] // 2 :],
-    Z[:, :, high_res.shape[0] // 2 :] + res * 2,
-    high_res[:, :, high_res.shape[0] // 2 :],
-    mode="cube",
-    scale_factor=1,
-    colormap="coolwarm",
 )
 
 mlab.show()
