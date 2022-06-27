@@ -11,6 +11,26 @@ def linear(x0, y0, x1, y1, x):
     return (y1 - y0) / (x1 - x0) * (x - x0) + y0
 
 
+def sph_to_car(r: float | NDArray[float], theta: float | NDArray[float], phi: float | NDArray[float]) -> NDArray[float]:
+    """
+    Converts spherical coordinates to cartesian.
+    """
+    x = r * np.sin(theta) * np.cos(phi)
+    y = r * np.sin(theta) * np.sin(phi)
+    z = r * np.cos(theta)
+    return np.array([x, y, z]).T
+
+
+def car_to_sph(x: float | NDArray[float], y: float | NDArray[float], z: float | NDArray[float]) -> NDArray[float]:
+    """
+    Converts cartesian coordinates to spherical.
+    """
+    r = np.sqrt(x**2 + y**2 + z**2)
+    theta = np.arccos(z / r)
+    phi = np.arctan2(y / x)
+    return np.array([r, theta, phi]).T
+
+
 def remove_duplicate_vertices(
     vertices: NDArray[float],
     faces: NDArray[float],

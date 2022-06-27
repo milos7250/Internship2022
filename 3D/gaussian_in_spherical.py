@@ -4,31 +4,11 @@ from numpy.typing import NDArray
 from scipy.ndimage import gaussian_filter
 from skimage.measure import marching_cubes
 
-from functions_3D import linear, remove_duplicate_vertices
+from functions_3D import remove_duplicate_vertices, sph_to_car, linear
 
 """
 This script investigates how marching cubes and gaussian filter work in spherical coordinates.
 """
-
-
-def sph_to_car(r: float | NDArray[float], theta: float | NDArray[float], phi: float | NDArray[float]) -> NDArray[float]:
-    """
-    Converts spherical coordinates to cartesian.
-    """
-    x = r * np.sin(theta) * np.cos(phi)
-    y = r * np.sin(theta) * np.sin(phi)
-    z = r * np.cos(theta)
-    return np.array([x, y, z]).T
-
-
-def car_to_sph(x: float | NDArray[float], y: float | NDArray[float], z: float | NDArray[float]) -> NDArray[float]:
-    """
-    Converts cartesian coordinates to spherical.
-    """
-    r = np.sqrt(x**2 + y**2 + z**2)
-    theta = np.arccos(z / r)
-    phi = np.arctan2(y / x)
-    return np.array([r, theta, phi]).T
 
 
 # TODO: Very time inefficient, consider replacing the linear() function by something else
