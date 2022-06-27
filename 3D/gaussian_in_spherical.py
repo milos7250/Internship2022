@@ -1,100 +1,35 @@
 import numpy as np
 from mayavi import mlab
-from numpy.typing import NDArray
 from scipy.ndimage import gaussian_filter
 from skimage.measure import marching_cubes
 
-from functions_3D import linear, remove_duplicate_vertices
+from functions_3D import remove_duplicate_vertices, sph_to_car, indices_to_coords_nd
 
 """
 This script investigates how marching cubes and gaussian filter work in spherical coordinates.
 """
 
 
-def sph_to_car(r: float | NDArray[float], theta: float | NDArray[float], phi: float | NDArray[float]) -> NDArray[float]:
-    """
-    Converts spherical coordinates to cartesian.
-    """
-    x = r * np.sin(theta) * np.cos(phi)
-    y = r * np.sin(theta) * np.sin(phi)
-    z = r * np.cos(theta)
-    return np.array([x, y, z]).T
-
-
-def car_to_sph(x: float | NDArray[float], y: float | NDArray[float], z: float | NDArray[float]) -> NDArray[float]:
-    """
-    Converts cartesian coordinates to spherical.
-    """
-    r = np.sqrt(x**2 + y**2 + z**2)
-    theta = np.arccos(z / r)
-    phi = np.arctan2(y / x)
-    return np.array([r, theta, phi]).T
-
-
-# TODO: Very time inefficient, consider replacing the linear() function by something else
-def coords_from_indices(
-    r_idx: float | NDArray[float],
-    theta_idx: float | NDArray[float],
-    phi_idx: float | NDArray[float],
-    shape: tuple[int],
-) -> tuple:
-    """
-    Converts indices of an array to spherical coordinates. Assumption is made that r index is the same as r value and
-    that theta and phi is linearly spaced from 0 to pi or 0 to 2*pi respectively (including endpoints).
-
-    :param r_idx: r index or (n) array of r indices
-    :param theta_idx: theta index or (n) array of theta indices
-    :param phi_idx: phi index or (n) array of phi indices
-    :param shape: shape of the array the indices are from
-    :return: (1, 3) array of (r, theta, phi) coordinates or (n, 3) array of r, theta, phi coordinates of each triplet of
-    indices.
-    """
-    return (
-        r_idx,
-        linear(0, 0, shape[1] - 1, np.pi, theta_idx),
-        linear(0, 0, shape[2] - 1, 2 * np.pi, phi_idx),
-    )
-
-
-def sph_grid_to_car(grid: NDArray[float]) -> NDArray[float]:
-    """
-    Converts points on a spherical grid into an array of points represented in cartesian coordinates.
-    '3D/gaussian_in_spherical.py' is used in the process.
-
-    :param grid: Values on a spherical grid.
-    :return: (n, 4) array of point coordinates with their value.
-    """
-    car_points = np.empty((grid.size, 4))
-    i = 0
-    for r_idx in range(grid.shape[0]):
-        for theta_idx in range(grid.shape[1]):
-            for phi_idx in range(grid.shape[2]):
-                car_points[i] = [
-                    *sph_to_car(*coords_from_indices(r_idx, theta_idx, phi_idx, grid.shape)),
-                    grid[r_idx, theta_idx, phi_idx],
-                ]
-                i += 1
-    return car_points
-
-
 res = 30
 surface_kind = ["ellipsoid", "saddle"][0]  # Change number here to change surface type
 surface = np.zeros([res] * 3)
-for r in range(res):
-    for theta in range(res):
-        for phi in range(res):
-            x, y, z = sph_to_car(*coords_from_indices(r, theta, phi, surface.shape))
+r = np.linspace(0, res - 1, res)
+theta = np.linspace(0, np.pi, res)
+phi = np.linspace(0, 2 * np.pi, res)
+for r_idx, r_val in enumerate(r):
+    for theta_idx, theta_val in enumerate(theta):
+        for phi_idx, phi_val in enumerate(phi):
+            x, y, z = sph_to_car(r_val, theta_val, phi_val)
             if surface_kind == "ellipsoid":
                 a, b, c = res - 1, res / 2, res / 3
                 if (x / a) ** 2 + (y / b) ** 2 + (z / c) ** 2 < 1:
-                    surface[r, theta, phi] = 1
+                    surface[r_idx, theta_idx, phi_idx] = 1
             elif surface_kind == "saddle":
                 x /= res / 2
                 y /= res / 2
                 z /= res / 2
                 if z - x**2 + y**2 < 0:
-                    surface[r, theta, phi] = 1
-X, Y, Z = np.indices(surface.shape)
+                    surface[r_idx, theta_idx, phi_idx] = 1
 
 
 # Plot the surface in (r, theta, phi) space
@@ -109,7 +44,8 @@ mlab.triangular_mesh(
 mlab.orientation_axes(xlabel="r", ylabel="theta", zlabel="phi")
 
 # Plot the surface in cartesian coordinates
-vertices = sph_to_car(*coords_from_indices(vertices[:, 0], vertices[:, 1], vertices[:, 2], surface.shape))
+vertices = indices_to_coords_nd(vertices.T, [r, theta, phi])
+vertices = sph_to_car(*vertices.T)
 vertices, faces = remove_duplicate_vertices(vertices, faces)
 mlab.triangular_mesh(
     vertices[:, 0],
@@ -134,7 +70,8 @@ mlab.triangular_mesh(
 
 # Plot the surface in cartesian coordinates
 vertices, faces, _, _ = marching_cubes(gaussian_surface, allow_degenerate=False, level=0.5)
-vertices = sph_to_car(*coords_from_indices(vertices[:, 0], vertices[:, 1], vertices[:, 2], gaussian_surface.shape))
+vertices = indices_to_coords_nd(vertices.T, [r, theta, phi])
+vertices = sph_to_car(*vertices.T)
 vertices, faces = remove_duplicate_vertices(vertices, faces)
 mlab.triangular_mesh(
     vertices[:, 0] + res * 2.5,

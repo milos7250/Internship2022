@@ -11,6 +11,26 @@ def linear(x0, y0, x1, y1, x):
     return (y1 - y0) / (x1 - x0) * (x - x0) + y0
 
 
+def sph_to_car(r: float | NDArray[float], theta: float | NDArray[float], phi: float | NDArray[float]) -> NDArray[float]:
+    """
+    Converts spherical coordinates to cartesian.
+    """
+    x = r * np.sin(theta) * np.cos(phi)
+    y = r * np.sin(theta) * np.sin(phi)
+    z = r * np.cos(theta)
+    return np.array([x, y, z]).T
+
+
+def car_to_sph(x: float | NDArray[float], y: float | NDArray[float], z: float | NDArray[float]) -> NDArray[float]:
+    """
+    Converts cartesian coordinates to spherical.
+    """
+    r = np.sqrt(x**2 + y**2 + z**2)
+    theta = np.arccos(z / r)
+    phi = np.arctan2(y / x)
+    return np.array([r, theta, phi]).T
+
+
 # TODO: Definitely not memory friendly, apparently uses about 1GiB of memory for 100 points???
 """
 File "/home/milosmicik/Documents/Internship/functions_3D.py", line 38, in remove_duplicate_vertices
@@ -38,12 +58,12 @@ def remove_duplicate_vertices(
     If False, degenerate triangles are removed, at the cost of making the algorithm slower.
     :return: ((N - n), (M - m)) tuple of arrays, with n removed vertices and m removed degenerate faces
     """
-    # Reassign faces to the smallest index of a point and average their coordinates
     duplicate = np.linalg.norm(vertices - vertices[:, np.newaxis], axis=2) < tolerance
     duplicate[np.triu_indices_from(duplicate)] = False
     nonzero = duplicate.nonzero()
     if nonzero[0].size == 0:
         return vertices, faces
+    # Reassign faces to the common point with the smallest index
     pts_remove, pts_replacement = nonzero
     for p_remove, p_replace in zip(pts_remove, pts_replacement):
         faces.flat[faces.flat == p_remove] = p_replace
@@ -60,7 +80,7 @@ def remove_duplicate_vertices(
     # Remove repeated points from vertices and adjust face numbers accordingly
     delete = np.unique(pts_remove)
     for idx in reversed(delete):
-        faces[np.unravel_index(np.nonzero(faces.flatten() > idx)[0], faces.shape)] -= 1
+        faces.flat[faces.flat > idx] -= 1
     vertices = np.delete(vertices, delete, axis=0)
 
     # Remove degenerate faces
@@ -75,6 +95,17 @@ def remove_duplicate_vertices(
 
 
 def indices_to_coords_1d(ids, vals):
+    """
+    This method allows to index the 'vals' array by float indices from the 'ids' array. The values for the float indices
+    are linearly approximated from the nearest entries in 'vals', whereas integer indices are looked up in the 'vals'
+    array directly.
+
+    The range of the 'vals' array should contain all indices of the 'ids' array, otherwise an exception is thrown.
+
+    :param ids: (n) array of indices
+    :param vals: (m) array of values
+    :return: (n) array of coordinate values generated from indices.
+    """
     ids_vals = np.empty_like(ids, dtype=float)
     whole_part = np.floor(ids).astype(int)
     decimal_part = ids - whole_part
@@ -91,4 +122,15 @@ def indices_to_coords_1d(ids, vals):
 
 
 def indices_to_coords_nd(ids, vals):
+    """
+    This method allows to index the 'vals' arrays by float indices from the 'ids' arrays. The values for the float
+    indices are linearly approximated from the nearest entries in 'vals', whereas integer indices are looked up in
+    the 'vals' arrays directly.
+
+    The range of the 'vals' array should contain all indices of the 'ids' array, otherwise an exception is thrown.
+
+    :param ids: (n, d) array of indices
+    :param vals: (m, d) array of values
+    :return: (n, d) array of coordinate values generated from indices.
+    """
     return np.array([indices_to_coords_1d(xi_ids, xi_vals) for xi_ids, xi_vals in zip(ids, vals)]).T

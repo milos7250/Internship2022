@@ -6,42 +6,16 @@ from numpy.typing import NDArray
 from scipy.ndimage import gaussian_filter, zoom
 from skimage.measure import marching_cubes
 
-from functions_3D import linear
+from functions_3D import indices_to_coords_nd
 
 """
 In this script I create and test a method to merge two triangular meshes generated from data with different resolution.
 """
 
 
-res = 15
+res = 30
 res = 2 * res - 1  # Resolution of the low resolution object - has to be odd for this script to work
 n = 4  # Multiplier of resolution, the high resolution object will have resolution res * n
-
-
-# TODO: Very time inefficient, consider replacing the linear() function by something else
-def coords_from_indices(
-    x_idx: float | NDArray[float],
-    y_idx: float | NDArray[float],
-    z_idx: float | NDArray[float],
-    shape: tuple[int],
-) -> NDArray[float]:
-    """
-    Converts indices of an array to cartesian coordinates. The conversion functions are not general, they have to be
-    altered to suit the object.
-
-    :param x_idx: x index or (n) array of x indices
-    :param y_idx: y index or (n) array of y indices
-    :param z_idx: z index or (n) array of z indices
-    :param shape: shape of the array the indices are from
-    :return: (1, 3) array of (x, y, z) coordinates or (n, 3) array of x, y and z coordinates of each triplet of indices.
-    """
-    return np.array(
-        [
-            linear(0, -res, shape[0] - 1, res, x_idx),
-            linear(0, -res, shape[1] - 1, res, y_idx),
-            linear(0, -res, shape[2] - 1, res, z_idx),
-        ]
-    ).T
 
 
 def merge_meshes(
@@ -132,21 +106,14 @@ def merge_meshes(
 Generate low and high resolution ellipses
 """
 a, b, c = res - 1, res / 1.5, res / 2  # The axis lengths of the ellipse
-low_res = np.zeros([res] * 3, dtype=float)
-high_res = np.zeros([((res - 1) * n + 1)] * 3, dtype=float)
-for i, j, k in product(*[np.arange(shape) for shape in low_res.shape]):
-    x, y, z = coords_from_indices(i, j, k, low_res.shape)
-    if (x / a) ** 2 + (y / b) ** 2 + (z / c) ** 2 <= 1:
-        low_res[i, j, k] = 1
-for i, j, k in product(*[np.arange(shape) for shape in high_res.shape]):
-    x, y, z = coords_from_indices(i, j, k, high_res.shape)
-    if (x / a) ** 2 + (y / b) ** 2 + (z / c) ** 2 <= 1:
-        high_res[i, j, k] = 1
-
 # Generate low and high resolution meshgrids with proper coordinates
-x, y, z = coords_from_indices(*np.indices(low_res.shape), low_res.shape).T
-X, Y, Z = coords_from_indices(*np.indices(high_res.shape), high_res.shape).T
-
+xs = ys = zs = np.linspace(-res, res, res)
+xh = yh = zh = np.linspace(-res, res, (res - 1) * n + 1)
+XS, YS, ZS = np.meshgrid(xs, ys, zs, indexing="ij", sparse=True)
+XH, YH, ZH = np.meshgrid(xh, yh, zh, indexing="ij", sparse=True)
+# Generate the ellipses
+low_res = ((XS / a) ** 2 + (YS / b) ** 2 + (ZS / c) ** 2 <= 1).astype(float)
+high_res = ((XH / a) ** 2 + (YH / b) ** 2 + (ZH / c) ** 2 <= 1).astype(float)
 
 """
 Apply gaussian filter and marching squares after merging
@@ -159,7 +126,7 @@ merged = gaussian_filter(merged, 1, mode="nearest")
 
 # Generate and plot the triangular mesh
 vertices, faces, _, _ = marching_cubes(merged)
-vertices = coords_from_indices(*vertices.T, merged.shape)
+vertices = indices_to_coords_nd(vertices.T, [xh, yh, zh])
 mlab.triangular_mesh(
     vertices[:, 0],
     vertices[:, 1],
@@ -209,9 +176,10 @@ Generate meshes from low and high resolution objects and plot them, without and 
 """
 # Generate the vertices and faces of the meshes
 vertices_low, faces_low, _, _ = marching_cubes(low_res[:, :, : low_res.shape[0] // 2 + 1], level=0.5)
-vertices_low = coords_from_indices(*vertices_low.T, low_res.shape)
+vertices_low = indices_to_coords_nd(vertices_low.T, [xs, ys, zs])
 vertices_high, faces_high, _, _ = marching_cubes(high_res[:, :, high_res.shape[0] // 2 :], level=0.5)
-vertices_high = coords_from_indices(*(vertices_high + [0, 0, high_res.shape[0] // 2]).T, high_res.shape)
+vertices_high[:, 2] += high_res.shape[0] // 2
+vertices_high = indices_to_coords_nd(vertices_high.T, [xh, yh, zh])
 
 # Combine and plot the meshes without any post-processing
 vertices, faces = np.vstack([vertices_high, vertices_low]), np.vstack([faces_high, faces_low + vertices_high.shape[0]])
