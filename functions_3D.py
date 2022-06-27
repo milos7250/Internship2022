@@ -11,6 +11,14 @@ def linear(x0, y0, x1, y1, x):
     return (y1 - y0) / (x1 - x0) * (x - x0) + y0
 
 
+# TODO: Definitely not memory friendly, apparently uses about 1GiB of memory for 100 points???
+"""
+File "/home/milosmicik/Documents/Internship/functions_3D.py", line 38, in remove_duplicate_vertices
+    duplicate = np.linalg.norm(vertices - vertices[:, np.newaxis], axis=2) < tolerance
+numpy.core._exceptions._ArrayMemoryError: Unable to allocate 4.62 TiB for an array with shape (459865, 459865, 3) and data type float64
+"""
+
+
 def remove_duplicate_vertices(
     vertices: NDArray[float],
     faces: NDArray[float],
@@ -64,3 +72,23 @@ def remove_duplicate_vertices(
         faces = np.delete(faces, delete, axis=0)
 
     return vertices, faces
+
+
+def indices_to_coords_1d(ids, vals):
+    ids_vals = np.empty_like(ids, dtype=float)
+    whole_part = np.floor(ids).astype(int)
+    decimal_part = ids - whole_part
+    integer_indices = decimal_part == 0
+    ids_vals[integer_indices] = vals[whole_part[integer_indices]]
+    ids_vals[~integer_indices] = linear(
+        x0=whole_part[~integer_indices],
+        y0=vals[whole_part[~integer_indices]],
+        x1=whole_part[~integer_indices] + 1,
+        y1=vals[whole_part[~integer_indices] + 1],
+        x=ids[~integer_indices],
+    )
+    return ids_vals
+
+
+def indices_to_coords_nd(ids, vals):
+    return np.array([indices_to_coords_1d(xi_ids, xi_vals) for xi_ids, xi_vals in zip(ids, vals)]).T
