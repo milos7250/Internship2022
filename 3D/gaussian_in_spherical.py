@@ -4,7 +4,7 @@ from numpy.typing import NDArray
 from scipy.ndimage import gaussian_filter
 from skimage.measure import marching_cubes
 
-from functions_3D import remove_duplicate_vertices, sph_to_car, linear
+from functions_3D import linear, remove_duplicate_vertices, sph_to_car
 
 """
 This script investigates how marching cubes and gaussian filter work in spherical coordinates.
