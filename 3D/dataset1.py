@@ -1,9 +1,14 @@
-import numpy as np
-from mayavi import mlab
+from copy import deepcopy
 from os.path import exists
+from sys import getsizeof
+
+import numpy as np
+from matplotlib import pyplot as plt
+from mayavi import mlab
+from scipy.ndimage import gaussian_filter1d
 from skimage.measure import marching_cubes
+
 from functions_3D import linear, sph_to_car
-from scipy.ndimage import gaussian_filter, gaussian_filter1d
 
 
 class Grid:
@@ -141,36 +146,74 @@ class Grid:
         self.theta = new_theta
         self.phi = new_phi
         self.grid = new_grid
-        return self
 
 
-grid = Grid.from_file(0)
-grid.stitch(Grid.from_file(1))
+# grid = Grid.from_file(0, folder="../data/Dataset1")
+# for i in range(1, 2):
+#     grid.stitch(Grid.from_file(i, folder="../data/Dataset1"))
 
+grid = Grid.from_file(10, folder="../data/Dataset2")
+for i in range(11, 25):
+    grid.stitch(Grid.from_file(i, folder="../data/Dataset2"))
 
+print(getsizeof(grid.grid) / 1e6, "MB")
+print(grid.grid.shape)
+
+"""
+Using unsigned 8-bit integer allows to use 1/8 of the memory required to store the grid after applying the gaussian
+filter in compared to 64-bit float, while having the same results when creating the triangular mesh.
+"""
+
+grid.grid = grid.grid.astype(np.uint8) * 255
 # Apply gaussian filter axis by axis in order to make sure that on the phi axis, the values at -pi and +pi are equal
-kernel_size = 10
-grid.grid = gaussian_filter1d(grid.grid, axis=0, sigma=kernel_size / 4, truncate=4, mode="nearest", output=float)
-grid.grid = gaussian_filter1d(grid.grid, axis=1, sigma=kernel_size / 4, truncate=4, mode="nearest", output=float)
+original = deepcopy(grid)
+truncates = [10, 2, 5]
+sigmas = [3, 0.75, 2]
+"""
+Uncomment to show the kernel function in each direction
+"""
+# labels = ["r", "theta", "phi"]
+# for i in range(3):
+#     plt.subplot(131 + i)
+#     x = np.arange(-truncates[i], truncates[i] + 1)
+#     y = np.exp(-0.5 * np.square(x) / np.square(sigmas[i]))
+#     y = y / np.sum(y)
+#     plt.plot(x, y)
+#     plt.xticks(x)
+#     plt.ylim(0, np.max(y))
+#     plt.title(labels[i])
+# plt.show()
+
+grid.grid = gaussian_filter1d(
+    grid.grid, axis=0, sigma=sigmas[0], truncate=truncates[0] / sigmas[0], mode="nearest", output=grid.grid
+)
+grid.grid = gaussian_filter1d(
+    grid.grid, axis=1, sigma=sigmas[1], truncate=truncates[1] / sigmas[1], mode="nearest", output=grid.grid
+)
 grid.grid[..., :-1] = gaussian_filter1d(
-    grid.grid[..., :-1], axis=2, sigma=kernel_size / 4, truncate=4, mode="wrap", output=float
+    grid.grid[..., :-1],
+    axis=2,
+    sigma=sigmas[2],
+    truncate=truncates[2] / sigmas[2],
+    mode="wrap",
+    output=grid.grid[..., :-1],
 )
 grid.grid[..., -1] = grid.grid[..., 0]
 
 # Plot in spherical coordinate space
-vertices, faces, _, _ = marching_cubes(grid.grid, allow_degenerate=False, level=0.5)
+vertices, faces, _, _ = marching_cubes(grid.grid, allow_degenerate=False, level=128)
 vertices = grid.coords_from_indices_nd(*vertices.T)
-mlab.triangular_mesh(
-    vertices[:, 0],
-    vertices[:, 1],
-    vertices[:, 2],
-    faces,
-    color=(0.5, 0.5, 0.5),
-)
-
-mlab.surf(*np.ogrid[1:1:2j, 0 : np.pi : 2j], [[-np.pi, -np.pi], [np.pi, np.pi]], color=(0.7, 0.7, 0))
-mlab.orientation_axes(xlabel="r", ylabel="theta", zlabel="phi")
-mlab.show()
+# mlab.triangular_mesh(
+#     vertices[:, 0],
+#     vertices[:, 1],
+#     vertices[:, 2],
+#     faces,
+#     color=(0.5, 0.5, 0.5),
+# )
+#
+# mlab.surf(*np.ogrid[1:1:2j, 0 : np.pi : 2j], [[-np.pi, -np.pi], [np.pi, np.pi]], color=(0.7, 0.7, 0))
+# mlab.orientation_axes(xlabel="r", ylabel="theta", zlabel="phi")
+# mlab.show()
 
 # Plot in cartesian coordinates
 vertices = sph_to_car(*vertices.T)
@@ -181,6 +224,22 @@ mlab.triangular_mesh(
     faces,
     color=(0.5, 0.5, 0.5),
 )
+
+"""
+Uncomment for overlay of original contour
+"""
+# vertices, faces, _, _ = marching_cubes(original.grid, allow_degenerate=False, level=0.5)
+# vertices = original.coords_from_indices_nd(*vertices.T)
+# vertices = sph_to_car(*vertices.T)
+# mlab.triangular_mesh(
+#     vertices[:, 0],
+#     vertices[:, 1],
+#     vertices[:, 2],
+#     faces,
+#     color=(0.0, 0.3, 0.3),
+#     opacity=0.1,
+# )
+
 
 mlab.points3d(0, 0, 0, scale_factor=2 * 1, resolution=64, color=(0.7, 0.7, 0))
 mlab.orientation_axes(xlabel="x", ylabel="y", zlabel="z")
