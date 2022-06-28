@@ -2,8 +2,8 @@ import numpy as np
 from mayavi import mlab
 from os.path import exists
 from skimage.measure import marching_cubes
-from functions_3D import remove_duplicate_vertices, linear, sph_to_car
-from scipy.ndimage import gaussian_filter
+from functions_3D import linear, sph_to_car
+from scipy.ndimage import gaussian_filter, gaussian_filter1d
 
 
 class Grid:
@@ -44,16 +44,18 @@ class Grid:
         if exists(f"{folder}/grid_{grid_no}.npz"):
             r, t, p, grid = np.load(f"{folder}/grid_{grid_no}.npz").values()
         else:
-            # Using float16 because there are some rounding errors which make grid stitching hard
-            r = np.load(f"{folder}/grid_R_{grid_no}.npy").astype(np.float16)
-            t = np.load(f"{folder}/grid_t_{grid_no}.npy").astype(np.float16)
-            p = np.load(f"{folder}/grid_p_{grid_no}.npy").astype(np.float16)
+            # Round the values to 10 decimal places to avoid precision issues in the 'stitch' method.
+            r = np.load(f"{folder}/grid_R_{grid_no}.npy").astype(float).round(10)
+            t = np.load(f"{folder}/grid_t_{grid_no}.npy").astype(float).round(10)
+            p = np.load(f"{folder}/grid_p_{grid_no}.npy").astype(float).round(10)
             grid = np.load(f"{folder}/grid_binary_{grid_no}.npy").astype(bool)
             np.savez_compressed(f"{folder}/grid_{grid_no}.npz", r=r, t=t, p=p, grid=grid)
         theta = (90 - t) / 180 * np.pi
         phi = p / 180 * np.pi
         # Fix theta values so that they are increasing
-        grid, theta = grid[:, ::-1, :], theta[::-1]
+        theta, grid = theta[::-1], grid[:, ::-1, :]
+        # Remove overlap in phi coordinates
+        phi, grid = phi[3:-3], grid[:, :, 3:-3]
 
         return Grid(r, theta, phi, grid)
 
@@ -69,7 +71,7 @@ class Grid:
         :param axis: Either 'r', 'theta' or 'phi', which specifies the axis direction the indices are from.
         :return: (n) array of coordinates generated from indices.
         """
-        r_vals = np.empty_like(ids, dtype=float)
+        r_vals = np.empty_like(ids, dtype=self.__getattribute__(axis).dtype)
         whole_part = np.floor(ids).astype(int)
         decimal_part = ids - whole_part
         integer_indices = decimal_part == 0
@@ -146,13 +148,18 @@ grid = Grid.from_file(0)
 grid.stitch(Grid.from_file(1))
 
 
+# Apply gaussian filter axis by axis in order to make sure that on the phi axis, the values at -pi and +pi are equal
 kernel_size = 10
-grid.grid = gaussian_filter(grid.grid.astype(float), sigma=kernel_size / 4, truncate=4)
+grid.grid = gaussian_filter1d(grid.grid, axis=0, sigma=kernel_size / 4, truncate=4, mode="nearest", output=float)
+grid.grid = gaussian_filter1d(grid.grid, axis=1, sigma=kernel_size / 4, truncate=4, mode="nearest", output=float)
+grid.grid[..., :-1] = gaussian_filter1d(
+    grid.grid[..., :-1], axis=2, sigma=kernel_size / 4, truncate=4, mode="wrap", output=float
+)
+grid.grid[..., -1] = grid.grid[..., 0]
 
 # Plot in spherical coordinate space
 vertices, faces, _, _ = marching_cubes(grid.grid, allow_degenerate=False, level=0.5)
 vertices = grid.coords_from_indices_nd(*vertices.T)
-# vertices, faces = remove_duplicate_vertices(vertices0, face0)  # TODO: Doesn't work, too memory inefficient
 mlab.triangular_mesh(
     vertices[:, 0],
     vertices[:, 1],

@@ -13,12 +13,11 @@ In this script I create and test a method to merge two triangular meshes generat
 """
 
 
-res = 15
+res = 30
 res = 2 * res - 1  # Resolution of the low resolution object - has to be odd for this script to work
 n = 4  # Multiplier of resolution, the high resolution object will have resolution res * n
 
 
-# TODO: Very time inefficient, consider replacing the linear() function by something else
 def coords_from_indices(
     x_idx: float | NDArray[float],
     y_idx: float | NDArray[float],
@@ -134,18 +133,11 @@ Generate low and high resolution ellipses
 a, b, c = res - 1, res / 1.5, res / 2  # The axis lengths of the ellipse
 low_res = np.zeros([res] * 3, dtype=float)
 high_res = np.zeros([((res - 1) * n + 1)] * 3, dtype=float)
-for i, j, k in product(*[np.arange(shape) for shape in low_res.shape]):
-    x, y, z = coords_from_indices(i, j, k, low_res.shape)
-    if (x / a) ** 2 + (y / b) ** 2 + (z / c) ** 2 <= 1:
-        low_res[i, j, k] = 1
-for i, j, k in product(*[np.arange(shape) for shape in high_res.shape]):
-    x, y, z = coords_from_indices(i, j, k, high_res.shape)
-    if (x / a) ** 2 + (y / b) ** 2 + (z / c) ** 2 <= 1:
-        high_res[i, j, k] = 1
-
 # Generate low and high resolution meshgrids with proper coordinates
 x, y, z = coords_from_indices(*np.indices(low_res.shape), low_res.shape).T
 X, Y, Z = coords_from_indices(*np.indices(high_res.shape), high_res.shape).T
+low_res = ((x / a) ** 2 + (y / b) ** 2 + (z / c) ** 2 <= 1).astype(float)
+high_res = ((X / a) ** 2 + (Y / b) ** 2 + (Z / c) ** 2 <= 1).astype(float)
 
 
 """
