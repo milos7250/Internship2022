@@ -50,12 +50,12 @@ def remove_duplicate_vertices(
     If False, degenerate triangles are removed, at the cost of making the algorithm slower.
     :return: ((N - n), (M - m)) tuple of arrays, with n removed vertices and m removed degenerate faces
     """
-    # Reassign faces to the smallest index of a point and average their coordinates
     duplicate = np.linalg.norm(vertices - vertices[:, np.newaxis], axis=2) < tolerance
     duplicate[np.triu_indices_from(duplicate)] = False
     nonzero = duplicate.nonzero()
     if nonzero[0].size == 0:
         return vertices, faces
+    # Reassign faces to the common point with the smallest index
     pts_remove, pts_replacement = nonzero
     for p_remove, p_replace in zip(pts_remove, pts_replacement):
         faces.flat[faces.flat == p_remove] = p_replace
@@ -72,7 +72,7 @@ def remove_duplicate_vertices(
     # Remove repeated points from vertices and adjust face numbers accordingly
     delete = np.unique(pts_remove)
     for idx in reversed(delete):
-        faces[np.unravel_index(np.nonzero(faces.flatten() > idx)[0], faces.shape)] -= 1
+        faces.flat[faces.flat > idx] -= 1
     vertices = np.delete(vertices, delete, axis=0)
 
     # Remove degenerate faces
