@@ -51,9 +51,9 @@ Shader "Ultimate 10+ Shaders/Force Field"
         Tags { "RenderType"="Transparent" "IgnoreProjector"="True" "Queue"="Transparent" }
         Blend SrcAlpha OneMinusSrcAlpha
         LOD 100
-        Cull Back
+        Cull Off
         Lighting Off
-        ZWrite On
+        ZWrite Off
 
         Pass
         {
@@ -107,7 +107,7 @@ Shader "Ultimate 10+ Shaders/Force Field"
                 output.uv = TRANSFORM_TEX(vert.uv, _MainTex);
 
                 viewDir = normalize(ObjSpaceViewDir(vert.vertex));
-                output.rim = 1.0 - saturate(dot(viewDir, vert.normal));
+                output.rim = 1.0 - saturate(abs(dot(viewDir, vert.normal)));
 
                 output.uv += _ScrollDirection * _Time.y;
 
