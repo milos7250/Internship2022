@@ -4,5 +4,4 @@ pillow~=9.1.1
 mayavi~=4.7.4
 scikit-image~=0.19.3
 scipy~=1.8.1
-tricubic~=1.0.2
-raster_geometry~=0.1.4.1
+trimesh~=3.12.0
