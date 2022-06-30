@@ -197,10 +197,20 @@ Uncomment to show the kernel function in each direction
 # plt.show()
 
 grid.grid = gaussian_filter1d(
-    grid.grid, axis=0, sigma=kernel_sigmas[0], truncate=kernel_width[0] / kernel_sigmas[0], mode="nearest", output=grid.grid
+    grid.grid,
+    axis=0,
+    sigma=kernel_sigmas[0],
+    truncate=kernel_width[0] / kernel_sigmas[0],
+    mode="nearest",
+    output=grid.grid,
 )
 grid.grid = gaussian_filter1d(
-    grid.grid, axis=1, sigma=kernel_sigmas[1], truncate=kernel_width[1] / kernel_sigmas[1], mode="nearest", output=grid.grid
+    grid.grid,
+    axis=1,
+    sigma=kernel_sigmas[1],
+    truncate=kernel_width[1] / kernel_sigmas[1],
+    mode="nearest",
+    output=grid.grid,
 )
 grid.grid[..., :-1] = gaussian_filter1d(
     grid.grid[..., :-1],

@@ -1,0 +1,2 @@
+Unity/Assets/trimesh_dataset_2.glb filter=lfs diff=lfs merge=lfs -text
+Unity[[:space:]]App/app_Data/sharedassets0.assets filter=lfs diff=lfs merge=lfs -text
