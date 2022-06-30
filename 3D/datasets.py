@@ -6,7 +6,9 @@ import numpy as np
 from matplotlib import pyplot as plt
 from mayavi import mlab
 from scipy.ndimage import gaussian_filter1d
+from scipy.ndimage._filters import _gaussian_kernel1d
 from skimage.measure import marching_cubes
+from trimesh import Trimesh
 
 from functions_3D import linear, sph_to_car
 
@@ -148,13 +150,18 @@ class Grid:
         self.grid = new_grid
 
 
-# grid = Grid.from_file(0, folder="../data/Dataset1")
-# for i in range(1, 2):
-#     grid.stitch(Grid.from_file(i, folder="../data/Dataset1"))
+dataset_no = 1
 
-grid = Grid.from_file(10, folder="../data/Dataset2")
-for i in range(11, 25):
-    grid.stitch(Grid.from_file(i, folder="../data/Dataset2"))
+if dataset_no == 1:
+    grid = Grid.from_file(0, folder="../data/Dataset1")
+    for i in range(1, 2):
+        grid.stitch(Grid.from_file(i, folder="../data/Dataset1"))
+elif dataset_no == 2:
+    grid = Grid.from_file(10, folder="../data/Dataset2")
+    for i in range(11, 25):
+        grid.stitch(Grid.from_file(i, folder="../data/Dataset2"))
+else:
+    raise ImportError("Wrong dataset number")
 
 print(getsizeof(grid.grid) / 1e6, "MB")
 print(grid.grid.shape)
@@ -162,22 +169,27 @@ print(grid.grid.shape)
 """
 Using unsigned 8-bit integer allows to use 1/8 of the memory required to store the grid after applying the gaussian
 filter in compared to 64-bit float, while having the same results when creating the triangular mesh.
+
+Set the zero value to 64 and the one value to 255. This makes the meshing algorithm pick up some areas which would
+otherwise be smoothened out of existence by the gaussian filter.
 """
 
-grid.grid = grid.grid.astype(np.uint8) * 255
-# Apply gaussian filter axis by axis in order to make sure that on the phi axis, the values at -pi and +pi are equal
 original = deepcopy(grid)
-truncates = [10, 2, 5]
-sigmas = [3, 0.75, 2]
+zero_value = 64
+grid.grid = grid.grid.astype(np.uint8) * (255 - zero_value) + zero_value
+
+
+# Apply gaussian filter axis by axis in order to make sure that on the phi axis, the values at -pi and +pi are equal
+kernel_width = [10, 5, 5]
+kernel_sigmas = [4, 2, 2]
 """
 Uncomment to show the kernel function in each direction
 """
 # labels = ["r", "theta", "phi"]
 # for i in range(3):
 #     plt.subplot(131 + i)
-#     x = np.arange(-truncates[i], truncates[i] + 1)
-#     y = np.exp(-0.5 * np.square(x) / np.square(sigmas[i]))
-#     y = y / np.sum(y)
+#     x = np.arange(-kernel_width[i], kernel_width[i] + 1)
+#     y = _gaussian_kernel1d(kernel_sigmas[i], 0, kernel_width[i])
 #     plt.plot(x, y)
 #     plt.xticks(x)
 #     plt.ylim(0, np.max(y))
@@ -185,38 +197,40 @@ Uncomment to show the kernel function in each direction
 # plt.show()
 
 grid.grid = gaussian_filter1d(
-    grid.grid, axis=0, sigma=sigmas[0], truncate=truncates[0] / sigmas[0], mode="nearest", output=grid.grid
+    grid.grid, axis=0, sigma=kernel_sigmas[0], truncate=kernel_width[0] / kernel_sigmas[0], mode="nearest", output=grid.grid
 )
 grid.grid = gaussian_filter1d(
-    grid.grid, axis=1, sigma=sigmas[1], truncate=truncates[1] / sigmas[1], mode="nearest", output=grid.grid
+    grid.grid, axis=1, sigma=kernel_sigmas[1], truncate=kernel_width[1] / kernel_sigmas[1], mode="nearest", output=grid.grid
 )
 grid.grid[..., :-1] = gaussian_filter1d(
     grid.grid[..., :-1],
     axis=2,
-    sigma=sigmas[2],
-    truncate=truncates[2] / sigmas[2],
+    sigma=kernel_sigmas[2],
+    truncate=kernel_width[2] / kernel_sigmas[2],
     mode="wrap",
     output=grid.grid[..., :-1],
 )
 grid.grid[..., -1] = grid.grid[..., 0]
 
 # Plot in spherical coordinate space
-vertices, faces, _, _ = marching_cubes(grid.grid, allow_degenerate=False, level=128)
+vertices, faces, normals, values = marching_cubes(grid.grid, allow_degenerate=False, level=128)
 vertices = grid.coords_from_indices_nd(*vertices.T)
-# mlab.triangular_mesh(
-#     vertices[:, 0],
-#     vertices[:, 1],
-#     vertices[:, 2],
-#     faces,
-#     color=(0.5, 0.5, 0.5),
-# )
-#
-# mlab.surf(*np.ogrid[1:1:2j, 0 : np.pi : 2j], [[-np.pi, -np.pi], [np.pi, np.pi]], color=(0.7, 0.7, 0))
-# mlab.orientation_axes(xlabel="r", ylabel="theta", zlabel="phi")
-# mlab.show()
+mlab.triangular_mesh(
+    vertices[:, 0],
+    vertices[:, 1],
+    vertices[:, 2],
+    faces,
+    color=(0.5, 0.5, 0.5),
+    scalars=values,
+)
+
+mlab.surf(*np.ogrid[1:1:2j, 0 : np.pi : 2j], [[-np.pi, -np.pi], [np.pi, np.pi]], color=(0.7, 0.7, 0))
+mlab.orientation_axes(xlabel="r", ylabel="theta", zlabel="phi")
+mlab.show()
 
 # Plot in cartesian coordinates
 vertices = sph_to_car(*vertices.T)
+mlab.triangular_mesh(vertices[:, 0], vertices[:, 1], vertices[:, 2], faces, color=(0.5, 0.5, 0.5), scalars=values)
 mlab.triangular_mesh(
     vertices[:, 0],
     vertices[:, 1],
@@ -224,6 +238,16 @@ mlab.triangular_mesh(
     faces,
     color=(0.5, 0.5, 0.5),
 )
+
+"""
+Swap the y and z axis on saving the mesh to comply with Unity's axes orientation
+"""
+mesh = Trimesh(
+    vertices=vertices[:, (0, 2, 1)],
+    faces=faces,
+    vertex_normals=normals[:, (0, 2, 1)],
+)
+mesh.export(f"../Unity/Assets/trimesh_dataset_{dataset_no}.glb")
 
 """
 Uncomment for overlay of original contour
