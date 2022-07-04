@@ -34,4 +34,4 @@ Following these steps will make sure that the dropdown menu in the bottom left c
 
 Alternatively, you might follow the instructions in this GIF:
 
-![A gif guide](Unity Guide.gif)
+![A gif guide](Unity/Unity Guide.gif)
