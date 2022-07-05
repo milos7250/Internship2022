@@ -214,12 +214,12 @@ mlab.triangular_mesh(
 """
 Swap the y and z axis on saving the mesh to comply with Unity's axes orientation
 """
-mesh = Trimesh(
-    vertices=vertices[:, (0, 2, 1)],
-    faces=faces,
-    vertex_normals=normals[:, (0, 2, 1)],
-)
-mesh.export(f"../Unity/Assets/trimesh_dataset_{dataset_no}.glb")
+# mesh = Trimesh(
+#     vertices=vertices[:, (0, 2, 1)],
+#     faces=faces,
+#     vertex_normals=normals[:, (0, 2, 1)],
+# )
+# mesh.export(f"../Unity/Assets/trimesh_dataset_{dataset_no}.glb")
 
 """
 Uncomment for overlay of original contour

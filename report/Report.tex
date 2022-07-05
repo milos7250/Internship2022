@@ -249,6 +249,141 @@ The disadvantages of Delaunay tirangulation lead us to opting for the radial bas
 \end{figure}
 
 \subsubsection{Limitations}
-It's worth to mention that the interpolation approach for discretized elevation does not behave optimally at local maxima or local minima. This can be seen on Figure \ref{fig:3D_discretized_interpolation_a} in the top right part. A valley is lost in the interpolation process, due to the algorithm by which we select contour lines. The outline of the valley is conserved for the interpolation with elevation value of the higher plateau ($200$ $m$), whilst no further information is preserved about the valley. If interpolation of higher accuracy is desired for DEMs, a revised algorithm must be implemented.
+It's worth to mention that the interpolation approach for discretized elevation does not behave optimally at local maxima or local minima. This can be seen on Figure \ref{fig:3D_discretized_interpolation_a} in the top right part. A valley is lost in the interpolation process, due to the algorithm by which we select contour lines. The outline of the valley is conserved for the interpolation with elevation value of the higher plateau ($200$ $m$), whilst no further information is preserved about the valley. If interpolation of higher accuracy is desired for DEMs, a revised algorithm should be implemented.
+
+\chapter{Interpolating Binary Contours in 3D}
+
+Interpolating binary contours is useful in case when a contour is produced by applying marching squares to binary data. This is usually done in order to create a triangular mesh, so that a smooth surface from the boundary of the binary data is produced. Rendering a mesh is also computationally cheaper then rendering the voxels individually. However, the resulting contour looks in this case still looks very voxelated. In this chapter, we'll investigate several methods how the smoothness of produced binary contours can be improved.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{.49\textwidth}
+        \includegraphics[width=\textwidth]{../images/3D/Ellipsoid_blocks.png}
+    \caption{The data voxels rendered directly.}
+    \label{fig:Ellipsoid_blocks}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{.49\textwidth}
+        \includegraphics[width=\textwidth]{../images/3D/Ellipsoid_marching_squares.png}
+    \caption{The triangular mesh produced by marching squares.}
+    \label{fig:Ellipsoid_marching_squares}
+    \end{subfigure}
+    \caption{Comparison between rendering voxels of an ellipsoid directly and applying marching squares algorithm.}
+    \label{fig:Ellipsoid}
+\end{figure}
+
+\section{Block Averaging}\label{sec:block_avg}
+
+Block averaging is a relatively simple method to smoothen the binary data. Only regions on the boundary of the contour are changed by using this method, and no distortion in shape is caused. Block averaging is also easy to implement, as it requires no more than a for loop, or a convolution function with uniform kernel.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{.49\textwidth}
+        \includegraphics[width=\textwidth]{../images/3D/Ellipsoid_blocks_block_avg.png}
+    \caption{The data voxels rendered directly.}
+    \label{fig:Ellipsoid_blocks_block_avg}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{.49\textwidth}
+        \includegraphics[width=\textwidth]{../images/3D/Ellipsoid_marching_squares_block_avg.png}
+    \caption{The triangular mesh produced by marching squares.}
+    \label{fig:Ellipsoid_marching_squares_block_avg}
+    \end{subfigure}
+    \caption{Comparison between rendering voxels directly and applying marching squares algorithm, after block averaging an ellipsoid with block size 2.}
+    \label{fig:Ellipsoid_block_avg}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{.49\textwidth}
+        \includegraphics[width=\textwidth]{../images/3D/Ellipsoid_blocks_block_avg_5.png}
+    \caption{The data voxels rendered directly.}
+    \label{fig:Ellipsoid_blocks_block_avg_5}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{.49\textwidth}
+        \includegraphics[width=\textwidth]{../images/3D/Ellipsoid_marching_squares_block_avg_5.png}
+    \caption{The triangular mesh produced by marching squares.}
+    \label{fig:Ellipsoid_marching_squares_block_avg_5}
+    \end{subfigure}
+    \caption{Comparison between rendering voxels directly and applying marching squares algorithm, after block averaging an ellipsoid with block size 5.}
+    \label{fig:Ellipsoid_block_avg_5}
+\end{figure}
+
+\section{Isolation of corner vertices}
+As an alternative to block averaging, we can identify a neighbourhood of the border and interpolate the points inside this region, as we know that on one side of the region the values are all $0$ and on the other they are all $1$. To identify this region, we can isolate the corner vertices from the binary data. These vertices can be identified by looking at block sums. If a sum of a $n\times n \times n$ block is $1$, then we can consider this block as the \textit{external} corner and if it is $n^3-1$, then we can consider the block to be the \textit{internal} corner. And finally, if the sum is not $0$ or $n^3$, we mark the points of this block as \textit{boundary} points.
+
+After isolating the corners, we can apply various interpolation techniques to interpolate all the points in the \textit{boundary} region by using the corner vertices as value sources. An example that works quite well is using Delaunay tetrahedral tesselation and subsequent linear barycentric interpolation. The tesselation is created from the corner vertices and all boundary vertices' values are interpolated linearly from this tesselation.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{.32\textwidth}
+        \includegraphics[width=\textwidth]{../images/3D/Ellipsoid_blocks_isolated_vertices.png}
+    \caption{The outside (in blue) and inside (in red) corners.}
+    \label{fig:Ellipsoid_blocks_isolated_vertices}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{.32\textwidth}
+        \includegraphics[width=\textwidth]{../images/3D/Ellipsoid_blocks_isolated_vertices_interpolated.png}
+    \caption{The ellipsoid voxels with interpolated boundary region.}
+    \label{fig:Ellipsoid_blocks_isolated_vertices_interpolated}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{.32\textwidth}
+        \includegraphics[width=\textwidth]{../images/3D/Ellipsoid_marching_squares_isolated_vertices.png}
+    \caption{The triangular mesh produced by marching squares.}
+    \label{fig:Ellipsoid_marching_squares_isolated_vertices}
+    \end{subfigure}
+    \caption{Illustration of contour interpolation using isolation of corner vertices with block size 2.}
+    \label{fig:Ellipsoid_isolated_vertices}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{.32\textwidth}
+        \includegraphics[width=\textwidth]{../images/3D/Ellipsoid_blocks_isolated_vertices_5.png}
+    \caption{The outside (in blue) and inside (in red) corners.}
+    \label{fig:Ellipsoid_blocks_isolated_vertices_5}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{.32\textwidth}
+        \includegraphics[width=\textwidth]{../images/3D/Ellipsoid_blocks_isolated_vertices_interpolated_5.png}
+    \caption{The ellipsoid voxels with interpolated boundary region.}
+    \label{fig:Ellipsoid_blocks_isolated_vertices_interpolated_5}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{.32\textwidth}
+        \includegraphics[width=\textwidth]{../images/3D/Ellipsoid_marching_squares_isolated_vertices_5.png}
+    \caption{The triangular mesh produced by marching squares.}
+    \label{fig:Ellipsoid_marching_squares_isolated_vertices_5}
+    \end{subfigure}
+    \caption{Illustration of contour interpolation using isolation of corner vertices with block size 5.}
+    \label{fig:Ellipsoid_isolated_vertices_5}
+\end{figure}
+
+The mesh shown in Figure \ref{fig:Ellipsoid_isolated_vertices} was produced by using block size of 2. When compared to the mesh in Figure \ref{fig:Ellipsoid_block_avg} produced by block averaging with block size 2, we can notice that this method creates smoother contours.
+
+However, it is also noticeable that this method does not perserve shapes exactly. As the block size is increased, the ellipsoid is being deformed into a cuboid, which is noticeable in Figure \ref{fig:Ellipsoid_isolated_vertices_5}. Therefore increasing the block size in this case does not always produce better looking results.
+
+Another noteworthy observation is that this algorithm would not work very well in the absence of \textit{internal} vertices. For example, applying this algorithm to a cuboid would make the boundary region of the cuboid vanish. This is however quite an edge case, as any other object shape does contain \textit{internal} vertices, and applying this algorithm would not be advantageous at all if we knew that the object is a cuboid beforehand.
+
+\section{Convolution with Gaussian Kernel}
+
+We have touched the idea of convolution in Section \ref{sec:block_avg}. Instead of using a uniform kernel, we can use any kernel that might produce better looking results. A very common kernel for smoothing data and images is the Gaussian kernel. In image and signal processing, the convolution with Gaussian kernel is called the Gaussian filter and is used very widely.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{.49\textwidth}
+        \includegraphics[width=\textwidth]{../images/3D/Ellipsoid_blocks_gaussian.png}
+    \caption{The data voxels rendered directly.}
+    \label{fig:Ellipsoid_blocks_gaussian}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{.49\textwidth}
+        \includegraphics[width=\textwidth]{../images/3D/Ellipsoid_marching_squares_gaussian.png}
+    \caption{The triangular mesh produced by marching squares.}
+    \label{fig:Ellipsoid_marching_squares_gaussian}
+    \end{subfigure}
+    \caption{Illustration of contour interpolation using convolution with Gaussian kernel with $\sigma=2$ and kernel width of 3.}
+    \label{fig:Ellipsoid_gaussian}
+\end{figure}
+
+Figure \ref{fig:Ellipsoid_gaussian} neatly demonstrates the power of the Gaussian filter. Even with kernel width of only $3$, the resulting contour mesh is very smooth. Increasing the kernel width (alongside with $\sigma$) will increase the smoothness even further, but it doesn't come without expenses. Large $\sigma$ will cause very small or very thin regions to disappear completely, as the $1$s will be diffused into the surrounding $0$s, likely bringing their values under $0.5$, meaning that the marching squares algorithm will not notice these as the interior of the object.
 
 \end{document}

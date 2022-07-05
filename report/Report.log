@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Arch Linux) (preloaded format=pdflatex 2022.5.30)  16 JUN 2022 16:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Arch Linux) (preloaded format=pdflatex 2022.5.30)  5 JUL 2022 17:54
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -795,7 +795,7 @@ Chapter 2.
 Package svg Info: Last page of `../images/svg-inkscape/1D_Function_svg-tex.pdf'
  is 1 on input line 34.
 (../images/svg-inkscape/1D_Function_svg-tex.pdf_tex
-<../images/svg-inkscape/1D_Function_svg-tex.pdf, id=50, page=1, 489.57257pt x 2
+<../images/svg-inkscape/1D_Function_svg-tex.pdf, id=66, page=1, 489.57257pt x 2
 86.11801pt>
 File: ../images/svg-inkscape/1D_Function_svg-tex.pdf Graphic file (type pdf)
 <use ../images/svg-inkscape/1D_Function_svg-tex.pdf, page 1>
@@ -807,7 +807,7 @@ Package svg Info: Last page of `../images/svg-inkscape/1D_Function_Interpolated
 _svg-tex.pdf' is 1 on input line 48.
 
 (../images/svg-inkscape/1D_Function_Interpolated_svg-tex.pdf_tex
-<../images/svg-inkscape/1D_Function_Interpolated_svg-tex.pdf, id=54, page=1, 47
+<../images/svg-inkscape/1D_Function_Interpolated_svg-tex.pdf, id=70, page=1, 47
 7.38748pt x 286.11801pt>
 File: ../images/svg-inkscape/1D_Function_Interpolated_svg-tex.pdf Graphic file 
 (type pdf)
@@ -820,7 +820,7 @@ Package svg Info: Last page of `../images/svg-inkscape/1D_Function_Interpolated
 _Zoomed_svg-tex.pdf' is 1 on input line 53.
 
 (../images/svg-inkscape/1D_Function_Interpolated_Zoomed_svg-tex.pdf_tex
-<../images/svg-inkscape/1D_Function_Interpolated_Zoomed_svg-tex.pdf, id=56, pag
+<../images/svg-inkscape/1D_Function_Interpolated_Zoomed_svg-tex.pdf, id=72, pag
 e=1, 293.54018pt x 286.11801pt>
 File: ../images/svg-inkscape/1D_Function_Interpolated_Zoomed_svg-tex.pdf Graphi
 c file (type pdf)
@@ -844,7 +844,7 @@ Chapter 3.
 Package svg Info: Last page of `../images/svg-inkscape/2D_Contour_svg-tex.pdf' 
 is 1 on input line 68.
 (../images/svg-inkscape/2D_Contour_svg-tex.pdf_tex
-<../images/svg-inkscape/2D_Contour_svg-tex.pdf, id=104, page=1, 651.7389pt x 39
+<../images/svg-inkscape/2D_Contour_svg-tex.pdf, id=120, page=1, 651.7389pt x 39
 1.89159pt>
 File: ../images/svg-inkscape/2D_Contour_svg-tex.pdf Graphic file (type pdf)
 <use ../images/svg-inkscape/2D_Contour_svg-tex.pdf, page 1>
@@ -856,7 +856,7 @@ Package svg Info: Last page of `../images/svg-inkscape/2D_Contour_Zoomed_svg-te
 x.pdf' is 1 on input line 72.
 
 (../images/svg-inkscape/2D_Contour_Zoomed_svg-tex.pdf_tex
-<../images/svg-inkscape/2D_Contour_Zoomed_svg-tex.pdf, id=106, page=1, 651.7389
+<../images/svg-inkscape/2D_Contour_Zoomed_svg-tex.pdf, id=122, page=1, 651.7389
 pt x 391.89159pt>
 File: ../images/svg-inkscape/2D_Contour_Zoomed_svg-tex.pdf Graphic file (type p
 df)
@@ -869,7 +869,7 @@ Package svg Info: Last page of `../images/NH52/svg-inkscape/2D_Contour_Interpol
 ation_svg-tex.pdf' is 1 on input line 90.
 
 (../images/NH52/svg-inkscape/2D_Contour_Interpolation_svg-tex.pdf_tex
-<../images/NH52/svg-inkscape/2D_Contour_Interpolation_svg-tex.pdf, id=109, page
+<../images/NH52/svg-inkscape/2D_Contour_Interpolation_svg-tex.pdf, id=125, page
 =1, 949.69888pt x 570.79324pt>
 File: ../images/NH52/svg-inkscape/2D_Contour_Interpolation_svg-tex.pdf Graphic 
 file (type pdf)
@@ -882,7 +882,7 @@ Package svg Info: Last page of `../images/NO33/svg-inkscape/2D_Contour_Interpol
 ation_svg-tex.pdf' is 1 on input line 95.
 
 (../images/NO33/svg-inkscape/2D_Contour_Interpolation_svg-tex.pdf_tex
-<../images/NO33/svg-inkscape/2D_Contour_Interpolation_svg-tex.pdf, id=111, page
+<../images/NO33/svg-inkscape/2D_Contour_Interpolation_svg-tex.pdf, id=127, page
 =1, 949.69888pt x 570.79324pt>
 File: ../images/NO33/svg-inkscape/2D_Contour_Interpolation_svg-tex.pdf Graphic 
 file (type pdf)
@@ -905,13 +905,13 @@ pdfTeX warning: /usr/bin/pdflatex (file ../images/NO33/svg-inkscape/2D_Contour_
 Interpolation_svg-tex.pdf): PDF inclusion: multiple pdfs with page group includ
 ed in a single page
 >]
-<../images/discretize/Accurate.png, id=2577, 3648.63126pt x 2597.705pt>
+<../images/discretize/Accurate.png, id=2594, 3648.63126pt x 2597.705pt>
 File: ../images/discretize/Accurate.png Graphic file (type png)
 <use ../images/discretize/Accurate.png>
 Package pdftex.def Info: ../images/discretize/Accurate.png  used on input line 
 111.
 (pdftex.def)             Requested size: 145.11053pt x 103.29593pt.
-<../images/discretize/Color_Graded.png, id=2579, 3637.59pt x 2589.675pt>
+<../images/discretize/Color_Graded.png, id=2596, 3637.59pt x 2589.675pt>
 File: ../images/discretize/Color_Graded.png Graphic file (type png)
 <use ../images/discretize/Color_Graded.png>
 Package pdftex.def Info: ../images/discretize/Color_Graded.png  used on input l
@@ -922,7 +922,7 @@ Underfull \hbox (badness 4001) in paragraph at lines 117--117
 \OT1/cmr/m/n/9 col-ors graded ac-cord-ing to dis-
  []
 
-<../images/discretize/Discretized.png, id=2580, 3642.60875pt x 2598.70876pt>
+<../images/discretize/Discretized.png, id=2597, 3642.60875pt x 2598.70876pt>
 File: ../images/discretize/Discretized.png Graphic file (type png)
 <use ../images/discretize/Discretized.png>
 Package pdftex.def Info: ../images/discretize/Discretized.png  used on input li
@@ -935,7 +935,7 @@ angulation_and_Barycentric_Interpolation_2D_svg-tex.pdf' is 1 on input line 141
 (../images/differences/svg-inkscape/Delaunay_Triangulation_and_Barycentric_Inte
 rpolation_2D_svg-tex.pdf_tex
 <../images/differences/svg-inkscape/Delaunay_Triangulation_and_Barycentric_Inte
-rpolation_2D_svg-tex.pdf, id=2582, page=1, 982.28075pt x 243.01761pt>
+rpolation_2D_svg-tex.pdf, id=2599, page=1, 982.28075pt x 243.01761pt>
 File: ../images/differences/svg-inkscape/Delaunay_Triangulation_and_Barycentric
 _Interpolation_2D_svg-tex.pdf Graphic file (type pdf)
 <use ../images/differences/svg-inkscape/Delaunay_Triangulation_and_Barycentric_
@@ -951,7 +951,7 @@ angulation_and_Clough-Tocher_scheme_2D_svg-tex.pdf' is 1 on input line 146.
 (../images/differences/svg-inkscape/Delaunay_Triangulation_and_Clough-Tocher_sc
 heme_2D_svg-tex.pdf_tex
 <../images/differences/svg-inkscape/Delaunay_Triangulation_and_Clough-Tocher_sc
-heme_2D_svg-tex.pdf, id=2584, page=1, 982.28075pt x 243.01761pt>
+heme_2D_svg-tex.pdf, id=2601, page=1, 982.28075pt x 243.01761pt>
 File: ../images/differences/svg-inkscape/Delaunay_Triangulation_and_Clough-Toch
 er_scheme_2D_svg-tex.pdf Graphic file (type pdf)
 <use ../images/differences/svg-inkscape/Delaunay_Triangulation_and_Clough-Toche
@@ -966,7 +966,7 @@ _Thin_Plate_Spline_2D_svg-tex.pdf' is 1 on input line 151.
 (../images/differences/svg-inkscape/Radial_Basis_Thin_Plate_Spline_2D_svg-tex.p
 df_tex
 <../images/differences/svg-inkscape/Radial_Basis_Thin_Plate_Spline_2D_svg-tex.p
-df, id=2586, page=1, 982.28075pt x 243.01761pt>
+df, id=2603, page=1, 982.28075pt x 243.01761pt>
 File: ../images/differences/svg-inkscape/Radial_Basis_Thin_Plate_Spline_2D_svg-
 tex.pdf Graphic file (type pdf)
 <use ../images/differences/svg-inkscape/Radial_Basis_Thin_Plate_Spline_2D_svg-t
@@ -977,7 +977,7 @@ late_Spline_2D_svg-tex.pdf , page1 used on input line 56.
 ) [6 <../images/discretize/Accurate.png> <../images/discretize/Color_Graded.png
 > <../images/discretize/Discretized.png>]
 <../images/differences/Delaunay_Triangulation_and_Barycentric_Interpolation_3D.
-png, id=2597, 3307.35625pt x 1429.34pt>
+png, id=2613, 3307.35625pt x 1429.34pt>
 File: ../images/differences/Delaunay_Triangulation_and_Barycentric_Interpolatio
 n_3D.png Graphic file (type png)
 <use ../images/differences/Delaunay_Triangulation_and_Barycentric_Interpolation
@@ -986,7 +986,7 @@ Package pdftex.def Info: ../images/differences/Delaunay_Triangulation_and_Baryc
 entric_Interpolation_3D.png  used on input line 162.
 (pdftex.def)             Requested size: 154.78653pt x 66.8911pt.
 <../images/differences/Delaunay_Triangulation_and_Clough-Tocher_scheme_3D.png, 
-id=2598, 3305.34875pt x 1425.325pt>
+id=2614, 3305.34875pt x 1425.325pt>
 File: ../images/differences/Delaunay_Triangulation_and_Clough-Tocher_scheme_3D.
 png Graphic file (type png)
 <use ../images/differences/Delaunay_Triangulation_and_Clough-Tocher_scheme_3D.p
@@ -994,7 +994,7 @@ ng>
 Package pdftex.def Info: ../images/differences/Delaunay_Triangulation_and_Cloug
 h-Tocher_scheme_3D.png  used on input line 169.
 (pdftex.def)             Requested size: 154.78653pt x 66.74669pt.
-<../images/differences/Radial_Basis_Thin_Plate_Spline_3D.png, id=2599, 3378.622
+<../images/differences/Radial_Basis_Thin_Plate_Spline_3D.png, id=2615, 3378.622
 5pt x 1930.21124pt>
 File: ../images/differences/Radial_Basis_Thin_Plate_Spline_3D.png Graphic file 
 (type png)
@@ -1022,7 +1022,7 @@ Package svg Info: Last page of `../images/NH52/svg-inkscape/2D_Data_Interpolati
 on_svg-tex.pdf' is 1 on input line 194.
 
 (../images/NH52/svg-inkscape/2D_Data_Interpolation_svg-tex.pdf_tex
-<../images/NH52/svg-inkscape/2D_Data_Interpolation_svg-tex.pdf, id=2662, page=1
+<../images/NH52/svg-inkscape/2D_Data_Interpolation_svg-tex.pdf, id=2678, page=1
 , 949.69888pt x 570.79324pt>
 File: ../images/NH52/svg-inkscape/2D_Data_Interpolation_svg-tex.pdf Graphic fil
 e (type pdf)
@@ -1035,7 +1035,7 @@ Package svg Info: Last page of `../images/NO33/svg-inkscape/2D_Data_Interpolati
 on_svg-tex.pdf' is 1 on input line 199.
 
 (../images/NO33/svg-inkscape/2D_Data_Interpolation_svg-tex.pdf_tex
-<../images/NO33/svg-inkscape/2D_Data_Interpolation_svg-tex.pdf, id=2664, page=1
+<../images/NO33/svg-inkscape/2D_Data_Interpolation_svg-tex.pdf, id=2680, page=1
 , 949.69888pt x 570.79324pt>
 File: ../images/NO33/svg-inkscape/2D_Data_Interpolation_svg-tex.pdf Graphic fil
 e (type pdf)
@@ -1044,7 +1044,7 @@ Package pdftex.def Info: ../images/NO33/svg-inkscape/2D_Data_Interpolation_svg-
 tex.pdf , page1 used on input line 56.
 (pdftex.def)             Requested size: 483.69687pt x 290.70877pt.
 )
-<../images/NH52/2D_Data_Interpolation_3D_discretized_datagrid.png, id=2665, 346
+<../images/NH52/2D_Data_Interpolation_3D_discretized_datagrid.png, id=2681, 346
 3.94125pt x 2702.095pt>
 File: ../images/NH52/2D_Data_Interpolation_3D_discretized_datagrid.png Graphic 
 file (type png)
@@ -1053,7 +1053,7 @@ Package pdftex.def Info: ../images/NH52/2D_Data_Interpolation_3D_discretized_da
 tagrid.png  used on input line 212.
 (pdftex.def)             Requested size: 237.01411pt x 184.87799pt.
 <../images/NH52/2D_Data_Interpolation_3D_discretized_datagrid_interpolated.png,
- id=2666, 3626.54875pt x 2709.12125pt>
+ id=2682, 3626.54875pt x 2709.12125pt>
 File: ../images/NH52/2D_Data_Interpolation_3D_discretized_datagrid_interpolated
 .png Graphic file (type png)
 <use ../images/NH52/2D_Data_Interpolation_3D_discretized_datagrid_interpolated.
@@ -1066,7 +1066,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 218--221
 
  []
 
-<../images/NO33/2D_Data_Interpolation_3D_discretized_datagrid.png, id=2667, 361
+<../images/NO33/2D_Data_Interpolation_3D_discretized_datagrid.png, id=2683, 361
 9.5225pt x 2503.3525pt>
 File: ../images/NO33/2D_Data_Interpolation_3D_discretized_datagrid.png Graphic 
 file (type png)
@@ -1080,7 +1080,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 231--233
  []
 
 <../images/NO33/2D_Data_Interpolation_3D_discretized_datagrid_interpolated.png,
- id=2668, 3632.57124pt x 2473.24pt>
+ id=2684, 3632.57124pt x 2473.24pt>
 File: ../images/NO33/2D_Data_Interpolation_3D_discretized_datagrid_interpolated
 .png Graphic file (type png)
 <use ../images/NO33/2D_Data_Interpolation_3D_discretized_datagrid_interpolated.
@@ -1102,15 +1102,137 @@ in a single page
 >] [9 <../images/NH52/2D_Data_Interpolation_3D_discretized_datagrid.png> <../im
 ages/NH52/2D_Data_Interpolation_3D_discretized_datagrid_interpolated.png> <../i
 mages/NO33/2D_Data_Interpolation_3D_discretized_datagrid.png> <../images/NO33/2
-D_Data_Interpolation_3D_discretized_datagrid_interpolated.png>] (./Report.aux)
+D_Data_Interpolation_3D_discretized_datagrid_interpolated.png>]
+Chapter 4.
+<../images/3D/Ellipsoid_blocks.png, id=3422, 1848.9075pt x 1237.62375pt>
+File: ../images/3D/Ellipsoid_blocks.png Graphic file (type png)
+<use ../images/3D/Ellipsoid_blocks.png>
+Package pdftex.def Info: ../images/3D/Ellipsoid_blocks.png  used on input line 
+260.
+(pdftex.def)             Requested size: 237.01411pt x 158.64946pt.
+<../images/3D/Ellipsoid_marching_squares.png, id=3423, 2539.4875pt x 1689.31125
+pt>
+File: ../images/3D/Ellipsoid_marching_squares.png Graphic file (type png)
+<use ../images/3D/Ellipsoid_marching_squares.png>
+Package pdftex.def Info: ../images/3D/Ellipsoid_marching_squares.png  used on i
+nput line 266.
+(pdftex.def)             Requested size: 237.01411pt x 157.65079pt.
+<../images/3D/Ellipsoid_blocks_block_avg.png, id=3424, 1888.05376pt x 1261.7137
+5pt>
+File: ../images/3D/Ellipsoid_blocks_block_avg.png Graphic file (type png)
+<use ../images/3D/Ellipsoid_blocks_block_avg.png>
+Package pdftex.def Info: ../images/3D/Ellipsoid_blocks_block_avg.png  used on i
+nput line 280.
+(pdftex.def)             Requested size: 237.01411pt x 158.36841pt.
+<../images/3D/Ellipsoid_marching_squares_block_avg.png, id=3425, 2500.34125pt x
+ 1651.16875pt>
+File: ../images/3D/Ellipsoid_marching_squares_block_avg.png Graphic file (type 
+png)
+<use ../images/3D/Ellipsoid_marching_squares_block_avg.png>
+Package pdftex.def Info: ../images/3D/Ellipsoid_marching_squares_block_avg.png 
+ used on input line 286.
+(pdftex.def)             Requested size: 237.01411pt x 156.50993pt.
+<../images/3D/Ellipsoid_blocks_block_avg_5.png, id=3426, 2172.115pt x 1550.7937
+5pt>
+File: ../images/3D/Ellipsoid_blocks_block_avg_5.png Graphic file (type png)
+<use ../images/3D/Ellipsoid_blocks_block_avg_5.png>
+Package pdftex.def Info: ../images/3D/Ellipsoid_blocks_block_avg_5.png  used on
+ input line 296.
+(pdftex.def)             Requested size: 237.01411pt x 169.21538pt.
+<../images/3D/Ellipsoid_marching_squares_block_avg_5.png, id=3427, 2436.10126pt
+ x 1624.0675pt>
+File: ../images/3D/Ellipsoid_marching_squares_block_avg_5.png Graphic file (typ
+e png)
+<use ../images/3D/Ellipsoid_marching_squares_block_avg_5.png>
+Package pdftex.def Info: ../images/3D/Ellipsoid_marching_squares_block_avg_5.pn
+g  used on input line 302.
+(pdftex.def)             Requested size: 237.01411pt x 158.0052pt.
+[10
+
+ <../images/3D/Ellipsoid_blocks.png> <../images/3D/Ellipsoid_marching_squares.p
+ng>]
+<../images/3D/Ellipsoid_blocks_isolated_vertices.png, id=3435, 2630.82875pt x 1
+782.66pt>
+File: ../images/3D/Ellipsoid_blocks_isolated_vertices.png Graphic file (type pn
+g)
+<use ../images/3D/Ellipsoid_blocks_isolated_vertices.png>
+Package pdftex.def Info: ../images/3D/Ellipsoid_blocks_isolated_vertices.png  u
+sed on input line 318.
+(pdftex.def)             Requested size: 154.78653pt x 104.86049pt.
+<../images/3D/Ellipsoid_blocks_isolated_vertices_interpolated.png, id=3436, 179
+5.70876pt x 1209.51875pt>
+File: ../images/3D/Ellipsoid_blocks_isolated_vertices_interpolated.png Graphic 
+file (type png)
+<use ../images/3D/Ellipsoid_blocks_isolated_vertices_interpolated.png>
+Package pdftex.def Info: ../images/3D/Ellipsoid_blocks_isolated_vertices_interp
+olated.png  used on input line 324.
+(pdftex.def)             Requested size: 154.78653pt x 104.2565pt.
+<../images/3D/Ellipsoid_marching_squares_isolated_vertices.png, id=3437, 2545.5
+1pt x 1669.23625pt>
+File: ../images/3D/Ellipsoid_marching_squares_isolated_vertices.png Graphic fil
+e (type png)
+<use ../images/3D/Ellipsoid_marching_squares_isolated_vertices.png>
+Package pdftex.def Info: ../images/3D/Ellipsoid_marching_squares_isolated_verti
+ces.png  used on input line 330.
+(pdftex.def)             Requested size: 154.78653pt x 101.49979pt.
+ [11 <../images/3D/Ellipsoid_blocks_block_avg.png> <../images/3D/Ellipsoid_marc
+hing_squares_block_avg.png> <../images/3D/Ellipsoid_blocks_block_avg_5.png> <..
+/images/3D/Ellipsoid_marching_squares_block_avg_5.png>]
+<../images/3D/Ellipsoid_blocks_isolated_vertices_5.png, id=3450, 2779.38374pt x
+ 2000.47375pt>
+File: ../images/3D/Ellipsoid_blocks_isolated_vertices_5.png Graphic file (type 
+png)
+<use ../images/3D/Ellipsoid_blocks_isolated_vertices_5.png>
+Package pdftex.def Info: ../images/3D/Ellipsoid_blocks_isolated_vertices_5.png 
+ used on input line 341.
+(pdftex.def)             Requested size: 154.78653pt x 111.38474pt.
+<../images/3D/Ellipsoid_blocks_isolated_vertices_interpolated_5.png, id=3451, 2
+093.8225pt x 1494.58376pt>
+File: ../images/3D/Ellipsoid_blocks_isolated_vertices_interpolated_5.png Graphi
+c file (type png)
+<use ../images/3D/Ellipsoid_blocks_isolated_vertices_interpolated_5.png>
+Package pdftex.def Info: ../images/3D/Ellipsoid_blocks_isolated_vertices_interp
+olated_5.png  used on input line 347.
+(pdftex.def)             Requested size: 154.78653pt x 110.46976pt.
+<../images/3D/Ellipsoid_marching_squares_isolated_vertices_5.png, id=3452, 2589
+.675pt x 1726.45pt>
+File: ../images/3D/Ellipsoid_marching_squares_isolated_vertices_5.png Graphic f
+ile (type png)
+<use ../images/3D/Ellipsoid_marching_squares_isolated_vertices_5.png>
+Package pdftex.def Info: ../images/3D/Ellipsoid_marching_squares_isolated_verti
+ces_5.png  used on input line 353.
+(pdftex.def)             Requested size: 154.78653pt x 103.18738pt.
+<../images/3D/Ellipsoid_blocks_gaussian.png, id=3457, 2167.09625pt x 1550.79375
+pt>
+File: ../images/3D/Ellipsoid_blocks_gaussian.png Graphic file (type png)
+<use ../images/3D/Ellipsoid_blocks_gaussian.png>
+Package pdftex.def Info: ../images/3D/Ellipsoid_blocks_gaussian.png  used on in
+put line 373.
+(pdftex.def)             Requested size: 237.01411pt x 169.59398pt.
+<../images/3D/Ellipsoid_marching_squares_gaussian.png, id=3458, 2438.10875pt x 
+1624.0675pt>
+File: ../images/3D/Ellipsoid_marching_squares_gaussian.png Graphic file (type p
+ng)
+<use ../images/3D/Ellipsoid_marching_squares_gaussian.png>
+Package pdftex.def Info: ../images/3D/Ellipsoid_marching_squares_gaussian.png  
+used on input line 379.
+(pdftex.def)             Requested size: 237.01411pt x 157.8565pt.
+ [12 <../images/3D/Ellipsoid_blocks_isolated_vertices.png> <../images/3D/Ellips
+oid_blocks_isolated_vertices_interpolated.png> <../images/3D/Ellipsoid_marching
+_squares_isolated_vertices.png> <../images/3D/Ellipsoid_blocks_isolated_vertice
+s_5.png> <../images/3D/Ellipsoid_blocks_isolated_vertices_interpolated_5.png> <
+../images/3D/Ellipsoid_marching_squares_isolated_vertices_5.png>] [13 <../image
+s/3D/Ellipsoid_blocks_gaussian.png> <../images/3D/Ellipsoid_marching_squares_ga
+ussian.png>]
+(./Report.aux)
 Package rerunfilecheck Info: File `Report.out' has not changed.
-(rerunfilecheck)             Checksum: D2F475A29D5DA89E331D82FEDF867386;939.
+(rerunfilecheck)             Checksum: CCE7A21F3CA2C493D3700DED57BE39F5;1728.
  ) 
 Here is how much of TeX's memory you used:
- 23854 strings out of 478238
- 459273 string characters out of 5850456
- 734297 words of memory out of 5000000
- 41585 multiletter control sequences out of 15000+600000
+ 24006 strings out of 478238
+ 466198 string characters out of 5850456
+ 737471 words of memory out of 5000000
+ 41708 multiletter control sequences out of 15000+600000
  478373 words of font info for 63 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  94i,12n,94p,785b,989s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1122,11 +1244,12 @@ mr12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/
 share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texmf-dist
 /fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texmf-dist/fonts/type1/pub
 lic/amsfonts/cm/cmr8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/
-cmr9.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on Report.pdf (11 pages, 23299567 bytes).
+cmr9.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr
+/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
+Output written on Report.pdf (15 pages, 31453960 bytes).
 PDF statistics:
- 3462 PDF objects out of 3580 (max. 8388607)
- 2276 compressed objects within 23 object streams
- 31 named destinations out of 1000 (max. 500000)
- 231 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 3544 PDF objects out of 3580 (max. 8388607)
+ 2323 compressed objects within 24 object streams
+ 45 named destinations out of 1000 (max. 500000)
+ 333 words of extra memory for PDF output out of 10000 (max. 10000000)
 
