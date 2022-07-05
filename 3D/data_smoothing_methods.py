@@ -32,13 +32,32 @@ def isolate_vertices(values: NDArray[float], block_size: int = 2) -> tuple[NDArr
             for z in range(blocksum.shape[2]):
                 if not (blocksum[x, y, z] == 0 or blocksum[x, y, z] == block_size**3):
                     mask[x : x + block_size, y : y + block_size, z : z + block_size] = True
-                if blocksum[x, y, z] == 1 or blocksum[x, y, z] == block_size**3 - 1:
+                if blocksum[x, y, z] == 1:
+                    # Find the one point inside the block
+                    i, j, k = np.nonzero(surface[x : x + block_size, y : y + block_size, z : z + block_size] == 1)
+                    i, j, k = i[0], j[0], k[0]
+                    # Add this point as the exterior point
                     vertices.append(
                         (
-                            x + (block_size - 1) / 2,
-                            y + (block_size - 1) / 2,
-                            z + (block_size - 1) / 2,
-                            blocksum[x, y, z] / block_size**3,
+                            x + i,
+                            y + j,
+                            z + k,
+                            0,
+                        )
+                    )
+                elif blocksum[x, y, z] == block_size**3 - 1:
+                    # Find the zero point inside the block
+                    i, j, k = np.nonzero(surface[x : x + block_size, y : y + block_size, z : z + block_size] == 0)
+                    i, j, k = i[0], j[0], k[0]
+                    # Find the point directly opposite the zero point
+                    i, j, k = (block_size - 1 - i, block_size - 1 - j, block_size - 1 - k)
+                    # Add this point as the interior point
+                    vertices.append(
+                        (
+                            x + i,
+                            y + j,
+                            z + k,
+                            1,
                         )
                     )
     vertices = np.vstack(vertices)
