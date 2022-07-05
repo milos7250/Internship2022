@@ -31,6 +31,14 @@ def car_to_sph(x: float | NDArray[float], y: float | NDArray[float], z: float | 
     return np.array([r, theta, phi]).T
 
 
+# TODO: Definitely not memory friendly, apparently uses about 1GiB of memory for 100 points???
+"""
+File "/home/milosmicik/Documents/Internship/functions_3D.py", line 38, in remove_duplicate_vertices
+    duplicate = np.linalg.norm(vertices - vertices[:, np.newaxis], axis=2) < tolerance
+numpy.core._exceptions._ArrayMemoryError: Unable to allocate 4.62 TiB for an array with shape (459865, 459865, 3) and data type float64
+"""
+
+
 def remove_duplicate_vertices(
     vertices: NDArray[float],
     faces: NDArray[float],
@@ -84,3 +92,45 @@ def remove_duplicate_vertices(
         faces = np.delete(faces, delete, axis=0)
 
     return vertices, faces
+
+
+def indices_to_coords_1d(ids, vals):
+    """
+    This method allows to index the 'vals' array by float indices from the 'ids' array. The values for the float indices
+    are linearly approximated from the nearest entries in 'vals', whereas integer indices are looked up in the 'vals'
+    array directly.
+
+    The range of the 'vals' array should contain all indices of the 'ids' array, otherwise an exception is thrown.
+
+    :param ids: (n) array of indices
+    :param vals: (m) array of values
+    :return: (n) array of coordinate values generated from indices.
+    """
+    ids_vals = np.empty_like(ids, dtype=float)
+    whole_part = np.floor(ids).astype(int)
+    decimal_part = ids - whole_part
+    integer_indices = decimal_part == 0
+    ids_vals[integer_indices] = vals[whole_part[integer_indices]]
+    ids_vals[~integer_indices] = linear(
+        x0=whole_part[~integer_indices],
+        y0=vals[whole_part[~integer_indices]],
+        x1=whole_part[~integer_indices] + 1,
+        y1=vals[whole_part[~integer_indices] + 1],
+        x=ids[~integer_indices],
+    )
+    return ids_vals
+
+
+def indices_to_coords_nd(ids, vals):
+    """
+    This method allows to index the 'vals' arrays by float indices from the 'ids' arrays. The values for the float
+    indices are linearly approximated from the nearest entries in 'vals', whereas integer indices are looked up in
+    the 'vals' arrays directly.
+
+    The range of the 'vals' array should contain all indices of the 'ids' array, otherwise an exception is thrown.
+
+    :param ids: (n, d) array of indices
+    :param vals: (m, d) array of values
+    :return: (n, d) array of coordinate values generated from indices.
+    """
+    return np.array([indices_to_coords_1d(xi_ids, xi_vals) for xi_ids, xi_vals in zip(ids, vals)]).T

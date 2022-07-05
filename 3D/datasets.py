@@ -10,7 +10,7 @@ from scipy.ndimage._filters import _gaussian_kernel1d
 from skimage.measure import marching_cubes
 from trimesh import Trimesh
 
-from functions_3D import linear, sph_to_car
+from functions_3D import sph_to_car, indices_to_coords_nd
 
 
 class Grid:
@@ -66,37 +66,7 @@ class Grid:
 
         return Grid(r, theta, phi, grid)
 
-    def coords_from_indices_1d(self, ids, axis: str):
-        """
-        Converts indices of an array to the spherical coordinates in the specified axis direction.
-        If the index is a whole number, it's converted by directly looking up the corresponding value in the axis'
-        coordinate array.
-        If the index is a decimal number, it's coordinates are interpolated by the nearest integer indices' coordinates
-        linearly.
-
-        :param ids: (n) array of indices
-        :param axis: Either 'r', 'theta' or 'phi', which specifies the axis direction the indices are from.
-        :return: (n) array of coordinates generated from indices.
-        """
-        r_vals = np.empty_like(ids, dtype=self.__getattribute__(axis).dtype)
-        whole_part = np.floor(ids).astype(int)
-        decimal_part = ids - whole_part
-        integer_indices = decimal_part == 0
-
-        # Get values for integer indices directly
-        r_vals[integer_indices] = self.__getattribute__(axis)[whole_part[integer_indices]]
-
-        # Get values for non-integer indices by linear interpolation
-        r_vals[~integer_indices] = linear(
-            x0=whole_part[~integer_indices],
-            y0=self.__getattribute__(axis)[whole_part[~integer_indices]],
-            x1=whole_part[~integer_indices] + 1,
-            y1=self.__getattribute__(axis)[whole_part[~integer_indices] + 1],
-            x=ids[~integer_indices],
-        )
-        return r_vals
-
-    def coords_from_indices_nd(self, r_ids, theta_ids, phi_ids):
+    def coords_from_indices_nd(self, indices):
         """
         Converts indices of an array to the spherical coordinates.
         If the index is a whole number, it's converted by directly looking up the corresponding value in the coordinate
@@ -104,18 +74,10 @@ class Grid:
         If the index is a decimal number, it's coordinates are interpolated by the nearest integer indices' coordinates
         linearly.
 
-        :param r_ids: (n) array of r indices
-        :param theta_ids: (n) array of theta indices
-        :param phi_ids: (n) array of phi indices
+        :param indices: (n, 3) array of point indices
         :return: (n, 3) array of coordinates generated from indices.
         """
-        return np.array(
-            [
-                self.coords_from_indices_1d(r_ids, "r"),
-                self.coords_from_indices_1d(theta_ids, "theta"),
-                self.coords_from_indices_1d(phi_ids, "phi"),
-            ]
-        ).T
+        return indices_to_coords_nd(indices, [self.r, self.theta, self.phi])
 
     def stitch(self, other: "Grid"):
         """
@@ -224,7 +186,7 @@ grid.grid[..., -1] = grid.grid[..., 0]
 
 # Plot in spherical coordinate space
 vertices, faces, normals, values = marching_cubes(grid.grid, allow_degenerate=False, level=128)
-vertices = grid.coords_from_indices_nd(*vertices.T)
+vertices = grid.coords_from_indices_nd(vertices.T)
 mlab.triangular_mesh(
     vertices[:, 0],
     vertices[:, 1],
