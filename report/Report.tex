@@ -366,7 +366,14 @@ Another noteworthy observation is that this algorithm would not work very well i
 
 \section{Convolution with Gaussian Kernel}
 
-We have touched the idea of convolution in Section \ref{sec:block_avg}. Instead of using a uniform kernel, we can use any kernel that might produce better looking results. A very common kernel for smoothing data and images is the Gaussian kernel. In image and signal processing, the convolution with Gaussian kernel is called the Gaussian filter and is used very widely.
+We have touched the idea of convolution in Section \ref{sec:block_avg}. Instead of using a uniform kernel, we can use any kernel that might produce better looking results. A very common kernel for smoothing data and images is the Gaussian kernel. In image and signal processing, the convolution with Gaussian kernel is called the Gaussian filter and is used very widely. We can see the illustration of the Gaussian kernel compared to uniform kernel in Figure \ref{fig:kernel_comparison}, and it's application on the ellipsoid example in Figure \ref{fig:Ellipsoid_gaussian}.
+\begin{figure}[H]
+    \centering
+    \includesvg[width=0.49\textwidth]{../images/3D/Kernels.svg}
+    \caption{Comparison of uniform and Gaussian kernels with width 21.}
+    \label{fig:kernel_comparison}
+\end{figure}
+
 \begin{figure}[H]
     \centering
     \begin{subfigure}{.49\textwidth}
@@ -386,4 +393,47 @@ We have touched the idea of convolution in Section \ref{sec:block_avg}. Instead 
 
 Figure \ref{fig:Ellipsoid_gaussian} neatly demonstrates the power of the Gaussian filter. Even with kernel width of only $3$, the resulting contour mesh is very smooth. Increasing the kernel width (alongside with $\sigma$) will increase the smoothness even further, but it doesn't come without expenses. Large $\sigma$ will cause very small or very thin regions to disappear completely, as the $1$s will be diffused into the surrounding $0$s, likely bringing their values under $0.5$, meaning that the marching squares algorithm will not notice these as the interior of the object.
 
+\section{Applying Gaussian Filter to Simulation Data}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{.49\textwidth}
+        \includegraphics[width=\textwidth]{../images/3D/Dataset1.png}
+    \caption{A contour produced from the data by applying marching squares directly.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{.49\textwidth}
+        \includegraphics[width=\textwidth]{../images/3D/Dataset1_Gaussian.png}
+    \caption{A contour produced from the data by applying marching squares after applying the Gaussian filter.}
+    \end{subfigure}
+    \caption{A contour from the first dataset from the simulation.}
+    \label{fig:Dataset1}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{.49\textwidth}
+        \includegraphics[width=\textwidth]{../images/3D/Dataset2.png}
+    \caption{A contour produced from the data by applying marching squares directly.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{.49\textwidth}
+        \includegraphics[width=\textwidth]{../images/3D/Dataset2_Gaussian.png}
+    \caption{A contour produced from the data by applying marching squares after applying the Gaussian filter.}
+    \end{subfigure}
+    \caption{A contour from the second dataset from the simulation.}
+    \label{fig:Dataset1}
+\end{figure}
+
+\chapter{Creating Visualizations in Unity}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{../images/3D/Dataset1_Unity.png}
+    \caption{The data voxels rendered directly.}
+    \label{fig:Dataset1_Unity}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{../images/3D/Dataset2_Unity.png}
+    \caption{The data voxels rendered directly.}
+    \label{fig:Dataset2_Unity}
+\end{figure}
 \end{document}
