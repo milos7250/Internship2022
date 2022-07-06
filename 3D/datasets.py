@@ -112,7 +112,9 @@ class Grid:
         self.grid = new_grid
 
 
-dataset_no = 1
+dataset_no = 2
+gaussian = True
+azimuth = [180, 45][dataset_no - 1]
 
 if dataset_no == 1:
     grid = Grid.from_file(0, folder="../data/Dataset1")
@@ -158,68 +160,71 @@ Uncomment to show the kernel function in each direction
 #     plt.title(labels[i])
 # plt.show()
 
-grid.grid = gaussian_filter1d(
-    grid.grid,
-    axis=0,
-    sigma=kernel_sigmas[0],
-    truncate=kernel_width[0] / kernel_sigmas[0],
-    mode="nearest",
-    output=grid.grid,
-)
-grid.grid = gaussian_filter1d(
-    grid.grid,
-    axis=1,
-    sigma=kernel_sigmas[1],
-    truncate=kernel_width[1] / kernel_sigmas[1],
-    mode="nearest",
-    output=grid.grid,
-)
-grid.grid[..., :-1] = gaussian_filter1d(
-    grid.grid[..., :-1],
-    axis=2,
-    sigma=kernel_sigmas[2],
-    truncate=kernel_width[2] / kernel_sigmas[2],
-    mode="wrap",
-    output=grid.grid[..., :-1],
-)
-grid.grid[..., -1] = grid.grid[..., 0]
-
-# Plot in spherical coordinate space
-vertices, faces, normals, values = marching_cubes(grid.grid, allow_degenerate=False, level=128)
-vertices = grid.coords_from_indices_nd(vertices.T)
-mlab.triangular_mesh(
-    vertices[:, 0],
-    vertices[:, 1],
-    vertices[:, 2],
-    faces,
-    color=(0.5, 0.5, 0.5),
-    scalars=values,
-)
-
-mlab.surf(*np.ogrid[1:1:2j, 0 : np.pi : 2j], [[-np.pi, -np.pi], [np.pi, np.pi]], color=(0.7, 0.7, 0))
-mlab.orientation_axes(xlabel="r", ylabel="theta", zlabel="phi")
-mlab.show()
-
-# Plot in cartesian coordinates
-vertices = sph_to_car(*vertices.T)
-mlab.triangular_mesh(vertices[:, 0], vertices[:, 1], vertices[:, 2], faces, color=(0.5, 0.5, 0.5), scalars=values)
-mlab.triangular_mesh(
-    vertices[:, 0],
-    vertices[:, 1],
-    vertices[:, 2],
-    faces,
-    color=(0.5, 0.5, 0.5),
-)
+if gaussian:
+    grid.grid = gaussian_filter1d(
+        grid.grid,
+        axis=0,
+        sigma=kernel_sigmas[0],
+        truncate=kernel_width[0] / kernel_sigmas[0],
+        mode="nearest",
+        output=grid.grid,
+    )
+    grid.grid = gaussian_filter1d(
+        grid.grid,
+        axis=1,
+        sigma=kernel_sigmas[1],
+        truncate=kernel_width[1] / kernel_sigmas[1],
+        mode="nearest",
+        output=grid.grid,
+    )
+    grid.grid[..., :-1] = gaussian_filter1d(
+        grid.grid[..., :-1],
+        axis=2,
+        sigma=kernel_sigmas[2],
+        truncate=kernel_width[2] / kernel_sigmas[2],
+        mode="wrap",
+        output=grid.grid[..., :-1],
+    )
+    grid.grid[..., -1] = grid.grid[..., 0]
 
 """
 Swap the y and z axis on saving the mesh to comply with Unity's axes orientation
 """
+# export_vertices = vertices[:, (0, 2, 1)]
+# export_vertices[:, 2] *= -1
+# export_normals = normals[:, (0, 2, 1)]
+# export_normals[:, 2] *= -1
 # mesh = Trimesh(
-#     vertices=vertices[:, (0, 2, 1)],
+#     vertices=export_vertices,
 #     faces=faces,
-#     vertex_normals=normals[:, (0, 2, 1)],
+#     vertex_normals=export_normals,
 # )
 # mesh.export(f"../Unity/Assets/trimesh_dataset_{dataset_no}.glb")
+# exit()
+
+
+# Plot in spherical coordinate space
+vertices, faces, normals, values = marching_cubes(grid.grid, allow_degenerate=False, level=128)
+vertices = grid.coords_from_indices_nd(vertices.T)
+# mlab.figure(bgcolor=(1, 1, 1))
+# mlab.triangular_mesh(
+#     vertices[:, 0],
+#     vertices[:, 1],
+#     vertices[:, 2],
+#     faces,
+#     color=(0.5, 0.5, 0.5),
+#     scalars=values,
+# )
+#
+# mlab.surf(*np.ogrid[1:1:2j, 0 : np.pi : 2j], [[-np.pi, -np.pi], [np.pi, np.pi]], color=(0.7, 0.7, 0))
+# mlab.orientation_axes(xlabel="r", ylabel="theta", zlabel="phi")
+# mlab.show()
+
+# Plot in cartesian coordinates
+vertices = sph_to_car(*vertices.T)
+mlab.figure(bgcolor=(1, 1, 1))
+mlab.triangular_mesh(vertices[:, 0], vertices[:, 1], vertices[:, 2], faces, color=(0.5, 0.5, 0.5), scalars=values)
+
 
 """
 Uncomment for overlay of original contour
@@ -238,6 +243,8 @@ Uncomment for overlay of original contour
 
 
 mlab.points3d(0, 0, 0, scale_factor=2 * 1, resolution=64, color=(0.7, 0.7, 0))
+mlab.view(azimuth=azimuth, elevation=90)
+# mlab.savefig(f"../images/3D/Dataset{dataset_no}{'_Gaussian' if gaussian else ''}.png", magnification=10)
 mlab.orientation_axes(xlabel="x", ylabel="y", zlabel="z")
 
 mlab.show()
