@@ -1,5 +1,6 @@
 import numpy as np
 
+
 # SOURCE https://towardsdatascience.com/b%C3%A9zier-interpolation-8033e9a262c2
 
 # find the a & b points
@@ -30,17 +31,22 @@ def get_bezier_coef(points):
 
     return A, B
 
+
 # returns the general Bezier cubic formula given 4 control points
 def get_cubic(a, b, c, d):
-    return lambda t: np.power(1 - t, 3) * a + 3 * np.power(1 - t, 2) * t * b + 3 * (1 - t) * np.power(t, 2) * c + np.power(t, 3) * d
+    return (
+        lambda t: np.power(1 - t, 3) * a
+        + 3 * np.power(1 - t, 2) * t * b
+        + 3 * (1 - t) * np.power(t, 2) * c
+        + np.power(t, 3) * d
+    )
+
 
 # return one cubic curve for each consecutive points
 def get_bezier_cubic(points):
     A, B = get_bezier_coef(points)
-    return [
-        get_cubic(points[i], A[i], B[i], points[i + 1])
-        for i in range(len(points) - 1)
-    ]
+    return [get_cubic(points[i], A[i], B[i], points[i + 1]) for i in range(len(points) - 1)]
+
 
 # evalute each cubic curve on the range [0, 1] sliced in n points
 def evaluate_bezier(points, n):
