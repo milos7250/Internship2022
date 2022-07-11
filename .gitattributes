@@ -1,3 +1,0 @@
-Unity[[:space:]]App/app_Data/sharedassets0.assets filter=lfs diff=lfs merge=lfs -text
-Unity/Assets/trimesh_dataset_*.glb filter=lfs diff=lfs merge=lfs -text
-data/slovakia.tif filter=lfs diff=lfs merge=lfs -text
