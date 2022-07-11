@@ -8,8 +8,14 @@
 \usepackage{todonotes}
 \usepackage{hyperref}
 
+\usepackage{titlesec}\titleformat{\chapter}
+  {\Large\bfseries} % format
+  {}                % label
+  {0pt}             % sep
+  {\huge}           % before-code
+
 % Title Page
-\title{Interpolation} %TODO: Come up with a better title
+\title{Interpolation of real-valued functions and their contours}
 \author{Milos Micik}
 
 
@@ -17,16 +23,27 @@
 \maketitle
 
 \begin{abstract}
-\todo{Add abstract}
+This report investigates various methods of interpolating functions and contours in one, two and three dimensions. The interpolation considers real-valued functions and their contours in two different settings. The first one is interpolating functions whose range is discretized, and we wish to interpolate it back into a continuous range. The second is interpolating functions whose domain resolution is low, and we wish to interpolate the range to a domain with higher resolution. Various methods, such as fitting piecewise polynomials, radial basis function interpolation and convolutions are applied to functions and the results are compared on digital elevation maps in 2D and binary data from solar wind simulation in 3D.
 \end{abstract}
 
-\chapter{Introduction}
-\todo{Add introduction.}
+\newpage
+\tableofcontents
+\newpage
 
-\chapter{Interpolation in 1D}
+\chapter{Introduction}
+In this report, we investigate how real-valued functions and their contours can be interpolated to achieve higher level of smoothness in resulting visualisations of the data.
+
+In Chapter \ref{chap:1D}, we look at univariate functions and develop an algorithm to interpolate discretized range of these functions onto a continuous range.
+
+The following Chapter \ref{chap:2D} utilizes the results from univariate interpolation when interpolating contours of bivariate functions. The contours are parametric lines, thus the same algorithm can be applied. For interpolation of the function range itself, we investigate bicubic interpolation, Delaunay triangulation with Clough-Tocher scheme and radial basis function interpolation.
+
+In Chapter \label{chap:3D}, we interpolate binary trivariate functions in order to create smooth isosurface meshes from the binary range of the function by using different convolutions, Delaunay triangulation with linear barycentric interpolation and marching cubes algorithm. We apply the techniques to simulations of coronal magnetic fields and in Chapter \ref{chap:Unity} we import the smooth isosurface meshes to Unity to produce advanced visualisations and animations of the meshes.
+
+\chapter{Interpolation in 1D}\label{chap:1D}
+
 In one dimensional interpolation we have decided to compare interpolation methods using Bézier curves and cubic polynomial splines. Both methods use piecewise defined polynomial function to trace a curve defined by knot points. Continuity of the polynomial is ensured by equating first derivatives of neighbouring piecewise functions. Mathematically, the process of fitting these piecewise polynomials is equivalent to solving a linear system in both cases.
 
-In 1D, the interpolation task is nearly straightforward. The only issue that can arise is when the data to be interpolated is discretized. This could occur for example when collecting data from a measurement where the measuring device has a finite precision and can only detect change in the observed quantity in steps.
+In 1D, the interpolation task is nearly straightforward. The only issue that can arise is when the range of the function which is to be interpolated is discretized. This could occur for example when collecting data from a measurement where the measuring device has a finite precision and can only detect change in the observed quantity in steps.
 \begin{figure}[h]
  \centering
  \includesvg[width=.6\textwidth]{../images/1D_Function.svg}
@@ -37,7 +54,7 @@ In 1D, the interpolation task is nearly straightforward. The only issue that can
 
 If we were to run the interpolation on such data without any adjustments, the polynomials would try to fit every single point in the collinear segments, producing a curve not too different from what we started with. Therefore in this case pre-processing of the data is required.
 
-The pre-processing we have chosen assumes that the discretized data is obtained by rounding the real-data observation. For example, in Figure \ref{fig:1D_fun}, the collinear segment from $x\approx0.15$ to $x\approx0.55$ is represented in the data with $y$ value $1.0$, however by our assumption we know that the real values could have been anywhere in the interval $[0.75, 1.25)$. The pre-processing algorithm simply isolates a midpoint from a collinear region of points. Where the collinear region is a local maximum or minimum, we isolate two point instead, $1/3$ and $2/3$ along the collinear segment.
+The pre-processing we have chosen assumes that the discretized data is obtained by rounding the real data observation. For example, in Figure \ref{fig:1D_fun}, the collinear segment from $x\approx0.15$ to $x\approx0.55$ is represented in the data with $y$ value $1.0$, however by our assumption we know that the real values could have been anywhere in the interval $[0.75, 1.25)$. The pre-processing algorithm simply isolates a midpoint from a collinear region of points. Where the collinear region is a local maximum or minimum, we isolate two points instead, $1/3$ and $2/3$ along the collinear segment.
 
 Using this algorithm, we can now interpolate any discretized curves in 1D. An example of it working in action can be seen in Figure \ref{fig:1D_fun_interpolated}:
 \begin{figure}[H]
@@ -57,7 +74,8 @@ Using this algorithm, we can now interpolate any discretized curves in 1D. An ex
 
 Note the subtle difference between the Bézier curve and the cubic spline. In segments which are relatively straight, their shape is very similar. However, the difference at places where the curve takes sharper turn is more noticeable. The cubic spline seems to achieve much better results, introducing less irregularities and copying the original data curve more smoothly. This does not come as a surprise, as cubic splines are expected to have \textit{$C^2$} continuity, whereas Bézier curves are only \textit{$C^1$} continuous.
 
-\chapter{Interpolation in 2D}
+\chapter{Interpolation in 2D}\label{chap:2D}
+
 \section{Parametric Curves}\label{sec:param_curve}
 Interpolating parametric curves in 2D (technically in any dimension) is very similar to interpolating in 1D. It might require different functions when implementing these in a programming language, but the algorithm is the same - if the data is discretized, we need to first isolate points from collinear segments.
 \begin{figure}[H]
@@ -263,7 +281,7 @@ The disadvantages of Delaunay triangulation lead us to opting for the radial bas
 \subsubsection{Limitations}
 It's worth to mention that the interpolation approach for discretized elevation does not behave optimally at local maxima or local minima. This can be seen on Figure \ref{fig:3D_discretized_interpolation_a} in the top right part. A valley is lost in the interpolation process, due to the algorithm by which we select contour lines. The outline of the valley is conserved for the interpolation with elevation value of the higher plateau ($200$ $m$), whilst no further information is preserved about the valley. If interpolation of higher accuracy is desired for DEMs, a revised algorithm should be implemented.
 
-\chapter{Interpolating Binary Contours in 3D}
+\chapter{Interpolating Binary Contours in 3D}\label{chap:3D}
 
 Interpolating binary contours is useful in case when a contour is produced by applying marching squares to binary data. This is usually done in order to create a triangular mesh, so that a smooth surface from the boundary of the binary data is produced. Rendering a mesh is also computationally cheaper then rendering the voxels individually. However, the resulting contour looks in this case still looks very voxelated. In this chapter, we'll investigate several methods how the smoothness of produced binary contours can be improved.
 \begin{figure}[H]
@@ -406,7 +424,7 @@ We have touched the idea of convolution in Section \ref{sec:block_avg}. Instead 
 Figure \ref{fig:Ellipsoid_gaussian} neatly demonstrates the power of the Gaussian filter. Even with kernel width of only $3$, the resulting contour mesh is very smooth. Increasing the kernel width (alongside with $\sigma$) will increase the smoothness even further, but it doesn't come without expenses. Large $\sigma$ will cause very small or very thin regions to disappear completely, as the $1$s will be diffused into the surrounding $0$s, likely bringing their values under $0.5$, meaning that the marching squares algorithm will not notice these as the interior of the object.
 
 \section{Applying Gaussian Filter to Simulation Data}\label{sec:simulation}
-The goal of comparing various ways to produce a smooth contour from 3D binary data was to apply one of the techniques to real simulation data. The data referenced here is produced by simulating closed and open flux coronal magnetic fields. The isosurface in the following figures represent the boundaries between the regions of open and closed flux magnetic fields.
+The goal of comparing various ways to produce a smooth contour from 3D binary data was to apply one of the techniques to real simulation data. The data referenced here is produced by simulating closed and open flux coronal magnetic fields.\footnote{\url{https://doi.org/10.3847/1538-4357/ac5d5b}} The isosurface in the following figures represent the boundaries between the regions of open and closed flux magnetic fields.
 \begin{figure}[H]
     \centering
     \begin{subfigure}{.49\textwidth}
@@ -437,7 +455,7 @@ The goal of comparing various ways to produce a smooth contour from 3D binary da
 \end{figure}
 In both cases, the isosurface meshes were produced by applying marching squares to the data in spherical coordinate system. The Gaussian filter greatly increases the smoothness of the meshes, however as was mentioned in Section \ref{sec:gaussian_kernel}, the regions where $1$s are sparse disappeared from the mesh. This can especially be seen in Figure \ref{fig:Dataset2}, where the noise from the bottom-left region does not go through to the smooth contour.
 
-\chapter{Creating Visualizations in Unity}
+\chapter{Creating Visualizations in Unity}\label{chap:Unity}
 The figures in Section \ref{sec:simulation} were all created using Python library Mayavi. The library is good for quickly visualizing 3D objects, but further adjustment of the visuals of the produced figures is quite difficult. We have decided to utilize Unity to create more visually appealing images and animations.
 
 Importing the meshes from Python to Unity can be done in several ways, as Unity supports importing a wide range of file types. However, the mesh needs to be adjusted first to match Unity's axes orientation. Unity uses the \textit{y} axis as the \textit{up} axis, so if the original data used the \textit{z} axis as the \textit{up} axis, these two axis need to be swapped first and then the \textit{z} axis needs to be reversed (i.e. reflect all the points in the \textit{x-y} plane).
