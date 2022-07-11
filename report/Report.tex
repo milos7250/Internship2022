@@ -24,7 +24,7 @@
 \todo{Add introduction.}
 
 \chapter{Interpolation in 1D}
-In one dimensional interpolation we have decided to compare interpolation methods using Bezier curves and cubic polynomial splines. Both methods use piecewise defined polynomial function to trace a curve defined by knot points. Continuity of the polynomial is ensured by equating first derivatives of neighbouring piecewise functions. Mathematically, the process of fitting these piecewise polynomials is equivalent to solving a linear system in both cases.
+In one dimensional interpolation we have decided to compare interpolation methods using Bézier curves and cubic polynomial splines. Both methods use piecewise defined polynomial function to trace a curve defined by knot points. Continuity of the polynomial is ensured by equating first derivatives of neighbouring piecewise functions. Mathematically, the process of fitting these piecewise polynomials is equivalent to solving a linear system in both cases.
 
 In 1D, the interpolation task is nearly straightforward. The only issue that can arise is when the data to be interpolated is discretized. This could occur for example when collecting data from a measurement where the measuring device has a finite precision and can only detect change in the observed quantity in steps.
 \begin{figure}[h]
@@ -55,7 +55,7 @@ Using this algorithm, we can now interpolate any discretized curves in 1D. An ex
     \label{fig:1D_fun_interpolated}
 \end{figure}
 
-Note the subtle difference between the Bezier curve and the cubic spline. In segments which are relatively straight, their shape is very similar. However, the difference at places where the curve takes sharper turn is more noticeable. The cubic spline seems to achieve much better results, introducing less irregularities and copying the original data curve more smoothly. This does not come as a surprise, as cubic splines are expected to have \textit{$C^2$} continuity, whereas Bezier curves are only \textit{$C^1$} continuous.
+Note the subtle difference between the Bézier curve and the cubic spline. In segments which are relatively straight, their shape is very similar. However, the difference at places where the curve takes sharper turn is more noticeable. The cubic spline seems to achieve much better results, introducing less irregularities and copying the original data curve more smoothly. This does not come as a surprise, as cubic splines are expected to have \textit{$C^2$} continuity, whereas Bézier curves are only \textit{$C^1$} continuous.
 
 \chapter{Interpolation in 2D}
 \section{Parametric Curves}\label{sec:param_curve}
@@ -75,7 +75,7 @@ Interpolating parametric curves in 2D (technically in any dimension) is very sim
 
 The same observation about the continuity holds in this case - cubic splines produce curves which look more natural.
 
-\section{Countour Lines of a Bivariate Function}
+\section{Contour Lines of a Bivariate Function}
 There are many reasons why we might want to interpolate contours of a bivariate function. Computer simulations or numerical analysis methods work with discretized or rasterized input dimensions and the contours resulting from them might not be in the required resolution. Rather than having the simulation to run in a higher resolution, we may instead choose to interpolate the results, which is in most cases cheaper computationally.
 
 Interpolating contour lines of bivariate functions mapping a 2D space to a scalar can be done by representing the contours as parametric curves. As an example, we will use digital elevation maps (DEMs) of regions from Scotland.
@@ -98,10 +98,10 @@ Isolating the contours in the first place can be done by regular marching square
     \label{fig:2D_contour}
 \end{figure}
 
-We can see on Figure \ref{fig:2D_contour} that this approach does work quite nicely for cases when the spatial resolution is low. The contour levels can be chosen arbitraily and we should always be left with smooth contours. However, the drawbacks of this approach are that in case of discretized data, we are unable to produce contours of any level other than those of the data. For this, we would need to interpolate the data itself, as is discussed in the next section.
+We can see on Figure \ref{fig:2D_contour} that this approach does work quite nicely for cases when the spatial resolution is low. The contour levels can be chosen arbitrarily and we should always be left with smooth contours. However, the drawbacks of this approach are that in case of discretized data, we are unable to produce contours of any level other than those of the data. For this, we would need to interpolate the data itself, as is discussed in the next section.
 
 \section{Bivariate Function}
-There are two main different cases when interpolating bivariate functions. One is that the spatial resolution of the 2D space is lower than required. In this case, the 2D space is sampled sparsely and the goal is to interpolate the function to a denser grid. The other reason is that the image of the function is discretized, as in Figure \ref{fig:3D_discrete_example}. The surface and it's derivatives are discontinuous, and producing a colormesh or a 3D visualisation of such data produces terraced surface. Hence we may wish to interpolate these terraces to produce a smooth surface.
+There are two main different cases when interpolating bivariate functions. One is that the spatial resolution of the 2D space is lower than required. In this case, the 2D space is sampled sparsely and the goal is to interpolate the function to a denser grid. The other reason is that the image of the function is discretized, as in Figure \ref{fig:3D_discrete_example}. The surface and it's derivatives are discontinuous, and producing a colour mesh or a 3D visualisation of such data produces terraced surface. Hence we may wish to interpolate these terraces to produce a smooth surface.
 
 \begin{figure}[H]
     \centering
@@ -112,7 +112,7 @@ There are two main different cases when interpolating bivariate functions. One i
     \hfill
     \begin{subfigure}{.3\textwidth}
         \includegraphics[width=1\textwidth]{../images/discretize/Color_Graded.png}
-    \caption{Accurate elevation surface with colors graded according to discretization levels.}
+    \caption{Accurate elevation surface with colours graded according to discretization levels.}
     \end{subfigure}
     \hfill
     \begin{subfigure}{.3\textwidth}
@@ -129,7 +129,7 @@ Analogously to 1D, interpolating a discretized image of a function requires us t
 
 In the case of our  DEM examples, we assume that in a discretized DEM, a particular value represents real height which is equal or higher than the value. In other words, the discretized values were created by rounding down to the nearest level. Therefore, the only real values truly preserved by the discretized data representation is located on the curves where two coplanar regions meet - on the contour lines. The elevation level of the contour is then determined by the higher value of the two coplanar regions.
 
-By isolating contours from the discretized data we obtain a set of irregularly spaced points in the domain. Using bicubic interpolation therefore is not a valid option, as that requires a regular grid. There are two alternative methods we investigate in this report. One uses Delaunay triangulation to produce a triangular mesh from the isolated points, and then uses either barycentric interpolation or Clough-Tocher scheme (which in turn uses piecewise cubic interpolating Bezier polynomials). Other option is to use radial basis function (RBF) interpolation.
+By isolating contours from the discretized data we obtain a set of irregularly spaced points in the domain. Using bicubic interpolation therefore is not a valid option, as that requires a regular grid. There are two alternative methods we investigate in this report. One uses Delaunay triangulation to produce a triangular mesh from the isolated points, and then uses either barycentric interpolation or Clough-Tocher scheme (which in turn uses piecewise cubic interpolating Bézier polynomials). Other option is to use radial basis function (RBF) interpolation.
 
 A radial basis function is a real-valued univariate function of the form $\varphi(||\mathbf{x}-\mathbf{c}||)$. The RBF interpolating function $s(\mathbf{x})$ is formed from the weighted sum of radial basis functions, one for each point $\mathbf{x}_k$ from the data that is being interpolated. The weights $w_k$ are chosen such that $\forall k:\ s(\mathbf{x}_k)=f(\mathbf{x}_k)$, i.e. $s(\mathbf{x})$ interpolates the original function $f(\mathbf{x})$ at the original points $\mathbf{x}_k$ with zero error.\footnote{\url{https://en.wikipedia.org/wiki/Radial\_basis\_function\_interpolation\#Examples}}
 $$
@@ -194,11 +194,11 @@ There is a degree of freedom in the choice of the RBF, some examples include lin
     \label{fig:3D_discretized_comparison}
 \end{figure}
 
-In Figure \ref{fig:2D_discretized_comparison} and \ref{fig:3D_discretized_comparison} we compare the two aforementioned methods. We can immediately notice that neither of the methods is particularly accurate at the regions where no contour lines are available, in this case the NW corner of the tile. The methods using Delaunay tirangulation do not interpolate regions outside the convex hull of the isolated points at all, and radial basis function interpolation does produce reasonable estimates, but as can be seen on the right-most plot the absolute error in this region is still quite high. However, this is perhaps expected, as there simply isn't enough information to interpolate in the first place.
+In Figure \ref{fig:2D_discretized_comparison} and \ref{fig:3D_discretized_comparison} we compare the two aforementioned methods. We can immediately notice that neither of the methods is particularly accurate at the regions where no contour lines are available, in this case the NW corner of the tile. The methods using Delaunay triangulation do not interpolate regions outside the convex hull of the isolated points at all, and radial basis function interpolation does produce reasonable estimates, but as can be seen on the right-most plot the absolute error in this region is still quite high. However, this is perhaps expected, as there simply isn't enough information to interpolate in the first place.
 
-Another issue with the Delaunay triangulation is that it doesn't produce smooth surfaces. This can be easily seen in Figure \ref{fig:3D_discretized_comparison_a} and \ref{fig:3D_discretized_comparison_b}, where the triangles still remain visible when visualizing the surface. The Clough-Tocher scheme also introduces artifacts in forms of stretched valleys.
+Another issue with the Delaunay triangulation is that it doesn't produce smooth surfaces. This can be easily seen in Figure \ref{fig:3D_discretized_comparison_a} and \ref{fig:3D_discretized_comparison_b}, where the triangles still remain visible when visualizing the surface. The Clough-Tocher scheme also introduces artefacts in forms of stretched valleys.
 
-The disadvantages of Delaunay tirangulation lead us to opting for the radial basis function interpolation for DEMs. With this approach, we also have a choice of kernel function for the interpolation. We compared several, such as linear, thin plate spline, cubic, quintic, multiquadric, inverse multiquadric, inverse quadratic and gaussian.\footnote{All available within the \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.RBFInterpolator.html}{RBFInterpolator class} of python scipy package.}. Out of these, linear, thin plate spline and multiquadric produced results with the smallest errors. We can see the RBF interpolation in action on Figure \ref{fig:2D_data} and \ref{fig:3D_discretized_interpolation}.
+The disadvantages of Delaunay triangulation lead us to opting for the radial basis function interpolation for DEMs. With this approach, we also have a choice of kernel function for the interpolation. We compared several, such as linear, thin plate spline, cubic, quintic, multiquadric, inverse multiquadric, inverse quadratic and Gaussian.\footnote{All available within the \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.RBFInterpolator.html}{RBFInterpolator class} of Python SciPy library.}. Out of these, linear, thin plate spline and multiquadric produced results with the smallest errors. We can see the RBF interpolation in action on Figure \ref{fig:2D_data} and \ref{fig:3D_discretized_interpolation}.
 
 \begin{figure}[H]
     \centering
@@ -223,7 +223,7 @@ The disadvantages of Delaunay tirangulation lead us to opting for the radial bas
         \centering
             \includegraphics[width=\textwidth]{../images/NH52/2D_Data_Interpolation_3D_discretized_datagrid.png}
         \renewcommand\thesubfigure{\alph{subfigure}) i}
-        \caption{Surface from disretized elevation data.}
+        \caption{Surface from discretized elevation data.}
         \end{subfigure}
         \hfill
         \begin{subfigure}{.49\textwidth}
@@ -242,7 +242,7 @@ The disadvantages of Delaunay tirangulation lead us to opting for the radial bas
         \begin{subfigure}{.49\textwidth}
             \includegraphics[width=\textwidth]{../images/NO33/2D_Data_Interpolation_3D_discretized_datagrid.png}
         \renewcommand\thesubfigure{\alph{subfigure}) i}
-        \caption{Surface from disretized elevation data.}
+        \caption{Surface from discretized elevation data.}
         \end{subfigure}
         \hfill
         \begin{subfigure}{.49\textwidth}
@@ -372,11 +372,11 @@ After isolating the corners, we can apply various interpolation techniques to in
 
 The mesh shown in Figure \ref{fig:Ellipsoid_isolated_vertices} was produced by using block size of 2. When compared to the mesh in Figure \ref{fig:Ellipsoid_block_avg} produced by block averaging with block size 2, we can notice that this method creates smoother contours.
 
-However, it is also noticeable that this method does not perserve shapes exactly. As the block size is increased, the ellipsoid is being deformed into a cuboid, which is noticeable in Figure \ref{fig:Ellipsoid_isolated_vertices_5}. Therefore increasing the block size in this case does not always produce better looking results.
+However, it is also noticeable that this method does not preserve shapes exactly. As the block size is increased, the ellipsoid is being deformed into a cuboid, which is noticeable in Figure \ref{fig:Ellipsoid_isolated_vertices_5}. Therefore increasing the block size in this case does not always produce better looking results.
 
 Another noteworthy observation is that this algorithm would not work very well in the absence of \textit{internal} vertices. For example, applying this algorithm to a cuboid would make the boundary region of the cuboid vanish. This is however quite an edge case, as any other object shape does contain \textit{internal} vertices, and applying this algorithm would not be advantageous at all if we knew that the object is a cuboid beforehand.
 
-\section{Convolution with Gaussian Kernel}
+\section{Convolution with Gaussian Kernel}\label{sec:gaussian_kernel}
 
 We have touched the idea of convolution in Section \ref{sec:block_avg}. Instead of using a uniform kernel, we can use any kernel that might produce better looking results. A very common kernel for smoothing data and images is the Gaussian kernel. In image and signal processing, the convolution with Gaussian kernel is called the Gaussian filter and is used very widely. We can see the illustration of the Gaussian kernel compared to uniform kernel in Figure \ref{fig:kernel_comparison}, and it's application on the ellipsoid example in Figure \ref{fig:Ellipsoid_gaussian}.
 \begin{figure}[H]
@@ -405,7 +405,8 @@ We have touched the idea of convolution in Section \ref{sec:block_avg}. Instead 
 
 Figure \ref{fig:Ellipsoid_gaussian} neatly demonstrates the power of the Gaussian filter. Even with kernel width of only $3$, the resulting contour mesh is very smooth. Increasing the kernel width (alongside with $\sigma$) will increase the smoothness even further, but it doesn't come without expenses. Large $\sigma$ will cause very small or very thin regions to disappear completely, as the $1$s will be diffused into the surrounding $0$s, likely bringing their values under $0.5$, meaning that the marching squares algorithm will not notice these as the interior of the object.
 
-\section{Applying Gaussian Filter to Simulation Data}
+\section{Applying Gaussian Filter to Simulation Data}\label{sec:simulation}
+The goal of comparing various ways to produce a smooth contour from 3D binary data was to apply one of the techniques to real simulation data. The data referenced here is produced by simulating closed and open flux coronal magnetic fields. The isosurface in the following figures represent the boundaries between the regions of open and closed flux magnetic fields.
 \begin{figure}[H]
     \centering
     \begin{subfigure}{.49\textwidth}
@@ -432,20 +433,27 @@ Figure \ref{fig:Ellipsoid_gaussian} neatly demonstrates the power of the Gaussia
     \caption{An isosurface produced from the data by applying marching squares after applying the Gaussian filter.}
     \end{subfigure}
     \caption{Isosurfaces from the second dataset from the simulation.}
-    \label{fig:Dataset1}
+    \label{fig:Dataset2}
 \end{figure}
+In both cases, the isosurface meshes were produced by applying marching squares to the data in spherical coordinate system. The Gaussian filter greatly increases the smoothness of the meshes, however as was mentioned in Section \ref{sec:gaussian_kernel}, the regions where $1$s are sparse disappeared from the mesh. This can especially be seen in Figure \ref{fig:Dataset2}, where the noise from the bottom-left region does not go through to the smooth contour.
 
 \chapter{Creating Visualizations in Unity}
+The figures in Section \ref{sec:simulation} were all created using Python library Mayavi. The library is good for quickly visualizing 3D objects, but further adjustment of the visuals of the produced figures is quite difficult. We have decided to utilize Unity to create more visually appealing images and animations.
+
+Importing the meshes from Python to Unity can be done in several ways, as Unity supports importing a wide range of file types. However, the mesh needs to be adjusted first to match Unity's axes orientation. Unity uses the \textit{y} axis as the \textit{up} axis, so if the original data used the \textit{z} axis as the \textit{up} axis, these two axis need to be swapped first and then the \textit{z} axis needs to be reversed (i.e. reflect all the points in the \textit{x-y} plane).
+
+After the meshes are imported, any of the tools available in Unity can be used to change the visuals of the meshes. In Figure \ref{fig:Dataset1_Unity} and \ref{fig:Dataset2_Unity}, we have used a force field shader to add transparency and varying colour based on the mesh face's normal vectors.
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{../images/3D/Dataset1_Unity.png}
-    \caption{The viualization of the isosurface from the first dataset.}
+    \includegraphics[width=0.7\textwidth]{../images/3D/Dataset1_Unity.png}
+    \caption{The visualization of the isosurface from the first dataset.}
     \label{fig:Dataset1_Unity}
 \end{figure}
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{../images/3D/Dataset2_Unity.png}
-    \caption{The viualization of the isosurface from the second dataset.}
+    \caption{The visualization of the isosurface from the second dataset.}
     \label{fig:Dataset2_Unity}
 \end{figure}
 \end{document}
