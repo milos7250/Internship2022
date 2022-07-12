@@ -71,7 +71,7 @@ plt.colorbar(
 
 
 plot_contours(
-    x, y, datagrid, levels=levels, interpolate=True, ax=ax, colors=colors, discretized_data=False, linewidth=8
+    x, y, datagrid, levels=levels, interpolate=True, ax=ax, colors=colors, discretized_data=False, linewidth=4
 )
 plt.savefig(f"images/newsletter/Contour.svg", transparent=True, dpi=300, bbox_inches="tight")
 plt.show()
