@@ -1,19 +1,23 @@
 # Creating contour visualisations in Unity
 
-This section explaines the process of creating a 3D model of a contour from a triangular mesh.
+This section explains the process of creating a 3D model of a contour from a triangular mesh.
 
 ## Python
 To be able to use the triangular mesh generated in python in Unity, you need to export the mesh in a suitable file format. There are many formats supported by Unity. I have found that using the `trimesh` Python module to export the mesh in `.glb` format works quite well.
 
-However, when exporting any mesh, I recommend swapping the axes order to match Unity, i.e. using Y axis as the 'up' axis. In my case, this helped to remove problems with incorrect orientation and inverted normal vectors when importing the mesh into Unity.
+However, when exporting any mesh, I recommend swapping the *y* and *z* axes order to match Unity's coordinate system, i.e. using *y* axis as the *up* axis. In my case, this helped to remove problems with incorrect orientation and inverted normal vectors when importing the mesh into Unity. Swapping the axes also requires to reflect the *z* axis in order for the coordinate systems to match.
 
 An example of how a triangular mesh might be created and imported in Python using the `trimesh` module:
 ``` python
 vertices, faces, normals, _ = skimage.measure.marching_cubes(data)
-mesh = trimesh.Trimesh(
-    vertices=vertices[:, (0, 2, 1)],
+vertices = vertices[:, (0, 2, 1)]
+normals = normals[:, (0, 2, 1)]
+vertices[:, 2] *= -1
+normals[:, 2] *= -1
+mesh = Trimesh(
+    vertices=vertices,
     faces=faces,
-    vertex_normals=normals[:, (0, 2, 1)],
+    vertex_normals=normals,
 )
 mesh.export("mesh.glb")
 
@@ -35,3 +39,15 @@ Following these steps will make sure that the dropdown menu in the bottom left c
 Alternatively, you might follow the instructions in this GIF:
 
 ![A gif guide](./Unity%20Guide.gif)
+
+## Creating images and videos from Unity
+If you wish to create images or videos from the unity renderings, you have two choices. You can either build the Unity app (explained in the next section), run the app and record the screen using any screen recording software, or use the Unity's built-in recorder tool.
+
+The recordings can be created by going to **Window > General > Recorder > Recorder Window** and setting the required recording parameters. With the default camera setting that rotates around the Sun on a circular path, the whole rotation takes 18 seconds.
+
+The camera's path can be changed in the script `Assets/CameraRotate.cs`.
+
+By default, the first dataset is loaded when making the recording. To change that, either use the dropdown menu to change the dataset in the beginning, or move the option corresponding to the wanted dataset to the first place in the dropdown's game object inspector pane.
+
+## Building the Unity app
+To create a standalone app that can be run to show the animations without the need to install Unity, go to **File > Build Settings...** The settings in this project are good default choices, only the platform should be adjusted to Windows, Linux, etc.
