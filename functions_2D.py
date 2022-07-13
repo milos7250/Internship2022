@@ -45,9 +45,9 @@ def plot_contours(
         levels = np.unique(datagrid)
         levels = np.append(levels, 2 * levels[-1] - levels[-2])
         if levels.size > 100:
-            raise RuntimeWarning("More than 100 levels were detected. Did you mean to pass low_output_resolution=True?")
+            raise RuntimeWarning("More than 100 levels were detected. Is discretized_data=True used correctly?")
     elif levels is None:
-        raise TypeError("Either low_output_resolution=True or levels must be specified.")
+        raise TypeError("Either discretized_data=True or levels must be specified.")
 
     # Find contours for each level
     for contour_datapoints in isolate_contour_datapoints(
