@@ -11,7 +11,8 @@ This script interpolates a map of fictional landscape by using a combination of 
 interpolation.
 """
 
-datagrid = np.load("../data/FictionalData.npy", allow_pickle=False)
+# Load the data
+datagrid = np.load("../data/FictionalData.npz", mmap_mode="c", allow_pickle=False)["arr_0"]
 maximum = np.max(datagrid)
 x = np.arange(0, datagrid.shape[1])
 y = np.arange(0, datagrid.shape[0])

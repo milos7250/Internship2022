@@ -1,6 +1,5 @@
 import numpy as np
 from mayavi import mlab
-from PIL import Image
 from matplotlib import pyplot as plt
 from matplotlib.cm import ScalarMappable
 from matplotlib.colors import Normalize, BoundaryNorm, LinearSegmentedColormap
@@ -14,8 +13,8 @@ This script produces 2D and 3D images from elevation maps of a region from Slova
 import_step = 1
 height_levels = 200
 
-datagrid = Image.open("../data/slovakia.tif")
-datagrid = np.array(datagrid)[::-1][1200:2200:import_step, 2300:3300:import_step]
+datagrid = np.load("../data/slovakia.npz", mmap_mode="c", allow_pickle=False)["arr_0"]
+datagrid = datagrid[::-1][1200:2200:import_step, 2300:3300:import_step]
 datagrid = np.maximum(0, datagrid)
 dim_x = 50 * datagrid.shape[1]  # Dimensions of loaded data in m
 dim_y = 50 * datagrid.shape[0]  # Dimensions of loaded data in m
