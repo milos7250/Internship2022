@@ -1,17 +1,13 @@
 import os
 
 import numpy as np
-from matplotlib import pyplot as plt
-from matplotlib.cm import ScalarMappable
-from matplotlib.colors import Normalize, BoundaryNorm, LinearSegmentedColormap
-from scipy import interpolate
 from mayavi import mlab
 
-from functions_2D import interpolate_discretized_data, plot_contours, isolate_contour_datapoints
+from functions_2D import isolate_contour_datapoints
 from helpers.colors import DEMScalarMappable
 
 """
-This script creates 3D graphics to showcase data discretization
+This script creates 3D graphics to showcase data discretization and saves them to file
 """
 
 
@@ -28,7 +24,7 @@ dim_x = 10 * 1e3  # Dimensions of loaded data in m
 dim_y = 10 * 1e3  # Dimensions of loaded data in m
 
 # Import data. Reversing y axis is necessary to make sure north stays on the top of the graphs.
-datagrid = np.loadtxt(f"data/{tile}.asc", skiprows=5)[::-1, :]
+datagrid = np.loadtxt(f"../data/{tile}.asc", skiprows=5)[::-1, :]
 # Each tile is of dimension 10km x 10km, sampled by 50m, thus we have 200 x 200 samples
 x = np.linspace(0, dim_x, datagrid.shape[1])
 y = np.linspace(0, dim_y, datagrid.shape[0])

@@ -51,7 +51,7 @@ plt.xlabel("Easting")
 plt.ylabel("Northing")
 
 # Import data. Reversing y axis is necessary to make sure north stays on the top of the graphs.
-datagrid = np.loadtxt(f"data/{tile}.asc", skiprows=5)[::-1, :]
+datagrid = np.loadtxt(f"../data/{tile}.asc", skiprows=5)[::-1, :]
 # Each tile is of dimension 10km x 10km, sampled by 50m, thus we have 200 x 200 samples
 x = np.linspace(0, dim_x, datagrid.shape[1])
 y = np.linspace(0, dim_y, datagrid.shape[0])
@@ -86,6 +86,9 @@ plt.colorbar(
 
 
 def plot_contours_wrap(x, y, datagrid, axes, plot_title, levels=None, discretized_data=False):
+    """
+    A utility function to create multiple plots from one datagrid.
+    """
     plot_contours(
         x,
         y,

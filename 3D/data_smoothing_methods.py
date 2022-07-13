@@ -46,7 +46,7 @@ def isolate_vertices(values: NDArray[float], block_size: int = 2) -> tuple[NDArr
 
 
 # Generate an ellipsoid in Cartesian coordinates
-res = 30
+res = 30  # The resolution of the surface array
 surface_kind = ["ellipsoid", "saddle"][0]  # Change number here to change surface type
 surface = np.zeros([res] * 3)
 for i in range(res):
@@ -63,7 +63,7 @@ for i in range(res):
                 z /= res / 2
                 if z - x**2 + y**2 < 0:
                     surface[i, j, k] = 1
-n = 1
+n = 1  # The factor by which to stretch the surface array
 res = res * n + 2
 if n > 1:
     for dim in range(3):
@@ -78,20 +78,20 @@ mlab.triangular_mesh(vertices[:, 0], vertices[:, 1], vertices[:, 2] + res, faces
 mlab.text3d(res * 1, res * 0.5, res * 2.5, "Original terraced object")
 
 # Use gaussian kernel to smooth the ellipsoid
-gaussian_ellipsoid = gaussian_filter(surface, 2, truncate=1)
+gaussian_surface = gaussian_filter(surface, 2, truncate=1)
 
-vertices, faces, _, _ = marching_cubes(gaussian_ellipsoid, spacing=(1, 1, 1), level=0.5)
+vertices, faces, _, _ = marching_cubes(gaussian_surface, spacing=(1, 1, 1), level=0.5)
 mlab.triangular_mesh(vertices[:, 0] + res * 2, vertices[:, 1], vertices[:, 2] + res, faces, colormap="coolwarm")
-mlab.points3d(X + res * 2, Y, Z, gaussian_ellipsoid, mode="cube", scale_factor=1, colormap="coolwarm")
+mlab.points3d(X + res * 2, Y, Z, gaussian_surface, mode="cube", scale_factor=1, colormap="coolwarm")
 mlab.text3d(res * 3, res * 0.5, res * 2.5, "Gaussian kernel\nsmoothened object")
 # Use block averages to smooth the ellipsoid
 kernel_size = 2
 kernel = np.ones([kernel_size] * 3) / kernel_size**3  # A rolling average kernel
-rolling_avg_ellipsoid = convolve(surface, kernel, mode="same", method="direct")
+rolling_avg_surface = convolve(surface, kernel, mode="same", method="direct")
 
-vertices, faces, _, _ = marching_cubes(rolling_avg_ellipsoid, spacing=(1, 1, 1), level=0.5)
+vertices, faces, _, _ = marching_cubes(rolling_avg_surface, spacing=(1, 1, 1), level=0.5)
 mlab.triangular_mesh(vertices[:, 0] + res * 3, vertices[:, 1], vertices[:, 2] + res, faces, colormap="coolwarm")
-mlab.points3d(X + res * 3, Y, Z, rolling_avg_ellipsoid, mode="cube", scale_factor=1, colormap="coolwarm")
+mlab.points3d(X + res * 3, Y, Z, rolling_avg_surface, mode="cube", scale_factor=1, colormap="coolwarm")
 mlab.text3d(res * 4, res * 0.5, res * 2.5, "Rolling block average\nsmoothened object")
 
 # Isolate corner vertices and plot them
@@ -115,16 +115,16 @@ gridded_vertices = griddata(
     method="linear",
 )
 
-interpolated_ellipsoid = surface.copy()
-interpolated_ellipsoid[mask] = gridded_vertices
+interpolated_surface = surface.copy()
+interpolated_surface[mask] = gridded_vertices
 
 # Fill in nan's from original ellipse
-nan_mask = np.isnan(interpolated_ellipsoid)
-interpolated_ellipsoid[nan_mask] = surface[nan_mask]
+nan_mask = np.isnan(interpolated_surface)
+interpolated_surface[nan_mask] = surface[nan_mask]
 
-mlab.points3d(X + res, Y, Z + res, interpolated_ellipsoid, mode="cube", scale_factor=1, colormap="coolwarm")
+mlab.points3d(X + res, Y, Z + res, interpolated_surface, mode="cube", scale_factor=1, colormap="coolwarm")
 
-vertices, faces, _, _ = marching_cubes(interpolated_ellipsoid, spacing=(1, 1, 1), level=0.5)
+vertices, faces, _, _ = marching_cubes(interpolated_surface, spacing=(1, 1, 1), level=0.5)
 mlab.triangular_mesh(vertices[:, 0] + res, vertices[:, 1], vertices[:, 2] + res * 2, faces, colormap="coolwarm")
 mlab.text3d(res * 2, res * 0.5, res * 3.5, "Isolation of vertices\nsmoothened object")
 

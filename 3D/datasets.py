@@ -15,7 +15,8 @@ from functions_3D import sph_to_car, indices_to_coords_nd
 
 class Grid:
     """
-    This is a class which provides utilities for importing, visualizing and stitching grids from TODO: add grid origin
+    This is a class which provides utilities for importing, visualizing and stitching together grids produced by
+    simulations of open and closed flux magnetic fields produced by the Sun.
     The grid uses spherical coordinates.
     """
 
@@ -29,9 +30,9 @@ class Grid:
         :param grid: The values of the grid at locations defined by 'r', 'theta' and 'phi'.
         """
         # Coordinates have to be increasing
-        assert np.all(r[1:] >= r[:-1])
-        assert np.all(theta[1:] >= theta[:-1])
-        assert np.all(phi[1:] >= phi[:-1])
+        assert np.all(r[1:] > r[:-1])
+        assert np.all(theta[1:] > theta[:-1])
+        assert np.all(phi[1:] > phi[:-1])
         self.r = r
         self.theta = theta
         self.phi = phi
@@ -42,7 +43,7 @@ class Grid:
         """
         Initiate an instance by loading the data from a file. The files are stored in the specified folder with
         filenames grid_binary_#.npy for the grid and grid_R_#.npy, grid_t_#.npy, grid_p_#.npy for the R, t and p
-        coordinates respectively
+        coordinates respectively. Alternatively, a NumPy compressed .npz archive can be used.
 
         :param grid_no: Number of the grid.
         :param folder: The folder where the grid and coordinate arrays are stored.
@@ -112,10 +113,12 @@ class Grid:
         self.grid = new_grid
 
 
-dataset_no = 2
-gaussian = True
+dataset_no = 2  # The number of dataset to use
+gaussian = True  # Whether to smooth the data before producing images
+
 azimuth = [180, 45][dataset_no - 1]
 
+# Load grids from dataset and stitch them together
 if dataset_no == 1:
     grid = Grid.from_file(0, folder="../data/Dataset1")
     for i in range(1, 2):
@@ -127,6 +130,7 @@ elif dataset_no == 2:
 else:
     raise ImportError("Wrong dataset number")
 
+# Print the amount of RAM used to store the grid and it's shape
 print(getsizeof(grid.grid) / 1e6, "MB")
 print(grid.grid.shape)
 
@@ -188,11 +192,11 @@ if gaussian:
     grid.grid[..., -1] = grid.grid[..., 0]
 
 """
-Swap the y and z axis on saving the mesh to comply with Unity's axes orientation
+Swap the y and z axis and reflect the z axis on saving the mesh to comply with Unity's axes orientation
 """
 # export_vertices = vertices[:, (0, 2, 1)]
-# export_vertices[:, 2] *= -1
 # export_normals = normals[:, (0, 2, 1)]
+# export_vertices[:, 2] *= -1
 # export_normals[:, 2] *= -1
 # mesh = Trimesh(
 #     vertices=export_vertices,
@@ -206,19 +210,19 @@ Swap the y and z axis on saving the mesh to comply with Unity's axes orientation
 # Plot in spherical coordinate space
 vertices, faces, normals, values = marching_cubes(grid.grid, allow_degenerate=False, level=128)
 vertices = grid.coords_from_indices_nd(vertices.T)
-# mlab.figure(bgcolor=(1, 1, 1))
-# mlab.triangular_mesh(
-#     vertices[:, 0],
-#     vertices[:, 1],
-#     vertices[:, 2],
-#     faces,
-#     color=(0.5, 0.5, 0.5),
-#     scalars=values,
-# )
-#
-# mlab.surf(*np.ogrid[1:1:2j, 0 : np.pi : 2j], [[-np.pi, -np.pi], [np.pi, np.pi]], color=(0.7, 0.7, 0))
-# mlab.orientation_axes(xlabel="r", ylabel="theta", zlabel="phi")
-# mlab.show()
+mlab.figure(bgcolor=(1, 1, 1))
+mlab.triangular_mesh(
+    vertices[:, 0],
+    vertices[:, 1],
+    vertices[:, 2],
+    faces,
+    color=(0.5, 0.5, 0.5),
+    scalars=values,
+)
+
+mlab.surf(*np.ogrid[1:1:2j, 0 : np.pi : 2j], [[-np.pi, -np.pi], [np.pi, np.pi]], color=(0.7, 0.7, 0))
+mlab.orientation_axes(xlabel="r", ylabel="theta", zlabel="phi")
+mlab.show()
 
 # Plot in cartesian coordinates
 vertices = sph_to_car(*vertices.T)

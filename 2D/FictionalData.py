@@ -7,6 +7,11 @@ from mayavi import mlab
 import helpers.save_figure_position
 from functions_2D import interpolate_discretized_data, plot_contours
 
+"""
+This script interpolates a map of fictional landscape by using a combination of RBF interpolation and cubic spline
+interpolation.
+"""
+
 datagrid = np.load("../data/FictionalData.npy", allow_pickle=False)
 maximum = np.max(datagrid)
 x = np.arange(0, datagrid.shape[1])
@@ -41,7 +46,7 @@ interpolated_image = sea_fix(interpolated_image)
 # axes[1].pcolormesh(x, y, interpolated_image, cmap=cmap, norm=norm, rasterized=True, rasterized=True)
 mlab.surf(x, y, interpolated_image.T, warp_scale=20, colormap="terrain", vmin=vmin, vmax=vmax)
 mlab.show()
-exit()
+
 # plot_contours(x, y, interpolated_image, ax=axes[4], colors=colors, levels=levels, interpolate=False)
 
 # purerbf = np.load("data/FictionalData_Interpolated.npy")
@@ -53,4 +58,4 @@ exit()
 # norm_diff = Normalize(-np.max(np.abs(interpolated_image - purerbf)), np.max(np.abs(interpolated_image - purerbf)))
 # axes[3].pcolormesh(x, y, interpolated_image - purerbf, cmap="coolwarm", norm=norm_diff, rasterized=True)
 # plt.colorbar(ScalarMappable(cmap="coolwarm", norm=norm_diff), ax=axes[3])
-helpers.save_figure_position.ShowLastPos(plt)
+# plt.show()

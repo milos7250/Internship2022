@@ -7,6 +7,10 @@ from matplotlib.colors import Normalize, BoundaryNorm, LinearSegmentedColormap
 from functions_2D import plot_contours
 import os
 
+"""
+This script produces 2D and 3D images from elevation maps of a region from Slovakia.
+"""
+
 import_step = 1
 height_levels = 200
 
@@ -83,10 +87,11 @@ try:
 except FileExistsError:
     pass
 
+plt.show()
 plt.savefig("images/Slovakia/2D.svg", transparent=True, dpi=300, bbox_inches="tight")
-# plt.show()
-mlab.options.offscreen = True
+# mlab.options.offscreen = True
 mlab.surf(y, x, np.rot90(datagrid.T), mask=mask, warp_scale=5, colormap="terrain", vmin=vmin, vmax=vmax)
 mlab.view(azimuth=315)
 
 mlab.savefig("../images/Slovakia/3D.png", magnification=10)
+mlab.show()

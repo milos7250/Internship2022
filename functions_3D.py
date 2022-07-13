@@ -6,8 +6,16 @@ This file contains various functions useful for working with triangular meshes i
 """
 
 
-# TODO: Very time inefficient, consider replacing by something else
-def linear(x0, y0, x1, y1, x):
+def linear(
+    x0: float | NDArray[float],
+    y0: float | NDArray[float],
+    x1: float | NDArray[float],
+    y1: float | NDArray[float],
+    x: float | NDArray[float],
+) -> float | NDArray[float]:
+    """
+    Evaluates equation of a line passing through points (x0, y0) and (x1, y1) at x.
+    """
     return (y1 - y0) / (x1 - x0) * (x - x0) + y0
 
 
@@ -33,7 +41,7 @@ def car_to_sph(x: float | NDArray[float], y: float | NDArray[float], z: float | 
 
 # TODO: Definitely not memory friendly, apparently uses about 1GiB of memory for 100 points???
 """
-File "/home/milosmicik/Documents/Internship/functions_3D.py", line 38, in remove_duplicate_vertices
+File "~/Documents/Internship/functions_3D.py", line 38, in remove_duplicate_vertices
     duplicate = np.linalg.norm(vertices - vertices[:, np.newaxis], axis=2) < tolerance
 numpy.core._exceptions._ArrayMemoryError: Unable to allocate 4.62 TiB for an array with shape (459865, 459865, 3) and data type float64
 """

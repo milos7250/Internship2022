@@ -2,8 +2,6 @@ import os
 
 import numpy as np
 from matplotlib import pyplot as plt
-from matplotlib.cm import ScalarMappable
-from matplotlib.colors import Normalize, BoundaryNorm, LinearSegmentedColormap
 from scipy import interpolate
 from mayavi import mlab
 
@@ -57,7 +55,7 @@ plt.xlabel("Easting")
 plt.ylabel("Northing")
 
 # Import data. Reversing y axis is necessary to make sure north stays on the top of the graphs.
-datagrid = np.loadtxt(f"data/{tile}.asc", skiprows=5)[::-1, :]
+datagrid = np.loadtxt(f"../data/{tile}.asc", skiprows=5)[::-1, :]
 # Each tile is of dimension 10km x 10km, sampled by 50m, thus we have 200 x 200 samples
 x = np.linspace(0, dim_x, datagrid.shape[1])
 y = np.linspace(0, dim_y, datagrid.shape[0])
@@ -88,6 +86,9 @@ plt.colorbar(
 
 
 def plot_data_wrap(x, y, datagrid, xi=None, yi=None, interpolated_datagrid=None, axes=None, plot_title=None):
+    """
+    A utility function to create multiple plots from one datagrid.
+    """
     axes[0].pcolormesh(x, y, datagrid, cmap=colors.cmap, norm=colors.norm, rasterized=True)
     axes[0].set_title(plot_title)
     if interpolated_datagrid is not None:
@@ -184,10 +185,7 @@ except FileExistsError:
     pass
 
 plt.savefig(f"images/{tile}/2D_Data_Interpolation.svg", transparent=True, dpi=300, bbox_inches="tight")
-# plt.show()
-
-os.system("zenity --info --text 'Interpolation Finished' --icon-name=emblem-success")
-exit()
+plt.show()
 
 # 3D plots
 

@@ -7,7 +7,7 @@
 /data/Dataset*/*.npy
 
 /conda*/
-/Unity\ App/
+/Unity\ App*/
 /EMS/
 
 svg-inkscape/

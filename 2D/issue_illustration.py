@@ -3,8 +3,11 @@ from matplotlib import pyplot as plt
 from matplotlib.cm import ScalarMappable
 from matplotlib.colors import Normalize
 
-import helpers.save_figure_position
 from functions_2D import interpolate_discretized_data, plot_contours
+
+"""
+This script illustrates the issue with the current way of interpolating discretized functions by isolating contours.
+"""
 
 block_stride = 8
 height_levels = 50
@@ -49,4 +52,4 @@ plt.colorbar(ScalarMappable(cmap="coolwarm", norm=norm_diff), ax=axes[4])
 plt.subplot(236, projection="3d")
 plt.gca().plot_surface(X, Y, z_interp, cmap=cmap, norm=norm)
 
-helpers.save_figure_position.ShowLastPos(plt)
+plt.show()

@@ -10,7 +10,7 @@ This script investigates how marching cubes and gaussian filter work in spherica
 """
 
 
-res = 30
+res = 30  # The resolution of the surface array
 surface_kind = ["ellipsoid", "saddle"][0]  # Change number here to change surface type
 surface = np.zeros([res] * 3)
 r = np.linspace(0, res - 1, res)
@@ -38,7 +38,7 @@ vertices, faces = remove_duplicate_vertices(vertices, faces)
 mlab.triangular_mesh(
     vertices[:, 0],
     vertices[:, 1],
-    vertices[:, 2],
+    vertices[:, 2] + res * 2.2,
     faces,
 )
 mlab.orientation_axes(xlabel="r", ylabel="theta", zlabel="phi")
@@ -50,21 +50,21 @@ vertices, faces = remove_duplicate_vertices(vertices, faces)
 mlab.triangular_mesh(
     vertices[:, 0],
     vertices[:, 1],
-    vertices[:, 2] + res * 2.5,
+    vertices[:, 2],
     faces,
 )
 
 # Use gaussian kernel to smoothen the surface
-gaussian_surface = gaussian_filter(surface - 0.5, 1) + 0.5
+gaussian_surface = gaussian_filter(surface, sigma=2)
 
 
 # Plot the surface in (r, theta, phi) space
 vertices, faces, _, _ = marching_cubes(gaussian_surface, allow_degenerate=False, level=0.5)
 vertices, faces = remove_duplicate_vertices(vertices, faces)
 mlab.triangular_mesh(
-    vertices[:, 0] + res * 2.5,
+    vertices[:, 0] + res * 2.2,
     vertices[:, 1],
-    vertices[:, 2],
+    vertices[:, 2] + res * 2.2,
     faces,
 )
 
@@ -76,7 +76,7 @@ vertices, faces = remove_duplicate_vertices(vertices, faces)
 mlab.triangular_mesh(
     vertices[:, 0] + res * 2.5,
     vertices[:, 1],
-    vertices[:, 2] + res * 2.5,
+    vertices[:, 2],
     faces,
 )
 mlab.show()

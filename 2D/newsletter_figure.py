@@ -5,7 +5,7 @@ from functions_2D import plot_contours
 from helpers.colors import DEMScalarMappable
 
 """
-This script creates smooth contours without attempting to interpolate the data itself.
+This script creates figures to illustrate discretized data interpolation
 """
 
 block_stride = 8

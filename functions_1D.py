@@ -38,8 +38,8 @@ def check_half_plane(collinear_points: np.ndarray, points: np.ndarray):
 
 def isolate_from_collinear(path: np.ndarray, closed: bool = False, collinearity_tol: float = None):
     """
-    Isolates points from step segments. Midpoints are selected if a step is an inflection point, two points along the
-    step are selected if the step is local minimum/maximum.
+    Isolates points from step segments. In 2D, midpoints are selected if a step is an inflection point, two points along
+    the step are selected if the step is local minimum/maximum. In more dimensions, only midpoints are selected.
 
     :param path: (n, 2) ndarray - the path to isolate points from.
     :param closed: Whether we want the isolated path to be closed
@@ -71,6 +71,7 @@ def isolate_from_collinear(path: np.ndarray, closed: bool = False, collinearity_
             i += 1
             continue
 
+        # Only consider adding two points per segment if the line is in 2D
         if points.shape[1] == 2 and check_half_plane(
             path[[firstpoint, lastpoint]], path[[firstpoint - 1, min(lastpoint + 1, path.shape[0] - 1)]]
         ):
@@ -82,6 +83,7 @@ def isolate_from_collinear(path: np.ndarray, closed: bool = False, collinearity_
         lastpoint = i
         i += 1
 
+    # Handle the addition of last point
     if closed and check_half_plane(
         path[[firstpoint, lastpoint]], path[[firstpoint - 1, (lastpoint + 1) % (path.shape[0] - 1)]]
     ):
@@ -95,17 +97,18 @@ def isolate_from_collinear(path: np.ndarray, closed: bool = False, collinearity_
     return points
 
 
-def smooth_contour(contour: np.ndarray, smoothness: float = 20, collinearity_tol: float = None):
+def smooth_contour(contour: np.ndarray, smoothness: int = 20, collinearity_tol: float = None):
     """
-    Smoothens a 2D contour by using cubic splines.
+    Smoothens a 2D contour by isolating points from linear segments and interpolating these points by cubic splines.
 
-    :param contour: (n, 2) ndarray - contour to smoothen.
-    :param smoothness: The amount of segments by which the spline should be approximated in between two consecutive
+    :param contour: (n, 2) ndarray - points of the contour to smoothen.
+    :param smoothness: The number of segments by which the spline should be approximated in between two consecutive
     points.
     :param collinearity_tol: Tolerance for 'functions_1D.are_collinear'. Needs to be adjusted to fit size of data.
     :return: (n, 2) ndarray - the smoothened contour.
     """
     closed = np.all(contour[0] == contour[-1])
+    smoothness += 1  # Need to add 1 to change from no of segments to no of points
 
     isolated_contour = isolate_from_collinear(contour, closed, collinearity_tol)
     try:
