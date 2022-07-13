@@ -7,8 +7,8 @@ My research involved investigating various methods of interpolating functions an
 
 Digital elevation maps are mathematically real-valued bivariate functions, so one part of my research included comparing bivariate and multivariate interpolation methods. The terraced image in the middle is the result of creating a surface from an elevation map with its range discretized into 50 m steps. The smooth image on the right was produced by isolating the contour lines from the discretized range and using them as the input points in thin-plate spline interpolation.
 
-[<img src="images/3D/Dataset1.png" height="300" alt="Blocky isosurface"/>](images/3D/Dataset1.png)
-[<img src="images/3D/Dataset1_Gaussian.png" height="300" alt="Interpolated isosurface"/>](images/3D/Dataset1_Gaussian.png)
+[<img src="images/3D/Dataset1.png" height="250" alt="Blocky isosurface"/>](images/3D/Dataset1.png)
+[<img src="images/3D/Dataset1_Gaussian.png" height="250" alt="Interpolated isosurface"/>](images/3D/Dataset1_Gaussian.png)
 
 The second part of the research involved interpolating binary data from simulations of the Sun's corona. The images here represent a boundary between open flux and closed flux magnetic fields. The image on the left is produced by applying marching cubes algorithm without any interpolation of the data, whereas the image on the right was produced after convolution of the data with a Gaussian kernel.
 
